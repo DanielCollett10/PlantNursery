@@ -97,6 +97,7 @@ namespace PlantNursery.Sim.Content
                     Layer = n.Enum<ItemLayer>("layer"),
                     ProvidesSurface = n.Bool("providesSurface"),
                     Price = n.Int("price"),
+                    SeedCount = n.Has("seedCount") ? n.Int("seedCount") : 0,
                 };
                 if (def.Layer == ItemLayer.Surface)
                     def.SurfaceFootprint = n.Size("surfaceFootprint");

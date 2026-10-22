@@ -61,6 +61,8 @@ namespace PlantNursery.Sim.Content
         public bool ProvidesSurface;
         /// <summary>Buy price in coins.</summary>
         public int Price;
+        /// <summary>Seeds in one packet (seed packets only; 0 otherwise).</summary>
+        public int SeedCount;
     }
 
     /// <summary>A plant container type (docs/design/plants.md).</summary>

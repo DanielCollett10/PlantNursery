@@ -34,10 +34,12 @@ namespace PlantNursery.Sim.Building
         public int Width { get; }
         /// <summary>Rotated footprint depth in units.</summary>
         public int Depth { get; }
+        /// <summary>Seeds carried (seed packets); 0 for other items.</summary>
+        public int SeedCount { get; }
 
-        public SurfaceItem(int id, string itemId, Unit anchor, Rotation rotation, int width, int depth)
+        public SurfaceItem(int id, string itemId, Unit anchor, Rotation rotation, int width, int depth, int seedCount = 0)
         {
-            Id = id; ItemId = itemId; Anchor = anchor; Rotation = rotation; Width = width; Depth = depth;
+            SeedCount = seedCount; Id = id; ItemId = itemId; Anchor = anchor; Rotation = rotation; Width = width; Depth = depth;
         }
     }
 
@@ -99,12 +101,12 @@ namespace PlantNursery.Sim.Building
         }
 
         /// <summary>Place a surface item. Returns it, or null with the reason.</summary>
-        public SurfaceItem Place(string itemId, Unit anchor, Rotation rotation, out BuildRejection rejection)
+        public SurfaceItem Place(string itemId, Unit anchor, Rotation rotation, out BuildRejection rejection, int seedCount = 0)
         {
             rejection = CanPlace(itemId, anchor, rotation);
             if (rejection != BuildRejection.None) return null;
             var size = Footprints.Rotate(_content.ItemDefs[itemId].SurfaceFootprint, rotation);
-            var item = new SurfaceItem(_nextId++, itemId, anchor, rotation, size.W, size.D);
+            var item = new SurfaceItem(_nextId++, itemId, anchor, rotation, size.W, size.D, seedCount);
             _items[item.Id] = item;
             for (var du = 0; du < item.Width; du++)
                 for (var dv = 0; dv < item.Depth; dv++)
@@ -128,6 +130,10 @@ namespace PlantNursery.Sim.Building
         /// (per axis), or null. Closeness is squared Euclidean distance; ties go to smallest v, then smallest u.
         /// </summary>
         public Unit? FindNearestFreeSpot(string itemId, Rotation rotation, Unit desired, int radius)
+            => FindNearestFreeSpot(itemId, rotation, desired, radius, null);
+
+        /// <summary>As above, but only anchors for which <paramref name="accept"/> returns true are considered (null = all).</summary>
+        public Unit? FindNearestFreeSpot(string itemId, Rotation rotation, Unit desired, int radius, Func<Unit, bool> accept)
         {
             Unit? best = null;
             var bestDist = int.MaxValue;
@@ -141,6 +147,7 @@ namespace PlantNursery.Sim.Building
                         if (dist > bestDist) continue;
                         if (dist == bestDist && !Before(cand, best.Value)) continue;
                     }
+                    if (accept != null && !accept(cand)) continue;
                     if (CanPlace(itemId, cand, rotation) != BuildRejection.None) continue;
                     best = cand;
                     bestDist = dist;
