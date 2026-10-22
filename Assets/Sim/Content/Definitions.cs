@@ -61,6 +61,8 @@ namespace PlantNursery.Sim.Content
         public bool ProvidesSurface;
         /// <summary>Buy price in coins.</summary>
         public int Price;
+        /// <summary>Water charges a full watering can holds; 0 for items that are not cans.</summary>
+        public int WaterCapacity;
         /// <summary>Seeds in one packet (seed packets only; 0 otherwise).</summary>
         public int SeedCount;
     }
