@@ -1,0 +1,22 @@
+{
+  "varieties": [
+    {
+      "id": "green_plain", "name": "Green Plain", "growthPerHour": 1.0,
+      "stageThresholds": { "Seed": 0, "Seedling": 6, "Rooted": 24, "Young": 48, "Established": 84, "Mature": 132 },
+      "seasonGrowth": { "Spring": 1.0, "Summer": 1.0, "Autumn": 0.4 },
+      "genes": { "leafColour": ["green", "green"], "variegation": ["plain", "plain"], "spotSize": [0.2, 0.2] }
+    },
+    {
+      "id": "red_plain", "name": "Red Plain", "growthPerHour": 0.9,
+      "stageThresholds": { "Seed": 0, "Seedling": 6, "Rooted": 24, "Young": 48, "Established": 84, "Mature": 132 },
+      "seasonGrowth": { "Spring": 1.0, "Summer": 0.7, "Autumn": 0.4 },
+      "genes": { "leafColour": ["red", "red"], "variegation": ["plain", "plain"], "spotSize": [0.3, 0.3] }
+    },
+    {
+      "id": "yellow_striped", "name": "Yellow Striped", "growthPerHour": 0.8,
+      "stageThresholds": { "Seed": 0, "Seedling": 6, "Rooted": 24, "Young": 48, "Established": 84, "Mature": 132 },
+      "seasonGrowth": { "Spring": 0.7, "Summer": 1.0, "Autumn": 0.4 },
+      "genes": { "leafColour": ["yellow", "yellow"], "variegation": ["striped", "striped"], "spotSize": [0.5, 0.5] }
+    }
+  ]
+}

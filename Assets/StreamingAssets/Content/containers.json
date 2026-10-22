@@ -1,0 +1,7 @@
+{
+  "containers": [
+    { "id": "plug_tray", "itemId": "plug_tray", "cellCount": 6, "maxStage": "Rooted", "acceptsFromStage": "Seed", "dryRatePerHour": 4.0 },
+    { "id": "pot_small", "itemId": "pot_small", "cellCount": 1, "maxStage": "Established", "acceptsFromStage": "Rooted", "dryRatePerHour": 2.5 },
+    { "id": "pot_medium", "itemId": "pot_medium", "cellCount": 1, "maxStage": "Mature", "acceptsFromStage": "Established", "dryRatePerHour": 1.5 }
+  ]
+}
