@@ -118,6 +118,27 @@ namespace PlantNursery.Sim.Hands
             _plants[plant.Id] = plant;
         }
 
+        /// <summary>
+        /// Appends every plant (on the surface grid or in a hand) with the container that holds it.
+        /// Plants whose container is unknown are skipped.
+        /// </summary>
+        public void CollectPlants(List<KeyValuePair<Plant, ContainerDef>> result)
+        {
+            foreach (var item in _grid.Items)
+            {
+                if (!_contents.TryGetValue(item.Id, out var c) || c.Plants.Count == 0) continue;
+                var def = ContainerFor(item.ItemId);
+                if (def == null) continue;
+                foreach (var p in c.Plants) result.Add(new KeyValuePair<Plant, ContainerDef>(p, def));
+            }
+            foreach (var h in _held.Values)
+            {
+                var def = ContainerFor(h.ItemId);
+                if (def == null) continue;
+                foreach (var p in h.Contents.Plants) result.Add(new KeyValuePair<Plant, ContainerDef>(p, def));
+            }
+        }
+
         /// <summary>Finds a plant by id, or null.</summary>
         public Plant GetPlant(int plantId) => _plants.TryGetValue(plantId, out var p) ? p : null;
 
