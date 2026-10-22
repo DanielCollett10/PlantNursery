@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace NetSim.EditorTools
+namespace PlantNursery.EditorTools
 {
     /// <summary>
     /// Keeps the project in the settings that AI agents (and git) need:
