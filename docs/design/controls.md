@@ -19,7 +19,7 @@ Each player has **one hand slot** and holds at most one item. Interact picks up 
 | Nothing | Holdable item (can, seed packet, tray, pot) | Pick up |
 | Watering can with water | Plant in a cell or pot | Water that plant |
 | Watering can | Tap | Refill can to full |
-| Seed packet with seeds left | Empty plug cell | Sow one seed |
+| Seed packet with seeds left | Empty plug cell | Sow one seed (one click = one cell; revisit after the M1 playtest) |
 | Anything | Computer | Open shop UI |
 | Anything | Bed | Sleep (see `time.md`) |
 
