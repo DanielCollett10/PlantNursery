@@ -27,6 +27,7 @@ Key decisions: `docs/decisions/0003` (Unity owns bodies, the sim owns things),
 | `Sim/Genetics/` | Genes, alleles, phenotype |
 | `Sim/Hands/` | Per-player held item, watering can |
 
+- `Sim/Content/`: `ContentLoader.Load(filesByName)` takes JSON strings (`time`, `items`, `containers`, `genes`, `varieties`, `economy`, `building`, optional `time.demo`) from `Assets/StreamingAssets/Content/`, validates them and returns an immutable `ContentDb`. Errors throw `ContentException` (file + field path).
 - `SimWorld` owns the tick clock. `Step(n)` advances time; nothing else does. 1 tick = 1 in-game minute.
 
 ## Unity layer (planned for M1)

@@ -1,0 +1,14 @@
+{
+  "startingMoney": 200,
+  "sellBackFraction": 0.5,
+  "softLockGuard": { "enabled": true, "giftVarietyId": null },
+  "starterInventory": {
+    "bench_standard": 2,
+    "plug_tray": 6,
+    "watering_can": 1,
+    "tap": 1,
+    "computer": 1,
+    "bed": 1,
+    "delivery_shelf": 1
+  }
+}

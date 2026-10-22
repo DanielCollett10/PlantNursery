@@ -1,0 +1,14 @@
+{
+  "items": [
+    { "id": "bench_standard", "name": "Standard bench", "layer": "Floor", "floorFootprint": { "w": 1, "d": 4 }, "providesSurface": true, "price": 40 },
+    { "id": "tap", "name": "Tap", "layer": "Floor", "floorFootprint": { "w": 1, "d": 1 }, "providesSurface": false, "price": 0 },
+    { "id": "computer", "name": "Computer", "layer": "Floor", "floorFootprint": { "w": 1, "d": 1 }, "providesSurface": false, "price": 0 },
+    { "id": "bed", "name": "Bed", "layer": "Floor", "floorFootprint": { "w": 2, "d": 3 }, "providesSurface": false, "price": 0 },
+    { "id": "delivery_shelf", "name": "Delivery shelf", "layer": "Floor", "floorFootprint": { "w": 1, "d": 2 }, "providesSurface": true, "price": 0 },
+    { "id": "plug_tray", "name": "Plug tray (6 cells)", "layer": "Surface", "surfaceFootprint": { "w": 2, "d": 3 }, "providesSurface": false, "price": 15 },
+    { "id": "pot_small", "name": "Small pot", "layer": "Surface", "surfaceFootprint": { "w": 1, "d": 1 }, "providesSurface": false, "price": 2 },
+    { "id": "pot_medium", "name": "Medium pot", "layer": "Surface", "surfaceFootprint": { "w": 2, "d": 2 }, "providesSurface": false, "price": 5 },
+    { "id": "watering_can", "name": "Watering can", "layer": "Surface", "surfaceFootprint": { "w": 2, "d": 3 }, "providesSurface": false, "price": 0 },
+    { "id": "seed_packet", "name": "Seed packet (6 seeds)", "layer": "Surface", "surfaceFootprint": { "w": 1, "d": 2 }, "providesSurface": false, "price": 10 }
+  ]
+}

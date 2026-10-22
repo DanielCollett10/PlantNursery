@@ -1,0 +1,7 @@
+{
+  "genes": [
+    { "id": "leafColour", "kind": "Mendelian", "alleles": ["green", "red", "yellow"] },
+    { "id": "variegation", "kind": "Mendelian", "alleles": ["plain", "striped"] },
+    { "id": "spotSize", "kind": "Blend", "min": 0, "max": 1 }
+  ]
+}
