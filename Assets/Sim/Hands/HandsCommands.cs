@@ -69,6 +69,31 @@ namespace PlantNursery.Sim.Hands
             world.RegisterHandler<PutDown>(new PutDownH(s));
             world.RegisterHandler<RefillCan>(new RefillH(s));
             world.RegisterHandler<WaterPlant>(new WaterH(s));
+            world.RegisterHandler<Sow>(new SowH(s));
+            world.RegisterHandler<Compost>(new CompostH(s));
+        }
+
+        private sealed class SowH : ICommandHandler<Sow>
+        {
+            private readonly HandsState _s;
+            public SowH(HandsState s) { _s = s; }
+            public CommandResult Validate(Sow c, SimWorld w) => ToResult(_s.CanSow(c.PlayerId, c.TrayId, c.CellIndex));
+            public void Apply(Sow c, SimWorld w)
+            {
+                var plant = _s.Sow(c.PlayerId, c.TrayId, c.CellIndex, out _);
+                if (plant != null) w.Raise(new PlantSown(c.PlayerId, plant.Id, c.TrayId, c.CellIndex));
+            }
+        }
+
+        private sealed class CompostH : ICommandHandler<Compost>
+        {
+            private readonly HandsState _s;
+            public CompostH(HandsState s) { _s = s; }
+            public CommandResult Validate(Compost c, SimWorld w) => ToResult(_s.CanCompost(c.PlayerId, c.PlantId));
+            public void Apply(Compost c, SimWorld w)
+            {
+                if (_s.Compost(c.PlayerId, c.PlantId) == HandsRejection.None) w.Raise(new PlantComposted(c.PlayerId, c.PlantId));
+            }
         }
 
         /// <summary>Map a rejection to a result; the message is the rejection name.</summary>
@@ -79,7 +104,10 @@ namespace PlantNursery.Sim.Hands
                 case HandsRejection.None: return CommandResult.Accepted();
                 case HandsRejection.NotHoldable:
                 case HandsRejection.UnknownPlant:
+                case HandsRejection.UnknownContainer:
+                case HandsRejection.InvalidCell:
                 case HandsRejection.NoSurface: return CommandResult.Rejected(RejectReason.InvalidTarget, r.ToString());
+                case HandsRejection.CellOccupied:
                 case HandsRejection.Occupied: return CommandResult.Rejected(RejectReason.Blocked, r.ToString());
                 default: return CommandResult.Rejected(RejectReason.NotAllowed, r.ToString());
             }
