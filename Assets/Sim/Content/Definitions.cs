@@ -63,6 +63,8 @@ namespace PlantNursery.Sim.Content
         public int Price;
         /// <summary>Water charges a full watering can holds; 0 for items that are not cans.</summary>
         public int WaterCapacity;
+        /// <summary>Seeds in one packet (seed packets only; 0 otherwise).</summary>
+        public int SeedCount;
     }
 
     /// <summary>A plant container type (docs/design/plants.md).</summary>
