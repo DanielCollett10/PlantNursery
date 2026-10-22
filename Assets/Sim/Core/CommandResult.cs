@@ -16,7 +16,9 @@ namespace PlantNursery.Sim.Core
         /// <summary>The player is not allowed to do this now.</summary>
         NotAllowed,
         /// <summary>Something else is in the way.</summary>
-        Blocked
+        Blocked,
+        /// <summary>The player cannot sleep yet (Morning or Daytime).</summary>
+        NotTired
     }
 
     /// <summary>Outcome of validating or applying a command.</summary>

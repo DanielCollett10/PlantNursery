@@ -28,6 +28,7 @@ Key decisions: `docs/decisions/0003` (Unity owns bodies, the sim owns things),
 | `Sim/Hands/` | Per-player held item, watering can |
 
 - `Sim/Content/`: `ContentLoader.Load(filesByName)` takes JSON strings (`time`, `items`, `containers`, `genes`, `varieties`, `economy`, `building`, optional `time.demo`) from `Assets/StreamingAssets/Content/`, validates them and returns an immutable `ContentDb`. Errors throw `ContentException` (file + field path).
+- `Sim/Time/GameClock`: `GameClock.Install(world, timeConfig)` adds the clock system (raises `DayStartedEvent`, `SeasonChangedEvent`) and the `SleepCommand` handler. Tick 0 = Spring day 1 at `dayStartMinute`; days roll at `dayStartMinute`. Sleep (Evening/Night only, else `RejectReason.NotTired`) calls `SimWorld.RunUntil`, which makes `Step` keep stepping tick by tick until the next day start.
 - `SimWorld` owns the tick clock. `Step(n)` advances time; nothing else does. 1 tick = 1 in-game minute.
 - Commands: `Submit(cmd)` queues; each `Step` tick first applies queued commands in submission order (validate, then apply, via the `ICommandHandler<T>` registered with `RegisterHandler`), then updates `ISimSystem`s. Rejections at apply time raise `CommandRejectedEvent`. `Validate(cmd)` is query-only. A paused world keeps commands queued.
 - Events: handlers and systems call `Raise(ISimEvent)`; the Unity layer calls `DrainEvents()` each frame.
