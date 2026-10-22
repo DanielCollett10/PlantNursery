@@ -1,7 +1,7 @@
-using NetSim.Sim.Core;
+using PlantNursery.Sim.Core;
 using NUnit.Framework;
 
-namespace NetSim.Sim.Tests
+namespace PlantNursery.Sim.Tests
 {
     public class SimWorldTests
     {

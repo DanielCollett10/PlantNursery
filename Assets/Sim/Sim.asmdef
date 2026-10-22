@@ -1,6 +1,6 @@
 {
-    "name": "NetSim.Sim",
-    "rootNamespace": "NetSim.Sim",
+    "name": "PlantNursery.Sim",
+    "rootNamespace": "PlantNursery.Sim",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
