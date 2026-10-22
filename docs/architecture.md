@@ -38,6 +38,7 @@ Key decisions: `docs/decisions/0003` (Unity owns bodies, the sim owns things),
 - Events: handlers and systems call `Raise(ISimEvent)`; the Unity layer calls `DrainEvents()` each frame.
 
 ## Unity layer (planned for M1)
+- Implemented: `Assets/Game/Host/SimHost.cs` (asmdef `PlantNursery.Game`). `Initialize()` loads `StreamingAssets/Content/*.json` (`UseDemoProfile` keeps/drops `time.demo.json`), builds SimWorld + GameClock + BuildState + SurfaceGrid + Wallet; `Advance(realSeconds)` steps ticks at `Clock.RealSecondsPerTick`; `Submit`/`Validate` pass commands; an accepted `SleepCommand` steps immediately to the next morning; `EventDispatched` relays drained events. `Plant Nursery/Generate Starter Scene` (`Assets/Editor/Scene`) writes `Assets/Scenes/Starter.unity`. EditMode tests: `Assets/Tests/EditMode`.
 - `SimHost` MonoBehaviour owns the `SimWorld`, loads content, steps ticks at the real-time pace from `time.json`, and drains events.
 - View scripts mirror sim state into prefabs (placeholder mesh as a child). The first-person controller sends commands.
 
