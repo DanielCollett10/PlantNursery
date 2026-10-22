@@ -28,6 +28,8 @@ Key decisions: `docs/decisions/0003` (Unity owns bodies, the sim owns things),
 | `Sim/Hands/` | Per-player held item, watering can |
 
 - `SimWorld` owns the tick clock. `Step(n)` advances time; nothing else does. 1 tick = 1 in-game minute.
+- Commands: `Submit(cmd)` queues; each `Step` tick first applies queued commands in submission order (validate, then apply, via the `ICommandHandler<T>` registered with `RegisterHandler`), then updates `ISimSystem`s. Rejections at apply time raise `CommandRejectedEvent`. `Validate(cmd)` is query-only. A paused world keeps commands queued.
+- Events: handlers and systems call `Raise(ISimEvent)`; the Unity layer calls `DrainEvents()` each frame.
 
 ## Unity layer (planned for M1)
 - `SimHost` MonoBehaviour owns the `SimWorld`, loads content, steps ticks at the real-time pace from `time.json`, and drains events.
