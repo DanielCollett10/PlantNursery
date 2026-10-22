@@ -22,3 +22,9 @@ Verdict:
 - "fail" otherwise, with required_changes that are concrete enough for another
   developer to fix without asking you questions.
 - Style nitpicks that don't break CLAUDE.md go in suggestions, not required_changes.
+
+## Lessons learned
+
+Rules added after reviews kept catching the same mistakes. Follow them like any other rule.
+
+- Check committed files with git (e.g. that the .asset and .meta files exist in the diff). Put Unity Editor-only checks you can't run, such as package resolution or an empty console, in suggestions or human verification notes. Make each one a single concrete item, and don't repeat the same item in different wording. _(learned from T-015)_
