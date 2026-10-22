@@ -23,7 +23,8 @@ Each player has **one hand slot** and holds at most one item. Interact picks up 
 | Anything | Computer | Open shop UI |
 | Anything | Bed | Sleep (see `time.md`) |
 
-Picking up a tray or pot carries the plants in it. Putting it down follows the surface placement rules in `building.md`.
+Picking up a tray or pot carries the plants in it. While you hold a surface item and aim at a bench, a ghost shows where it will land.
+The ghost snaps to the surface mini-grid and auto-nudges to the nearest free spot (see `building.md`). The put-down key places it there.
 
 ## Build mode
 - A key toggles build mode. A small UI Toolkit panel lists the items you own but haven't placed (the **build inventory**, see `economy.md`).

@@ -6,7 +6,7 @@
 | Measure | Value |
 |---|---|
 | Grid cell | 0.5 m × 0.5 m (1 Unity unit = 1 m) |
-| Surface sub-slot | 0.25 m × 0.25 m (2 × 2 per cell) |
+| Surface mini-grid unit | 0.1 m × 0.1 m (5 × 5 per cell) |
 | Player height / eye height | 1.8 m / 1.65 m |
 | Bench top height | 0.8 m |
 | Standard bench | 1 × 4 cells |
@@ -14,5 +14,6 @@
 | Interaction reach | 3.0 m (data) |
 
 - Sim coordinates are integer cells `(x, z)` with the origin at the plot's south-west corner. Unity's world position = `cell × 0.5 + plotOrigin`.
+- Surface items use integer mini-grid units `(u, v)` = cell × 5 + offset. World position = `unit × 0.1 + plotOrigin`, at the height of the supporting item's top.
 
 **Consequences.** Art briefs use these numbers. Changing the cell size means re-checking every footprint.

@@ -14,16 +14,32 @@
 
 Tunnels sit on their own Zone layer so benches can go inside them. Only the tunnel's walls and door edge block Floor placement. The exact shape comes in M5.
 
-## Surface sub-slots
-A surface cell is split into **2 × 2 sub-slots** (0.25 m each), so small pots don't waste a whole cell.
+## Surface mini-grid
+Surfaces (bench and shelf tops) use a finer **mini-grid of 0.1 m units, 5 × 5 per floor cell**.
+Surface items take up their physical size. The player chooses where each one sits, and there's no fixed "N pots per cell" rule.
 
-| Item | Surface footprint |
-|---|---|
-| Plug tray (6 cells) | 2 × 2 sub-slots (one full surface cell) |
-| Small pot | 1 sub-slot |
-| Medium pot | 2 × 2 sub-slots |
+| Item | Real size (approx.) | Surface footprint (units) |
+|---|---|---|
+| Small pot | 9 cm | 1 × 1 |
+| Medium pot | 17 cm | 2 × 2 |
+| Plug tray (6 cells) | 20 × 30 cm | 2 × 3 |
+| Watering can (put down) | 20 × 30 cm | 2 × 3 |
+| Seed packet (put down) | 10 × 20 cm | 1 × 2 |
 
-Surface items snap to sub-slots. A sub-slot holds at most one surface item.
+Footprints are in data, and rotation (90° steps) swaps width and depth as on the floor grid.
+
+**Rules**
+- A surface unit is usable if the floor cell under it holds an item with `providesSurface: true`.
+  Adjacent benches form one continuous surface, so a tray may straddle two benches that touch.
+- Each surface unit holds at most one surface item.
+- Mini-grid coordinates are integers `(u, v)` = floor cell × 5 + offset (0–4). Surface units are indexed across the whole plot, not per bench.
+
+**Keeping it lightweight**
+- The ghost snaps to the mini-grid unit nearest the aim point, centred on the item.
+- **Auto-nudge:** if that spot is blocked, the sim's `FindNearestFreeSpot(item, rotation, desired, radius)` query returns the closest valid spot within `nudgeRadius` units (default 2). The ghost jumps there.
+  Only if there is none does the ghost turn red. Ties are broken by smallest `v`, then smallest `u`, so the result is deterministic.
+- Players never have to line pots up by hand. Dropping pots roughly in a row packs them neatly.
+- Putting down a held surface item (pot, tray, can, packet) uses the same ghost and snapping. See `controls.md`.
 
 ## Footprints and rotation
 - Each item type has a footprint `w × d` in cells (sub-slots for Surface items) and an anchor at its south-west corner.
@@ -34,7 +50,7 @@ Surface items snap to sub-slots. A sub-slot holds at most one surface item.
 `PlaceItem(player, itemId, layer, anchor, rotation)` succeeds only if all of these are true. Otherwise it is rejected with the first failing reason:
 1. `NotOwned`: the item is not in the build inventory.
 2. `OutOfPlot`: a footprint cell is outside the plot.
-3. `Occupied`: a footprint cell or sub-slot on that layer is taken.
+3. `Occupied`: a footprint cell (or surface unit) on that layer is taken.
 4. `NoSurface`: (Surface items) a footprint cell has no surface-providing Floor item.
 
 The ghost uses the same check through a query (`CanPlace`) that changes nothing.

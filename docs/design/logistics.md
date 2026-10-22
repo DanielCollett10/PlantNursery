@@ -10,7 +10,7 @@ Goods are containers inside containers from day one:
 
 ## MVP handling
 - **Hands:** one item (see `controls.md`).
-- **Trolley (M4):** a pushable Floor-sized item with a shelf capacity in surface sub-slots (default 2 × 8 cells' worth). Pots and trays go on and off it by hand.
+- **Trolley (M4):** a pushable Floor-sized item whose shelves are their own small surface mini-grid (default 2 shelves of 5 × 10 units, see `building.md`), so trolley capacity is physical space. Pots and trays go on and off it by hand.
 - **Vehicle (M4):** a pickup truck or wagon with a bed capacity. Goods are loaded by hand from hands or the trolley.
 
 ## Later
