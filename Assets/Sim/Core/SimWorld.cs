@@ -98,12 +98,31 @@ namespace PlantNursery.Sim.Core
         {
             if (ticks < 0) throw new ArgumentOutOfRangeException(nameof(ticks));
             if (IsPaused) return;
-            for (var i = 0; i < ticks; i++)
+            for (var i = 0; i < ticks; i++) StepOne();
+            // A command (e.g. sleep) may ask to keep stepping until a condition holds.
+            while (_runUntil != null)
             {
-                ApplyPendingCommands();
-                Tick++;
-                foreach (var system in _systems) system.Update(this);
+                if (_runUntil(this)) { _runUntil = null; break; }
+                StepOne();
             }
+        }
+
+        private Func<SimWorld, bool> _runUntil;
+
+        /// <summary>
+        /// Keep stepping tick by tick, at the end of the current <see cref="Step"/>, until
+        /// <paramref name="done"/> returns true. Used by commands such as Sleep.
+        /// </summary>
+        public void RunUntil(Func<SimWorld, bool> done)
+        {
+            _runUntil = done ?? throw new ArgumentNullException(nameof(done));
+        }
+
+        private void StepOne()
+        {
+            ApplyPendingCommands();
+            Tick++;
+            foreach (var system in _systems) system.Update(this);
         }
 
         private void ApplyPendingCommands()
