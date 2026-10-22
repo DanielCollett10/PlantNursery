@@ -22,7 +22,9 @@ namespace PlantNursery.Sim.Building
         /// <summary>Surface items sit on the item being picked up.</summary>
         HasItemsOnTop,
         /// <summary>No placed item has that id.</summary>
-        UnknownPlacedItem
+        UnknownPlacedItem,
+        /// <summary>A surface unit has no surface-providing Floor item under it.</summary>
+        NoSurface
     }
 
     /// <summary>Floor grid, placed items and the shared build inventory of one nursery.</summary>
