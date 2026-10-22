@@ -74,8 +74,18 @@ namespace PlantNursery.Sim.Tests
         [Test]
         public void TrayStraddlesTouchingBenches()
         {
-            Assert.AreEqual(BuildRejection.None, _grid.CanPlace("plug_tray", new Unit(59, 50), Rotation.Deg0));
-            Assert.AreEqual(BuildRejection.NoSurface, _grid.CanPlace("plug_tray", new Unit(64, 50), Rotation.Deg0));
+            // Benches cover u 50..59; the seam is between u=54 and u=55.
+            Assert.AreEqual(BuildRejection.None, _grid.CanPlace("plug_tray", new Unit(54, 50), Rotation.Deg0));
+            // Anchor 59 spills onto u=60, which is off the benches.
+            Assert.AreEqual(BuildRejection.NoSurface, _grid.CanPlace("plug_tray", new Unit(59, 50), Rotation.Deg0));
+        }
+
+        [Test]
+        public void NudgeMovesTrayAcrossSeam()
+        {
+            _grid.Place("pot_small", new Unit(54, 50), Rotation.Deg0, out _);
+            // Desired (54,50) is blocked; (55,50) is the nearest valid tray anchor (u 55..56, both on bench 2).
+            Assert.AreEqual(new Unit(55, 50), _grid.FindNearestFreeSpot("plug_tray", Rotation.Deg0, new Unit(54, 50), 2));
         }
 
         [Test]
