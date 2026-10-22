@@ -19,6 +19,8 @@ namespace PlantNursery.Sim.Building
         OutOfPlot,
         /// <summary>A footprint cell already holds a Floor item.</summary>
         Occupied,
+        /// <summary>A surface unit has no surface-providing Floor item under it.</summary>
+        NoSurface,
         /// <summary>Surface items sit on the item being picked up.</summary>
         HasItemsOnTop,
         /// <summary>No placed item has that id.</summary>
