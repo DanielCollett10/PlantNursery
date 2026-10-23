@@ -16,8 +16,7 @@ layer and a neighbour effect on a single bench. All values are data (`species.js
 A low, softly glowing moss. Water it, scrape it, it grows back. The first plant every player grows, and the cheapest to keep.
 - **One plant per plug tray** (spores are sown as a whole tray).
 - Becomes **harvestable** 1 in-game day after sowing. **Scrape** (smart target or bench view): gives 1 **bundle** per tray, sends it to the regrow state; harvestable again 1 day later (`regrowDays`, scaled by `regrowthSpeed`).
-- Scraping needs empty hands; the **bundle goes into the player's hands**. Drop it in the storage crate, a cart or the wagon. _(Lead's default, to confirm.)_
-- Quality of the bundle = the moss's current quality.
+- Scraping needs empty hands; the **bundle goes into the player's hands**. Drop it in the storage crate, a cart or the wagon.- Quality of the bundle = the moss's current quality.
 
 ## Chimebell
 A flowering plant whose bell-shaped blooms vary in colour and pattern. It never interacts with anything: if a bench of Chimebells is calm, the base systems are working.
@@ -36,14 +35,13 @@ A small carnivorous plant. Its hunger rises through the day and is reset by feed
 | Mature | Medium pot | 2 then mature (sellable) |
 
 - Bought as a **seedling** already in a small pot (no sowing).
-- **Sheds 1 tooth per content day:** at each day start, a Mature Snapjaw that was never above Content during the previous day drops a tooth into its pot; harvesting collects it into the player's hands (`teethPerContentDay`). _(The "never above Content" reading is the lead's default.)_
-- Behaviour numbers: `behaviour.md`.
+- **Sheds 1 tooth per content day:** at each day start, a Mature Snapjaw that was never above Content during the previous day drops a tooth into its pot; harvesting collects it into the player's hands (`teethPerContentDay`).- Behaviour numbers: `behaviour.md`.
 
 The layout choice: a Snapjaw next to Hearthmoss feeds itself and never escapes, but slowly eats the moss.
 Players can treat moss as a deliberate feeder crop, or keep the two apart and feed by hand. Breeding calmer
 Snapjaw lines is the first long-term breeding goal.
 
-## Season multipliers (lead's first pass, to confirm)
+## Season multipliers (first pass)
 | Species | Spring | Summer | Autumn |
 |---|---|---|---|
 | Hearthmoss | good | slow | good |

@@ -16,7 +16,7 @@ See `docs/decisions/0010-top-down-cameras-and-bench-view.md`. There is **no firs
 
 ## Bench view
 - Entered by interacting with a bench while standing at it. Exited by walking away (more than `benchViewExitDistance`, default 1.0 m, from the bench edge). **No menu to close; movement stays live.**
-- **Mouse and keyboard:** the cursor points at a slot. **Gamepad:** d-pad or bumpers step through the slot grid. Same rules, two pointers.
+- **Mouse and keyboard:** the cursor points at a slot. **Gamepad (post-MVP):** d-pad or bumpers step through the slot grid. Same rules, two pointers.
 - The pointed slot lights up in the player's highlight colour; a held pot's ghost snaps into it (green valid, red invalid with reason).
 - **Neighbour lines** show while holding a pot (see `behaviour.md`, Neighbours on screen).
 - Back-to-back benches share one bench view so cross-bench neighbours are visible.
@@ -31,7 +31,10 @@ See `docs/decisions/0010-top-down-cameras-and-bench-view.md`. There is **no firs
 | Inspect | Hover (or select in bench view): a card shows needs, mood, genes and neighbours |
 
 - **Reach** for smart targeting: `reachMetres` = 1.5 from the player. Bench view needs the player standing at the bench.
-- Unity collects candidates in reach; the **sim** picks the target (it's a rule). Ties: lowest entity id.
+- Unity collects candidates in reach (each with its distance to the player, in metres); the **sim** picks the target
+  with a query `SmartTarget.Pick(action, player, candidates)` (it's a rule). Feed: highest hunger (only plants with a
+  Need above 0). Scrape: harvestable moss, then nearest. Catch: nearest escapee. Ties: lowest entity id.
+  Unity then submits the normal command (`FeedPlant`, `ScrapeMoss`, `CatchPlant`) with the chosen id.
 - Smart targeting skips a plant another player is already feeding or catching (see `coop.md`).
 - A drag waters a pot at most once, even if the cursor passes it twice. Each watering uses can charges (`plants.md`); the drag stops watering when the can is empty.
 
@@ -61,4 +64,10 @@ Each player holds **one thing**: one pot (any size, with or without a plant), on
 - Click places; interacting with a placed item picks it up (a bench takes its pots with it, see `building.md`).
 
 ## Inputs
-Keyboard and mouse **and** gamepad from the start, through the Input System, all rebindable.
+**Keyboard and mouse only until after the MVP** (PC is the main audience). Use the Input System with rebindable
+actions so gamepad can be added later; gamepad rows in this doc (slot-stepping, hold-to-water) are **post-MVP**.
+
+## First-person debug view
+The old first-person controller stays as a **debug option** (off by default, toggled from SimHost or a debug key in
+the editor). It isn't maintained for gameplay features and nothing new may depend on it. We may revisit a first-person
+view one day.

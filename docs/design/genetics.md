@@ -18,7 +18,7 @@ from the first day, so breeding can arrive later without changing saves or plant
 | `temperament` | Snapjaw | Blend | 0–1 → hunger rate ×(0.5 + value) | Hunger rate |
 | `jawSize` | Snapjaw | Blend | 0–1 | Jaw scale |
 
-_Allele names and formulas are the lead's first pass, to confirm. Each species ships with 1–2 varieties in data._
+Each species ships with 1–2 varieties in data.
 
 ## Later (post-MVP)
 - **Deliberate crosses:** two plants → seeds mixing their genes; stabilising a line takes generations.

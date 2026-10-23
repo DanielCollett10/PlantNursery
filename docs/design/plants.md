@@ -56,7 +56,6 @@ Rejections: `PotNotEmpty`, `PotTooSmall`, `PotTooBig` (more than one size up is 
 - **Quality** has three steps: **poor ×0.6, good ×1.0, excellent ×1.4** (`qualityMultipliers`).
 
 ## Quality
-_The care-history thresholds below are the lead's first pass, to confirm._
 - A plant starts at **good**.
 - Care history: over the plant's life, the share of ticks it was not Dry. ≥ 0.9 → can reach **excellent**; < 0.6 → drops to **poor**. Thresholds are data (`qualityCareThresholds`).
 - **Quality steps:** behaviour can knock a plant down one step (e.g. a Snapjaw grazing moss). Quality = care grade minus the steps lost, never below poor.

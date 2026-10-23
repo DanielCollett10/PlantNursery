@@ -49,11 +49,18 @@ Plants are processed in ascending plant id so results are deterministic.
 4. It **blocks carts** it touches (a cart can't move through its cell).
 5. A player in reach with empty hands catches it → it's held as a "caught plant". Raise `PlantCaught`.
 6. Placing it in an empty pot (any size its current stage allows) re-pots it → mood recomputed from hunger (usually Acting out until fed). Raise `PlantRepotted`.
-7. Hunger keeps rising while escaped or held; water doesn't drain while out of a pot. _(Lead's default.)_
+7. Hunger keeps rising while escaped or held; water doesn't drain while out of a pot.
 
-### Open (to confirm)
-- What an escapee does when it **reaches** the moss (suggested: grazes it from the floor on the normal 2 h timer until caught).
-- What it does if there is **no** Hearthmoss anywhere (suggested: wanders to a random reachable cell, seeded RNG, then waits).
+### At the moss, or no moss (agreed)
+- **Reaching the moss:** once on its target floor cell (any floor cell touching the bench's working edge nearest the
+  target moss's slot), the escapee **grazes that moss from the floor** on the normal timer (`everyHours` = 2: moss −1
+  quality step, hunger −30) until caught. It stays Escaped even if grazing lowers its hunger. If the target moss is
+  removed or dies, it picks the next nearest moss.
+- **No Hearthmoss anywhere (or none reachable):** it **wanders** to a random reachable floor cell within
+  `wanderRadiusCells` (default 6), chosen with the world's seeded RNG, waits `wanderWaitHours` (default 1), and repeats.
+  It re-checks for moss every tick.
+- With only three species in the prototype, grazing moss or lingering is all a Snapjaw does. More interactions may come later.
+- Carts don't exist in the prototype; `blocksCarts` is stored but unused until carts arrive.
 
 ## Neighbours on screen
 - While holding a pot or in bench view, soft lines link each slot to its neighbours, coloured **and** patterned by effect: calming green solid, draining red dashed, pollen yellow dotted.

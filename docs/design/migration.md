@@ -33,7 +33,7 @@ Dev agents: don't extend anything marked **Retire**; tasks will remove or replac
 ## Retire
 | Built | Why |
 |---|---|
-| `FirstPersonController`, camera-raycast `InteractionController`, `InteractableTarget` | No first person (0010). Replaced by a top-down player controller, follow camera, smart targeting and bench view |
+| `FirstPersonController`, camera-raycast `InteractionController`, `InteractableTarget` | No first person (0010). Replaced by a top-down player controller, follow camera, smart targeting and bench view. **Kept as an off-by-default debug view** (not deleted); don't add features to it |
 | 3 m interaction reach | Now 1.5 m smart targeting + bench view |
 | Old content: `varieties.json` (leaf-colour line), `genes.json` (`leafColour`, `variegation`, `spotSize`), items tap / computer / delivery shelf / seed packet, 1 × 2 m standard bench | Replaced by Hearthmoss/Chimebell/Snapjaw, new genes, rain barrel, order desk, storage crate, 3 m bench |
 | Old design docs: first-person `controls.md`, website orders, trolley, poly tunnels, display shelving | Rewritten in this folder |

@@ -41,14 +41,22 @@ area is 30 × 6 units. Every slot is a rectangle of units (reference drawing: `s
 |---|---|---|---|---|---|
 | Small | 2 × 2 | 0.2 × 0.2 | 3 | 15 (45 in all) | 4 |
 | Medium | 3 × 3 | 0.3 × 0.3 | 2 | 10 (20 in all) | 3 |
-| Large | 6 × 6 ⚠ | 0.6 × 0.6 | 1 | 5 | 2 |
-| Plug tray | 6 × 4 (4 along, 6 across) ⚠ | 0.4 × 0.6 | 1 | 7 | 2 |
+| Large | 6 × 6 | 0.6 × 0.6 | 1 | 5 | 2 |
+| Plug tray | 4 along × 6 across | 0.4 × 0.6 | 1 | 7 | 2 |
 
-⚠ = being confirmed with the human (see Open points). All sizes are data (`slotSizes`).
+All sizes are data (`slotSizes`: per container, `alongUnits`, `acrossUnits`). Large is 0.6 m (agreed), so small,
+medium and large all line up on 0.6 m boundaries.
 
+### Slot grid (agreed: option A)
 - **Pots snap to slots.** A bench can mix sizes along its length (a run of small, then medium, then large); each run uses its own row layout.
-- Slot positions along the bench: **see Open point B.**
-- A slot is free if none of its units is used.
+- Each size has a **fixed slot grid per bench**: slot `(col, row)` of a size covers units
+  `u = col × alongUnits … + alongUnits − 1` and `v = row × acrossUnits … + acrossUnits − 1`, in bench-local units
+  measured from the planting area's left-front corner (as seen from the working edge).
+  Only slots that fit wholly inside the planting area exist (`col < floor(lengthUnits / alongUnits)`, `row < floor(depthUnits / acrossUnits)`).
+  So on a 3 m bench: small 15 × 3, medium 10 × 2, large 5 × 1, plug tray 7 × 1 (the last 0.2 m is unused by trays).
+- A slot is free if none of its units is used by another pot or tray. Mixing sizes may leave a small gap; runs that change size on a 0.6 m boundary never do.
+- A slot is addressed as `(benchId, containerSize, col, row)`. Place rejections: `NotABench`, `NoSuchSlot`, `SlotOccupied`.
+- Gamepad slot-stepping is **post-MVP**; the slot grid is designed so it can step by slot later.
 
 ### Neighbours
 - Two pots are **neighbours** if their slots **share an edge of at least one unit** (left/right in a row, front/back across rows). Diagonal corners don't count.
@@ -60,9 +68,16 @@ area is 30 × 6 units. Every slot is a rectangle of units (reference drawing: `s
 ### Bench types
 | Bench | Footprint | Planting area | Buy | Unlock |
 |---|---|---|---|---|
-| 3 m bench | see Open point A | 3.0 × 0.6 m (30 × 6 units) | 40 | Start |
-| 4 m bench | see Open point A | 4.0 × 0.6 m (40 × 6 units) | 50 | Tier 2 |
-| Wide bench | 3 × 8 cells (1.5 × 4 m) | 4.0 × 1.5 m (40 × 15 units) | data | Tier 3 |
+| 3 m bench | 6 × 2 cells (3.0 × 1.0 m) | 3.0 × 0.6 m (30 × 6 units) | 40 | Start |
+| 4 m bench | 8 × 2 cells (4.0 × 1.0 m) | 4.0 × 0.6 m (40 × 6 units) | 50 | Tier 2 |
+| Wide bench | 8 × 3 cells (4.0 × 1.5 m) | 4.0 × 1.5 m (40 × 15 units), no working edge | data | Tier 3 |
+
+### Bench depth (agreed)
+- Standard benches are **1.0 m deep (2 floor cells)**: a **0.4 m working edge at the front** and the **0.6 m planting area along the back**.
+  At rotation 0 the front faces south (−z); rotation turns the whole bench, planting area included.
+- Back-to-back benches (backs touching) put their planting areas against each other, which is where the cross-bench puzzle lives.
+  A bench whose back touches another bench's **front** gets no cross-bench neighbours (the working edge is in between).
+- Data per bench item: `planting.lengthUnits`, `planting.depthUnits`, `planting.backOffsetUnits` (0 = flush with the back edge).
 
 Wide bench rows: small 7, medium 5, large 2, plug tray 2, so every size gets interior slots surrounded on all sides.
 
@@ -72,7 +87,7 @@ small pots into the tray in your hands, carry it, then put the pots into slots o
 whole tray into a cart or the wagon. A carry tray can be set down on the ground (it then sits on the floor
 cell under the player and blocks nothing).
 
-## Open points (to confirm)
-- **A. Bench depth vs the 0.5 m floor grid.** A 0.6 m deep bench is not a whole number of floor cells, so two benches can't sit exactly back to back. Suggested: the bench footprint is **1.0 m deep (2 cells)**, with the 0.6 m planting area along the **back** edge and a 0.4 m working edge at the front. Back-to-back benches then put their planting areas against each other.
-- **B. Slot positions along the bench.** Suggested: slots of each size snap to multiples of their own width from the bench's start (small every 2 units, medium every 3, large/tray every 6/4). Mixing sizes may leave a small gap; runs that change size on a 0.6 m boundary never do.
-- **C. Large pot size.** The drawing shows six 0.5 m large pots per 3 m; the spec says five 0.6 m. Suggested: 0.6 m, so all sizes line up every 0.6 m.
+## Moving a bench
+`MoveItem(player, placedId, anchor, rotation)` moves a placed floor item. For a bench, every pot and tray in it moves
+with it and keeps its `(containerSize, col, row)` slot. Same rejections as `PlaceItem` (ignoring the bench's own cells).
+Neighbours are recomputed afterwards. `PickUpItem` on a bench that still holds pots is rejected with `HasItemsOnTop`.

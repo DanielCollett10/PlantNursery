@@ -22,7 +22,13 @@ is rejected with `InsufficientFunds`. **No fixed daily costs in the MVP;** water
 ## Starting kit
 One 3 m bench, 6 plug trays with Hearthmoss spores, 2 carry trays, a watering can, a rain barrel, the storage
 crate, the order desk with its ledger, the shop counter, a bed, and 200 coin. (Data: `starterKit`.)
-_Whether the trays start sown and on the bench is to confirm; suggested: sown, on the bench, watered._
+The 6 plug trays start **sown with Hearthmoss, in the bench's plug-tray slots, watered to 100**.
+
+## Taking stock from the crate
+Interacting with the storage crate (empty hands) opens a small list of what it holds; choosing an item puts **one**
+into your hands (an empty pot, a plug tray, a seed packet, a carry tray, a Snapjaw seedling in its pot). **Grubs**
+come out as a **sack of up to `grubSackPortions` = 5 portions** (fewer if the crate holds fewer); each feed uses one.
+Putting an item back into the crate (interact while holding it) returns it, including unused grub portions.
 
 ## Storage crate
 Unlimited in the MVP. Holds bought stock, empty pots and harvested bundles. A capacity and a bigger storeroom can come later.

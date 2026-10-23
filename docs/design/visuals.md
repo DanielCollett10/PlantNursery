@@ -32,7 +32,7 @@ URP, basic day–night cycle from the sim clock: warm morning, neutral day, oran
 | Floor grid cell | 0.5 × 0.5 m |
 | Planting mini-grid unit | 0.1 × 0.1 m |
 | Bench planting area | 0.6 m deep, rows by pot size |
-| Standard benches | 3 m and 4 m long (depth: `building.md` open point A) |
+| Standard benches | 3 m and 4 m long, 1.0 m deep (0.4 m working edge + 0.6 m planting area at the back) |
 | Bench top height | 0.9 m |
 | Player height | 1.8 m |
 | Path width | 1.0 m minimum |

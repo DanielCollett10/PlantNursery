@@ -45,8 +45,13 @@ want the plants for. Each turn pays for equipment and bloodlines that make the n
 | M1 | First sprout | Done. First-person greybox (pre-pivot): buy, place, sow, water, grow, sleep |
 | M2 (proposed) | Snapjaw prototype | See below |
 
-**M2 Snapjaw prototype (proposed, scope being agreed).** Top-down follow camera on a small greybox nursery.
-A bench (or two back to back) with Hearthmoss, Chimebell and a Snapjaw. Bench view to place pots and
-click-drag water. The Snapjaw gets hungry, twitches, grazes neighbouring moss, escapes and crawls towards
-moss; the player catches it, re-pots it and feeds it. Later milestones (contracts and wagon, co-op, saves)
-are planned after the prototype playtest.
+**M2 Snapjaw prototype (agreed scope).** Solo, keyboard and mouse. Top-down follow camera with zoom-out on a small
+greybox nursery with the starter kit; a second bench can be bought and placed back to back.
+- **In:** Hearthmoss (sow, water, scrape, regrow), Chimebell (sow, pot on through sizes), Snapjaw (all four modules);
+  bench slots and neighbours across back-to-back benches; bench view (place, pick up, pot on, carry tray, click-drag
+  watering, neighbour lines); smart targeting for feed, scrape, catch; grub feeding from the storage crate; catch and
+  re-pot; order desk supplier panel; mood indicators; off-screen alerts; a loading-yard rush zone with a fixed camera
+  (no wagon or contracts yet); first-person controller kept as a debug view.
+- **Out:** co-op, gamepad, contracts, wagon, carts, shop counter, saves, cold frames, breeding.
+
+Later milestones (contracts and wagon, co-op, saves) are planned after the prototype playtest.
