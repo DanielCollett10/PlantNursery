@@ -16,6 +16,17 @@
     { "key": "reject.InsufficientFunds", "value": "Not enough coins." },
     { "key": "reject.InvalidArgument", "value": "That item is not for sale." },
     { "key": "reject.DeliveryShelfFull", "value": "The delivery shelf is full." },
-    { "key": "reject.Blocked", "value": "Delivery is blocked." }
+    { "key": "reject.Blocked", "value": "Delivery is blocked." },
+    { "key": "build.title", "value": "Build" },
+    { "key": "build.row", "value": "{0}. {1} x{2}" },
+    { "key": "build.empty", "value": "Nothing to place." },
+    { "key": "build.hint", "value": "1-9 / wheel: choose   R: rotate   Click: place   Q: pick up   B/Esc: close" },
+    { "key": "build.reject.NotOwned", "value": "You don't have that item." },
+    { "key": "build.reject.OutOfPlot", "value": "Outside the plot." },
+    { "key": "build.reject.Occupied", "value": "Something is already there." },
+    { "key": "build.reject.NoSurface", "value": "Needs a bench underneath." },
+    { "key": "build.reject.HasItemsOnTop", "value": "Clear the items on top first." },
+    { "key": "build.reject.UnknownPlacedItem", "value": "Nothing to pick up." },
+    { "key": "build.reject.PlayerInTheWay", "value": "You're standing there." }
   ]
 }
