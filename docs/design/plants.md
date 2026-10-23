@@ -55,6 +55,8 @@ Watering clears Dry and Wilted at once (the counters reset); growth resumes next
 ## Potting on
 Carry the plant in its old container to an **empty bigger pot sitting in a slot** and interact.
 The plant moves across with all its stats; the old pot (now empty) goes back to the storage crate.
+The empty bigger pot may also stand on a bench's **working strip**; then the newly potted plant ends up in your hands
+(`building.md`, Working strip).
 From a plug tray, one plant (the one in the cell the player picked, or the first ready cell) moves.
 Rejections: `PotNotEmpty`, `PotTooSmall`, `PotTooBig` (more than one size up is allowed only if the species allows that size), `NotReady` (stage not finished).
 

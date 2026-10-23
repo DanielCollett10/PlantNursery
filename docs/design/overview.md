@@ -43,16 +43,20 @@ want the plants for. Each turn pays for equipment and bloodlines that make the n
 | ID | Name | Playable result |
 |---|---|---|
 | M1 | First sprout | Done. First-person greybox (pre-pivot): buy, place, sow, water, grow, sleep |
-| M2 (proposed) | Snapjaw prototype | See below |
+| M2 (agreed) | A calm bench | See below |
+| M3 (agreed) | Snapjaw prototype | See below; planned after M2 and its tweaks |
 
-**M2 Snapjaw prototype (agreed scope).** Solo, keyboard and mouse. Top-down follow camera with zoom-out on a small
-greybox nursery with the starter kit; a second bench can be bought and placed back to back.
-- **In:** Hearthmoss (sow, water, scrape, regrow), Chimebell (sow, pot on through sizes), Snapjaw (all four modules);
-  bench slots and neighbours across back-to-back benches; bench view (place, pick up, pot on, carry tray, click-drag
-  watering, neighbour lines); smart targeting for feed, scrape, catch; grub feeding from the storage crate; catch and
-  re-pot; order desk supplier panel; mood indicators; off-screen alerts; a loading-yard rush zone with a fixed camera
-  (no wagon or contracts yet); first-person controller kept as a debug view.
-- **Out:** co-op, gamepad, **selling of any kind** (shop counter, contracts, selling bundles or plants), wagon, carts,
-  saves, cold frames, breeding. Coin only goes down in M2; the starting 200 is enough for the prototype's purchases.
+**M2 A calm bench (agreed scope).** A solid base before the complicated mechanics. One player on screen, but built
+co-op ready (`coop.md`). Keyboard and mouse **and gamepad** (`docs/decisions/0012`). Top-down follow camera with zoom-out
+on a small greybox nursery with the starter kit; a second bench can be bought and placed back to back.
+- **In:** Hearthmoss (water, scrape into a bundle, regrow) and Chimebell (sow, pot on through sizes); bench slots,
+  working strip and neighbours across back-to-back benches; bench view (place, pick up, pot on, carry tray, drag/hold
+  watering, neighbour lines); smart targeting for scrape; storage crate (take/return); order desk supplier panel; rain
+  barrel refill; water gauges; inspect card; bed and sleep; day-night lighting; retiring the pre-pivot code (`0011`).
+- **Out:** Snapjaw and all behaviour, **selling of any kind**, wagon, carts, loading yard, networking, saves, cold
+  frames, breeding, weather (`0013`). Coin only goes down; the starting 200 covers M2's purchases.
+- **After M2:** a playtest and a round of adjustments to the foundation before M3 starts.
 
-Later milestones (contracts and wagon, co-op, saves) are planned after the prototype playtest.
+**M3 Snapjaw prototype.** Snapjaw with all four modules, grub feeding, mood indicators, off-screen alerts, catch and
+re-pot, smart targeting for feed and catch, and a loading-yard rush zone with a fixed camera (no wagon yet).
+**If it's fun, the full MVP follows.** Later milestones (contracts and wagon, co-op networking, saves) are planned after it.

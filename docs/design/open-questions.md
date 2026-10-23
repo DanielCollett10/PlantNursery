@@ -15,4 +15,3 @@ Not decided yet; each has a suggested default so planning can start.
 | Audio | Placeholder ambience; cosy soundtrack later; clear audio warnings for restless plants |
 | Accessibility | Rebindable controls, readable UI, mood shown by shape and animation as well as colour |
 | Monetisation | One-off Steam purchase, no microtransactions |
-| Gamepad support | Post-MVP; keyboard and mouse first |

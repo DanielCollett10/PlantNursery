@@ -17,7 +17,7 @@ puzzle that neighbour effects create. The new design shows the nursery from abov
   (neediest, nearest escapee), because the choice is a game rule.
 - Cameras, zones and pointers are Unity-only. The sim never knows which camera is active.
 
-- **Input:** keyboard and mouse only until after the MVP (PC first). Gamepad slot-stepping is post-MVP.
+- **Input:** superseded by `0012` (keyboard and mouse and gamepad from the start).
 - The first-person controller stays as an **off-by-default debug view**; nothing new may depend on it.
 
 **Consequences.** Camera-raycast interaction and the 3 m reach are retired from gameplay.

@@ -16,7 +16,11 @@ See `docs/decisions/0010-top-down-cameras-and-bench-view.md`. There is **no firs
 
 ## Bench view
 - Entered by interacting with a bench while standing at it. Exited by walking away (more than `benchViewExitDistance`, default 1.0 m, from the bench edge). **No menu to close; movement stays live.**
-- **Mouse and keyboard:** the cursor points at a slot. **Gamepad (post-MVP):** d-pad or bumpers step through the slot grid. Same rules, two pointers.
+- **Mouse and keyboard:** the cursor points at a slot. **Gamepad:** d-pad or bumpers step through the slot grid
+  (planting slots of the held item's size, or of any size when empty-handed, then the working strip). Same rules, two pointers.
+- Stepping order: along the row (left/right), across rows (up/down), from the planting area's front row down into the
+  working strip and back; on back-to-back benches, up from the back row continues into the facing bench. Starts at the
+  slot nearest the player.
 - The pointed slot lights up in the player's highlight colour; a held pot's ghost snaps into it (green valid, red invalid with reason).
 - **Neighbour lines** show while holding a pot (see `behaviour.md`, Neighbours on screen).
 - Back-to-back benches share one bench view so cross-bench neighbours are visible.
@@ -64,8 +68,9 @@ Each player holds **one thing**: one pot (any size, with or without a plant), on
 - Click places; interacting with a placed item picks it up (a bench takes its pots with it, see `building.md`).
 
 ## Inputs
-**Keyboard and mouse only until after the MVP** (PC is the main audience). Use the Input System with rebindable
-actions so gamepad can be added later; gamepad rows in this doc (slot-stepping, hold-to-water) are **post-MVP**.
+**Keyboard and mouse and gamepad from the start** (`docs/decisions/0012`). Every action has a binding on both; the
+Input System's action maps per mode (Walk, Carry, BenchView, Build, UI) are rebindable. The last device used decides the
+pointer (cursor or slot-stepping) and the button prompts. Every Unity feature task covers both devices.
 
 ## First-person debug view
 The old first-person controller stays as a **debug option** (off by default, toggled from SimHost or a debug key in

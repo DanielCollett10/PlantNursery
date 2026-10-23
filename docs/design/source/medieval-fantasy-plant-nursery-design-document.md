@@ -2185,6 +2185,6 @@ Bench depth
 
  | 
 
-0.6 m deep, so the bench is exactly its planting area (3 m or 4 m long). The alternative is a 1 m deep bench with a 0.6 m planting area and a 0.4 m working edge
+Decided: 1.0 m deep, a 0.4 m working strip at the front plus a 0.6 m planting area (see grid.png and docs/design/building.md)
 
  |

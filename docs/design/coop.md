@@ -18,6 +18,18 @@ The host's sim is the single authority on the nursery; up to three friends join 
 - **Sync cheaply:** growth and needs change per in-game minute, so they go out in batches. Player movement, carried items and escaped plants need frequent updates.
 - **Split roles fall out naturally:** one player minds the nursery, another loads the wagon.
 
+## Co-op ready from M2 (before any networking exists)
+Networking comes later, but nothing built from M2 on may assume one player:
+- **Sim:** every command carries a `PlayerId`; per-player state (hands, an open bench view's bench, highlight colour) is
+  keyed by `PlayerId`; there is no "local player" in the sim. Shared things (crate, strip, purse) are shared.
+- **First request wins** is real from M2: two players' commands in one tick are applied in submission order, and the
+  loser gets a rejection (`Taken`). Headless tests run at least two players.
+- **Unity:** input never calls `SimWorld` directly; it submits through an `ICommandSink` (a local loopback for now, the
+  network transport later). Views read the local player's id from the session, never assume player 0, and draw every
+  player in the state.
+- **State is plain data** (`docs/decisions/0014`), so it can become the save/join snapshot later.
+- **No pause dependence:** nothing in M2 relies on pausing (co-op never pauses).
+
 ## Clashes
 - **First request wins:** if two players grab the same pot or slot, the request that reaches the host first gets it. The other sees a brief "taken" cue and their hands stay empty.
 - Two players can work the same bench at once.
