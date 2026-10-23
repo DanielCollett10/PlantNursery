@@ -27,7 +27,7 @@ namespace PlantNursery.Game
 
         private void Awake()
         {
-            if (host == null) host = FindObjectOfType<SimHost>();
+            if (host == null) host = FindFirstObjectByType<SimHost>();
             if (sun == null) sun = FindSunLight();
             if (driveAmbient) RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
         }
@@ -71,7 +71,7 @@ namespace PlantNursery.Game
 
         private static Light FindSunLight()
         {
-            foreach (var light in FindObjectsOfType<Light>())
+            foreach (var light in FindObjectsByType<Light>(FindObjectsSortMode.None))
                 if (light.type == LightType.Directional) return light;
             return null;
         }
