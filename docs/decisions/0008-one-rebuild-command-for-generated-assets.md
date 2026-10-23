@@ -9,6 +9,8 @@ There are also several menus to run in a fragile order: the scene generator repl
 - The scene generator adds everything the scene needs itself, including lighting. No step after generation may be needed.
 - Generated assets (`Assets/Game/Greybox/**`, `Assets/Scenes/Starter.unity`, and their `.meta` files) are **committed**. Opening the project and pressing Play must work with no menu steps.
 - An editor-lane task that changes a generator must run the rebuild and commit the output.
+- **Merge conflicts in generated assets are never hand-merged.** Merge the generator and code changes, then
+  take either side of the generated files, re-run `Rebuild Greybox World` on the merged code, and commit the output.
 - An EditMode test checks that the Starter scene contains a configured Player, SimHost, WorldView, HUD, BuildMode and lit sun.
 
 **Consequences.** The playtest only needs "open the scene, press Play". Generator changes show up as asset diffs in review.

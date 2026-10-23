@@ -23,6 +23,13 @@ exception: a tray of moss is **one** plant covering the whole tray (`species.md`
 
 Data keys: `containers[].drainPerHour`, `containers[].wateringCost`.
 
+**Containers are sim entities.** Each pot or plug tray has an id, its container type (size), its plants (one per pot;
+one per cell in a tray, or one for the whole tray for Hearthmoss) and its water meter. Empty pots and trays exist as
+containers too: they come out of the crate, sit in slots and are filled by sowing, potting on or re-potting.
+
+**Water feedback (MVP).** Each container shows a small water gauge when its meter is below 30, and a clear dry cue at 0,
+readable from the follow camera. Bench view shows the gauge for every container on the bench.
+
 ## Watering
 - **The water meter belongs to the container** (pot or tray), 0–100. Every plant in a tray shares it.
 - One watering sets the meter to 100 (`wateringAmount` = 100, capped at 100).

@@ -52,6 +52,7 @@ greybox nursery with the starter kit; a second bench can be bought and placed ba
   watering, neighbour lines); smart targeting for feed, scrape, catch; grub feeding from the storage crate; catch and
   re-pot; order desk supplier panel; mood indicators; off-screen alerts; a loading-yard rush zone with a fixed camera
   (no wagon or contracts yet); first-person controller kept as a debug view.
-- **Out:** co-op, gamepad, contracts, wagon, carts, shop counter, saves, cold frames, breeding.
+- **Out:** co-op, gamepad, **selling of any kind** (shop counter, contracts, selling bundles or plants), wagon, carts,
+  saves, cold frames, breeding. Coin only goes down in M2; the starting 200 is enough for the prototype's purchases.
 
 Later milestones (contracts and wagon, co-op, saves) are planned after the prototype playtest.
