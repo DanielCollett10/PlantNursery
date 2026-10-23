@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afd8c6f087da9974db8618c5bb27a411, type: 3}
   m_Name: 
   m_EditorClassIdentifier: PlantNursery.Game::PlantNursery.Game.PlaceableAuthoring
-  itemId: bench
+  itemId: bench_standard
   layer: 0
   footprintWidth: 2
   footprintDepth: 4

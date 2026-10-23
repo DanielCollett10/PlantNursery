@@ -32,15 +32,16 @@ namespace PlantNursery.EditorTools
         private static readonly Spec[] Specs =
         {
             // Floor items: size = cells * 0.5 m. Bench top at 0.9 m (half player height), 2 x 4 cells (1 m x 2 m).
-            new Spec { Name = "Bench", Id = "bench", Material = "Furniture", Layer = PlaceableLayer.Floor, W = 2, D = 4, Size = new Vector3(2 * Cell, 0.9f, 4 * Cell) },
-            new Spec { Name = "Tap", Id = "tap", Material = "Water", Layer = PlaceableLayer.Floor, W = 1, D = 1, Size = new Vector3(0.3f, 0.9f, 0.3f) },
-            new Spec { Name = "Computer", Id = "computer", Material = "Building", Layer = PlaceableLayer.Floor, W = 2, D = 1, Size = new Vector3(2 * Cell, 0.8f, Cell) },
-            new Spec { Name = "Bed", Id = "bed", Material = "Building", Layer = PlaceableLayer.Floor, W = 2, D = 4, Size = new Vector3(2 * Cell, 0.5f, 4 * Cell) },
-            new Spec { Name = "DeliveryShelf", Id = "delivery_shelf", Material = "Building", Layer = PlaceableLayer.Floor, W = 1, D = 3, Size = new Vector3(Cell, 1.2f, 3 * Cell) },
+            // Footprints must equal items.json floorFootprint (checked by GreyboxFootprintTests).
+            new Spec { Name = "Bench", Id = "bench_standard", Material = "Furniture", Layer = PlaceableLayer.Floor, W = 2, D = 4, Size = new Vector3(2 * Cell, 0.9f, 4 * Cell) },
+            new Spec { Name = "Tap", Id = "tap", Material = "Water", Layer = PlaceableLayer.Floor, W = 1, D = 1, Size = new Vector3(Cell, 0.9f, Cell) },
+            new Spec { Name = "Computer", Id = "computer", Material = "Building", Layer = PlaceableLayer.Floor, W = 1, D = 1, Size = new Vector3(Cell, 0.8f, Cell) },
+            new Spec { Name = "Bed", Id = "bed", Material = "Building", Layer = PlaceableLayer.Floor, W = 2, D = 3, Size = new Vector3(2 * Cell, 0.5f, 3 * Cell) },
+            new Spec { Name = "DeliveryShelf", Id = "delivery_shelf", Material = "Building", Layer = PlaceableLayer.Floor, W = 1, D = 2, Size = new Vector3(Cell, 1.2f, 2 * Cell) },
             // Surface items: size = units * 0.1 m (building.md surface table).
             new Spec { Name = "PlugTray", Id = "plug_tray", Material = "Plant", Layer = PlaceableLayer.Surface, W = 2, D = 3, Size = new Vector3(2 * Unit, 0.05f, 3 * Unit) },
-            new Spec { Name = "SmallPot", Id = "small_pot", Material = "Plant", Layer = PlaceableLayer.Surface, W = 1, D = 1, Size = new Vector3(Unit * 0.9f, 0.09f, Unit * 0.9f) },
-            new Spec { Name = "MediumPot", Id = "medium_pot", Material = "Plant", Layer = PlaceableLayer.Surface, W = 2, D = 2, Size = new Vector3(0.17f, 0.15f, 0.17f) },
+            new Spec { Name = "SmallPot", Id = "pot_small", Material = "Plant", Layer = PlaceableLayer.Surface, W = 1, D = 1, Size = new Vector3(Unit, 0.09f, Unit) },
+            new Spec { Name = "MediumPot", Id = "pot_medium", Material = "Plant", Layer = PlaceableLayer.Surface, W = 2, D = 2, Size = new Vector3(2 * Unit, 0.15f, 2 * Unit) },
             new Spec { Name = "WateringCan", Id = "watering_can", Material = "Water", Layer = PlaceableLayer.Surface, W = 2, D = 3, Size = new Vector3(2 * Unit, 0.2f, 3 * Unit) },
             new Spec { Name = "SeedPacket", Id = "seed_packet", Material = "Plant", Layer = PlaceableLayer.Surface, W = 1, D = 2, Size = new Vector3(Unit, 0.01f, 2 * Unit) },
         };
