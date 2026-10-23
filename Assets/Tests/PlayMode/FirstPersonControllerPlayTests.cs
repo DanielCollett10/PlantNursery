@@ -1,6 +1,8 @@
 using System.Collections;
-using NUnit.Framework;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.TestTools;
@@ -27,7 +29,7 @@ namespace PlantNursery.Game.PlayModeTests
             _floor.transform.position = new Vector3(0f, -0.5f, 0f);
             _floor.transform.localScale = new Vector3(50f, 1f, 50f);
 
-            var asset = AssetDatabase.LoadAssetAtPath<InputActionAsset>(ControlsPath);
+            var asset = LoadControls();
             Assert.IsNotNull(asset, "Missing " + ControlsPath);
 
             _player = new GameObject("Player");
@@ -45,6 +47,16 @@ namespace PlantNursery.Game.PlayModeTests
             Object.Destroy(_player);
             Object.Destroy(_floor);
             base.TearDown();
+        }
+
+        /// <summary>Loads the real controls asset. PlayMode tests only run in the Editor, so AssetDatabase is available.</summary>
+        private static InputActionAsset LoadControls()
+        {
+#if UNITY_EDITOR
+            return AssetDatabase.LoadAssetAtPath<InputActionAsset>(ControlsPath);
+#else
+            return null;
+#endif
         }
 
         [UnityTest]
