@@ -46,3 +46,6 @@ Key decisions: `docs/decisions/0003` (Unity owns bodies, the sim owns things),
 ## Data flow
 
 Player input → Unity layer → Sim command → `SimWorld.Step` → Sim state + events → Unity layer renders.
+
+## World views (T-019)
+`Assets/Game/Views/`: `WorldView` reconciles prefab instances against the full sim state every `LateUpdate` (floor items from `Build.PlacedItems`, surface items from `Surface.Items`, plants from `Hands.GetContents`), so loads rebuild and event-less changes (deliveries, gift) still appear; `RebuildAll()` forces it. `WorldLayout` is the pure cell/unit-to-metre, rotation-pivot, stage-scale and tint maths (unit-tested). `PlantView` builds the stem+leaves placeholder (leafColour tint, droop/desaturate when moisture < 20, brown-grey `#6E6253` when dead). Surface items sit on the top of the supporting floor view's renderer bounds. Held items (and plants inside held containers) are drawn by `HeldItemView`, not here.
