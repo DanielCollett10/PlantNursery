@@ -48,12 +48,21 @@ namespace PlantNursery.Game
             var root = doc.rootVisualElement;
             root.Clear();
             root.style.flexGrow = 1;
+            root.style.width = Length.Percent(100);
+            root.style.height = Length.Percent(100);
             root.pickingMode = PickingMode.Ignore;
             var tree = Resources.Load<VisualTreeAsset>("UI/Hud");
             var sheet = Resources.Load<StyleSheet>("UI/Hud");
             if (tree == null) { Debug.LogError("Resources/UI/Hud.uxml missing"); return; }
             if (sheet != null) root.styleSheets.Add(sheet);
             tree.CloneTree(root);
+            // Make every wrapper (TemplateContainer) fill the screen so right/bottom anchors resolve on-screen.
+            foreach (var child in root.Children())
+            {
+                child.style.flexGrow = 1;
+                child.style.width = Length.Percent(100);
+                child.style.height = Length.Percent(100);
+            }
 
             _day = root.Q<Label>("day-label");
             _season = root.Q<Label>("season-label");
