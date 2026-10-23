@@ -43,7 +43,7 @@ want the plants for. Each turn pays for equipment and bloodlines that make the n
 | ID | Name | Playable result |
 |---|---|---|
 | M1 | First sprout | Done. First-person greybox (pre-pivot): buy, place, sow, water, grow, sleep |
-| M2 (agreed) | Moss on the bench | All new sim rules (headless 5-day scenario), plus walking the top-down nursery: the starter kit's moss grows, wilts if left, day turns to night, sleep at the bed |
+| M2 (agreed) | Moss on the bench | All new sim rules (headless 5-day scenario), plus walking the top-down nursery and **tending the starter moss** from the walk view: pick up the can from the strip, refill at the barrel, water the driest tray, scrape moss, drop bundles in the crate, sleep at the bed. No sowing, buying or bench view yet (M3). The old computer shop is hidden in M2 |
 | M3 (agreed) | A calm bench | Bench view, crate, order desk, inspect card, build mode, cleanup. See below |
 | M4 (agreed) | Snapjaw prototype | See below; planned after M3 and its tweaks |
 

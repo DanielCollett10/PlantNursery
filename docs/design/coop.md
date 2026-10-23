@@ -24,6 +24,11 @@ Networking comes later, but nothing built from M2 on may assume one player:
   keyed by `PlayerId`; there is no "local player" in the sim. Shared things (crate, strip, purse) are shared.
 - **First request wins** is real from M2: two players' commands in one tick are applied in submission order, and the
   loser gets a rejection (`Taken`). Headless tests run at least two players.
+  - Where it lives: commands that act on an entity implement `ITargetsEntity` (target entity id). At apply time, if the
+    target was already moved, taken or filled by an earlier command this tick, the command is rejected with `Taken`
+    (instead of the generic reason), so the client can show the "taken" cue.
+  - **Pending claims** for smart targeting: `SimWorld` can list the targets of queued, not-yet-applied commands per player;
+    `SmartTarget.Pick` skips targets claimed by another player.
 - **Unity:** input never calls `SimWorld` directly; it submits through an `ICommandSink` (a local loopback for now, the
   network transport later). Views read the local player's id from the session, never assume player 0, and draw every
   player in the state.

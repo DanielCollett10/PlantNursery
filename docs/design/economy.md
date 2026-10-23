@@ -38,7 +38,8 @@ The soft-lock guard's "spores" are `spores_hearthmoss_amber`; "cheapest seed pri
 One 3 m bench, 6 plug trays with Hearthmoss spores, 2 carry trays, a watering can, a rain barrel, the storage
 crate, the order desk with its ledger, the shop counter, a bed, and 200 coin. (Data: `starterKit`.)
 The 6 plug trays start **sown with Hearthmoss (`hearthmoss_amber`), in the bench's plug-tray slots 0–5, watered to 100**.
-The **watering can starts in the storage crate** (full), as do the 2 carry trays. Floor items are placed at anchors
+The **watering can starts on the starter bench's working strip** (full, strip slot 0), so it can be picked up on day one
+without the crate UI. The 2 carry trays start in the storage crate. Floor items are placed at anchors
 given in `starterKit.placements`.
 
 ## Taking stock from the crate
