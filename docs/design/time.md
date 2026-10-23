@@ -8,7 +8,9 @@
 |---|---|---|
 | Playable day | `dayStartMinute` / `nightStartMinute` | 360 (06:00) / 1320 (22:00) |
 | Real time for the playable day | `realSecondsDay` | 600 (10 min), so 0.625 s per tick |
+| Phase boundaries | `morningEndMinute` / `eveningStartMinute` | 540 (09:00) / 1200 (20:00) |
 | Night | — | 22:00–06:00, skipped by sleep |
+| Night rate | `nightRateMultiplier` | 0.25 (validated 0..1); read via `GameClock.NeedRateMultiplier` |
 | Shop opening hours | `shopOpenMinute` / `shopCloseMinute` | 480 (08:00) / 1080 (18:00) |
 | Season length | `seasonLengthDays` | 10 (demo profile may shorten) |
 

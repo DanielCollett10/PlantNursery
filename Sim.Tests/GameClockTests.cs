@@ -10,8 +10,8 @@ namespace PlantNursery.Sim.Tests
     {
         private static TimeConfig Cfg(int seasonDays = 3) => new TimeConfig
         {
-            DayStartMinute = 360, NightStartMinute = 1200,
-            RealSecondsDaylight = 840, RealSecondsNight = 600, SeasonLengthDays = seasonDays
+            DayStartMinute = 360, MorningEndMinute = 540, EveningStartMinute = 1200, NightStartMinute = 1320,
+            RealSecondsDay = 600, NightRateMultiplier = 0.25f, SeasonLengthDays = seasonDays
         };
 
         private static (SimWorld, GameClock) Make(int seasonDays = 3)
@@ -37,10 +37,10 @@ namespace PlantNursery.Sim.Tests
         [TestCase(360, DayPhase.Morning)]
         [TestCase(539, DayPhase.Morning)]
         [TestCase(540, DayPhase.Daytime)]
-        [TestCase(1079, DayPhase.Daytime)]
-        [TestCase(1080, DayPhase.Evening)]
-        [TestCase(1199, DayPhase.Evening)]
-        [TestCase(1200, DayPhase.Night)]
+        [TestCase(1199, DayPhase.Daytime)]
+        [TestCase(1200, DayPhase.Evening)]
+        [TestCase(1319, DayPhase.Evening)]
+        [TestCase(1320, DayPhase.Night)]
         [TestCase(0, DayPhase.Night)]
         [TestCase(359, DayPhase.Night)]
         public void PhaseBoundaries(int minute, DayPhase expected)
@@ -85,7 +85,7 @@ namespace PlantNursery.Sim.Tests
         public void SleepRejectedInMorningAndDaytime()
         {
             var (w, c) = Make();
-            foreach (var minute in new[] { 360, 800, 1079 })
+            foreach (var minute in new[] { 360, 800, 1199 })
             {
                 var target = Ticks(minute);
                 w.Step((int)(target - w.Tick));
@@ -96,14 +96,27 @@ namespace PlantNursery.Sim.Tests
             w.Submit(new SleepCommand(new PlayerId(0)));
             w.Step();
             Assert.IsTrue(w.DrainEvents().OfType<CommandRejectedEvent>().Any());
-            Assert.AreEqual(1080 - 360, w.Tick);
+            Assert.AreEqual(1199 - 360 + 1, w.Tick); // the rejected command's tick still advances once
+        }
+
+        [Test]
+        public void SleepFromNightRunsToDayStart()
+        {
+            var (w, c) = Make();
+            w.Step(Ticks(1380)); // 23:00
+            Assert.AreEqual(DayPhase.Night, c.Phase);
+            Assert.IsTrue(w.Validate(new SleepCommand(new PlayerId(0))).IsAccepted);
+            w.Submit(new SleepCommand(new PlayerId(0)));
+            w.Step();
+            Assert.AreEqual(360, c.MinuteOfDay);
+            Assert.AreEqual(2, c.Day);
         }
 
         [Test]
         public void SleepFromEveningRunsToNextDayStart()
         {
             var (w, c) = Make();
-            w.Step(Ticks(1100));
+            w.Step(Ticks(1250));
             w.DrainEvents();
             w.Submit(new SleepCommand(new PlayerId(0)));
             w.Step();
@@ -130,7 +143,7 @@ namespace PlantNursery.Sim.Tests
         public void SleepAcrossSeasonBoundaryRaisesSeasonChanged()
         {
             var (w, _) = Make(1);
-            w.Step(Ticks(1100));
+            w.Step(Ticks(1250));
             w.DrainEvents();
             w.Submit(new SleepCommand(new PlayerId(0)));
             w.Step();
@@ -138,14 +151,30 @@ namespace PlantNursery.Sim.Tests
         }
 
         [Test]
-        public void RealSecondsPerTickPerPhase()
+        public void RealSecondsPerTickComesFromData()
         {
             var (w, c) = Make();
-            Assert.AreEqual(1.0, c.RealSecondsPerTick, 1e-9); // 840 s / 840 min
-            w.Step(Ticks(1300));
-            Assert.AreEqual(DayPhase.Night, c.Phase);
-            Assert.AreEqual(600.0 / 600, c.RealSecondsPerTick, 1e-9);
-            Assert.AreEqual(1.0, c.RealSecondsPerTickFor(DayPhase.Evening), 1e-9);
+            Assert.AreEqual(0.625, c.RealSecondsPerTick, 1e-9); // 600 s / 960 min
+            w.Step(Ticks(1400));
+            Assert.AreEqual(0.625, c.RealSecondsPerTick, 1e-9);
+        }
+
+        [Test]
+        public void NightRulesHelper()
+        {
+            var (w, c) = Make();
+            Assert.IsFalse(c.IsNight);
+            Assert.AreEqual(1f, c.NeedRateMultiplier);
+            w.Step(Ticks(1250));
+            Assert.IsFalse(c.IsNight);
+            Assert.AreEqual(1f, c.NeedRateMultiplier);
+            w.Step(Ticks(1320) - Ticks(1250));
+            Assert.IsTrue(c.IsNight);
+            Assert.AreEqual(0.25f, c.NeedRateMultiplier);
+            w.Step(Ticks(359) - Ticks(1320));
+            Assert.IsTrue(c.IsNight);
+            w.Step();
+            Assert.IsFalse(c.IsNight);
         }
     }
 }

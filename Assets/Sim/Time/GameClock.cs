@@ -34,8 +34,6 @@ namespace PlantNursery.Sim.Time
     {
         /// <summary>Minutes in a day.</summary>
         public const int MinutesPerDay = 1440;
-        private const int MorningMinutes = 180;
-        private const int EveningMinutes = 120;
         private const int SeasonCount = 3;
 
         private readonly TimeConfig _cfg;
@@ -46,9 +44,14 @@ namespace PlantNursery.Sim.Time
             _cfg = config ?? throw new ArgumentNullException(nameof(config));
             _world = world ?? throw new ArgumentNullException(nameof(world));
             if (_cfg.DayStartMinute < 0 || _cfg.DayStartMinute >= MinutesPerDay) throw new ArgumentException("dayStartMinute out of range");
-            if (_cfg.NightStartMinute <= _cfg.DayStartMinute + MorningMinutes + EveningMinutes
+            if (_cfg.MorningEndMinute <= _cfg.DayStartMinute
+                || _cfg.EveningStartMinute <= _cfg.MorningEndMinute
+                || _cfg.NightStartMinute <= _cfg.EveningStartMinute
                 || _cfg.NightStartMinute >= _cfg.DayStartMinute + MinutesPerDay)
-                throw new ArgumentException("nightStartMinute leaves no room for the day phases");
+                throw new ArgumentException("phase boundaries must increase: dayStart < morningEnd < eveningStart < nightStart");
+            if (_cfg.RealSecondsDay <= 0f) throw new ArgumentException("realSecondsDay must be > 0");
+            if (_cfg.NightRateMultiplier < 0f || _cfg.NightRateMultiplier > 1f)
+                throw new ArgumentException("nightRateMultiplier must be 0..1");
             if (_cfg.SeasonLengthDays < 1) throw new ArgumentException("seasonLengthDays must be >= 1");
         }
 
@@ -85,16 +88,21 @@ namespace PlantNursery.Sim.Time
         /// <summary>Season at a tick.</summary>
         public Season SeasonAt(long tick) => (Season)(((DayAt(tick) - 1) / _cfg.SeasonLengthDays) % SeasonCount);
 
-        /// <summary>Phase at a tick.</summary>
+        /// <summary>Phase at a tick (boundaries come from the TimeConfig).</summary>
         public DayPhase PhaseAt(long tick)
         {
             var offset = (MinuteAt(tick) - _cfg.DayStartMinute + MinutesPerDay) % MinutesPerDay;
-            var nightOffset = _cfg.NightStartMinute - _cfg.DayStartMinute;
-            if (offset < MorningMinutes) return DayPhase.Morning;
-            if (offset < nightOffset - EveningMinutes) return DayPhase.Daytime;
-            if (offset < nightOffset) return DayPhase.Evening;
+            if (offset < _cfg.MorningEndMinute - _cfg.DayStartMinute) return DayPhase.Morning;
+            if (offset < _cfg.EveningStartMinute - _cfg.DayStartMinute) return DayPhase.Daytime;
+            if (offset < _cfg.NightStartMinute - _cfg.DayStartMinute) return DayPhase.Evening;
             return DayPhase.Night;
         }
+
+        /// <summary>True during the Night phase.</summary>
+        public bool IsNight => Phase == DayPhase.Night;
+
+        /// <summary>Multiplier for need and drying rates: 1.0 by day, nightRateMultiplier at night.</summary>
+        public float NeedRateMultiplier => IsNight ? _cfg.NightRateMultiplier : 1f;
 
         /// <summary>True when the player may sleep (Evening or Night).</summary>
         public bool CanSleep => Phase == DayPhase.Evening || Phase == DayPhase.Night;
@@ -102,17 +110,8 @@ namespace PlantNursery.Sim.Time
         /// <summary>True when the clock is exactly at dayStartMinute.</summary>
         public bool IsDayStart => MinuteOfDay == _cfg.DayStartMinute;
 
-        /// <summary>Real seconds one tick lasts in the current phase.</summary>
-        public double RealSecondsPerTick => RealSecondsPerTickFor(Phase);
-
-        /// <summary>Real seconds one tick lasts in the given phase, from the TimeConfig.</summary>
-        public double RealSecondsPerTickFor(DayPhase phase)
-        {
-            var daylightMinutes = _cfg.NightStartMinute - _cfg.DayStartMinute;
-            return phase == DayPhase.Night
-                ? _cfg.RealSecondsNight / (MinutesPerDay - daylightMinutes)
-                : _cfg.RealSecondsDaylight / daylightMinutes;
-        }
+        /// <summary>Real seconds one tick lasts: realSecondsDay over the playable day's minutes.</summary>
+        public double RealSecondsPerTick => _cfg.RealSecondsDay / (double)(_cfg.NightStartMinute - _cfg.DayStartMinute);
 
         /// <inheritdoc />
         public void Update(SimWorld world)

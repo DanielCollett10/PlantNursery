@@ -42,7 +42,11 @@ namespace PlantNursery.Sim.Tests
         {
             var db = ContentLoader.Load(RealFiles(false));
             Assert.AreEqual(360, db.Time.DayStartMinute);
-            Assert.AreEqual(3600f, db.Time.RealSecondsDaylight);
+            Assert.AreEqual(600f, db.Time.RealSecondsDay);
+            Assert.AreEqual(540, db.Time.MorningEndMinute);
+            Assert.AreEqual(1200, db.Time.EveningStartMinute);
+            Assert.AreEqual(1320, db.Time.NightStartMinute);
+            Assert.AreEqual(0.25f, db.Time.NightRateMultiplier);
             Assert.AreEqual(10, db.Time.SeasonLengthDays);
             Assert.AreEqual(3, db.VarietyDefs.Count);
             Assert.AreEqual(3, db.GeneDefs.Count);
@@ -92,10 +96,22 @@ namespace PlantNursery.Sim.Tests
         public void DemoFileOverridesTimeValues()
         {
             var db = ContentLoader.Load(RealFiles(true));
-            Assert.AreEqual(600f, db.Time.RealSecondsDaylight);
-            Assert.AreEqual(120f, db.Time.RealSecondsNight);
+            Assert.AreEqual(600f, db.Time.RealSecondsDay);
             Assert.AreEqual(3, db.Time.SeasonLengthDays);
             Assert.AreEqual(360, db.Time.DayStartMinute);
+        }
+
+        [TestCase("1.5")]
+        [TestCase("-0.1")]
+        public void NightRateMultiplierOutOfRangeFails(string bad)
+        {
+            var files = RealFiles(false);
+            var changed = files["time.json"].Replace("\"nightRateMultiplier\": 0.25", "\"nightRateMultiplier\": " + bad);
+            Assert.AreNotEqual(files["time.json"], changed, "Replace must change the json");
+            files["time.json"] = changed;
+            var e = Fails(files);
+            Assert.AreEqual("time.json", e.File);
+            Assert.AreEqual("nightRateMultiplier", e.Field);
         }
 
         [Test]

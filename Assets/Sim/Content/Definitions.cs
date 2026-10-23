@@ -32,10 +32,14 @@ namespace PlantNursery.Sim.Content
         public int DayStartMinute;
         /// <summary>Minute of day the night starts.</summary>
         public int NightStartMinute;
-        /// <summary>Real seconds for dayStart to nightStart.</summary>
-        public float RealSecondsDaylight;
-        /// <summary>Real seconds for nightStart to next dayStart.</summary>
-        public float RealSecondsNight;
+        /// <summary>Minute of day the morning phase ends and daytime begins.</summary>
+        public int MorningEndMinute;
+        /// <summary>Minute of day the evening phase begins.</summary>
+        public int EveningStartMinute;
+        /// <summary>Real seconds for the playable day (dayStart to nightStart).</summary>
+        public float RealSecondsDay;
+        /// <summary>Multiplier (0..1) applied to need and drying rates at night.</summary>
+        public float NightRateMultiplier = 0.25f;
         /// <summary>Days per season.</summary>
         public int SeasonLengthDays;
         /// <summary>Shop opening minute (M2).</summary>

@@ -61,7 +61,8 @@ namespace PlantNursery.Sim.Tests
             var time = new TimeConfig
             {
                 DayStartMinute = t.DayStartMinute, NightStartMinute = t.NightStartMinute,
-                RealSecondsDaylight = t.RealSecondsDaylight, RealSecondsNight = t.RealSecondsNight,
+                MorningEndMinute = t.MorningEndMinute, EveningStartMinute = t.EveningStartMinute,
+                RealSecondsDay = t.RealSecondsDay, NightRateMultiplier = t.NightRateMultiplier,
                 SeasonLengthDays = 1, ShopOpenMinute = t.ShopOpenMinute, ShopCloseMinute = t.ShopCloseMinute
             };
             _db = new ContentDb(time, real.ItemDefs,

@@ -66,8 +66,10 @@ namespace PlantNursery.Sim.Content
             // Reading every field validates it; for the demo pre-pass only demo keys are read.
             if (Check("dayStartMinute")) t.DayStartMinute = n.Int("dayStartMinute");
             if (Check("nightStartMinute")) t.NightStartMinute = n.Int("nightStartMinute");
-            if (Check("realSecondsDaylight")) t.RealSecondsDaylight = n.Float("realSecondsDaylight");
-            if (Check("realSecondsNight")) t.RealSecondsNight = n.Float("realSecondsNight");
+            if (Check("morningEndMinute")) t.MorningEndMinute = n.Int("morningEndMinute");
+            if (Check("eveningStartMinute")) t.EveningStartMinute = n.Int("eveningStartMinute");
+            if (Check("realSecondsDay")) t.RealSecondsDay = n.Float("realSecondsDay");
+            if (Check("nightRateMultiplier")) t.NightRateMultiplier = n.Float("nightRateMultiplier");
             if (Check("seasonLengthDays")) t.SeasonLengthDays = n.Int("seasonLengthDays");
             if (Check("shopOpenMinute")) t.ShopOpenMinute = n.Int("shopOpenMinute");
             if (Check("shopCloseMinute")) t.ShopCloseMinute = n.Int("shopCloseMinute");
@@ -77,8 +79,15 @@ namespace PlantNursery.Sim.Content
             if (t.NightStartMinute > 1439) throw n.Error("nightStartMinute", "must be below 1440");
             if (t.NightStartMinute <= t.DayStartMinute + 300)
                 throw n.Error("nightStartMinute", "must be more than 300 minutes after dayStartMinute");
-            if (t.RealSecondsDaylight <= 0f) throw n.Error("realSecondsDaylight", "must be greater than 0");
-            if (t.RealSecondsNight <= 0f) throw n.Error("realSecondsNight", "must be greater than 0");
+            if (t.MorningEndMinute <= t.DayStartMinute)
+                throw n.Error("morningEndMinute", "must be after dayStartMinute");
+            if (t.EveningStartMinute <= t.MorningEndMinute)
+                throw n.Error("eveningStartMinute", "must be after morningEndMinute");
+            if (t.NightStartMinute <= t.EveningStartMinute)
+                throw n.Error("nightStartMinute", "must be after eveningStartMinute");
+            if (t.RealSecondsDay <= 0f) throw n.Error("realSecondsDay", "must be greater than 0");
+            if (t.NightRateMultiplier < 0f || t.NightRateMultiplier > 1f)
+                throw n.Error("nightRateMultiplier", "must be between 0 and 1");
             if (t.SeasonLengthDays < 1) throw n.Error("seasonLengthDays", "must be at least 1");
             if (t.ShopOpenMinute > 1439) throw n.Error("shopOpenMinute", "must be below 1440");
             if (t.ShopCloseMinute > 1439) throw n.Error("shopCloseMinute", "must be below 1440");
