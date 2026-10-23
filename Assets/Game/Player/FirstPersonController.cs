@@ -43,7 +43,13 @@ namespace PlantNursery.Game
 
         private void OnEnable()
         {
-            if (actions == null) return;
+            if (actions == null || cameraPivot == null)
+            {
+                Debug.LogError("FirstPersonController needs both 'actions' and 'cameraPivot' assigned; input is disabled.", this);
+                return;
+            }
+            if (Keyboard.current == null || Mouse.current == null)
+                Debug.LogWarning("No keyboard/mouse detected by the Input System. Restart Unity after changing Active Input Handling (see docs/unity-troubleshooting.md).", this);
             var map = actions.FindActionMap("Player", true);
             _move = map.FindAction("Move", true);
             _look = map.FindAction("Look", true);
