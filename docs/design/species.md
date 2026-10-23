@@ -22,7 +22,7 @@ A low, softly glowing moss. Water it, scrape it, it grows back. The first plant 
 A flowering plant whose bell-shaped blooms vary in colour and pattern. It never interacts with anything: if a bench of Chimebells is calm, the base systems are working.
 | Stage | Container | Days |
 |---|---|---|
-| Seedling | Plug tray | 1 |
+| Seedling | Plug tray or small pot (sown directly, `plants.md` Sowing) | 1 |
 | Young | Small pot | 1 |
 | Blooming | Medium pot | 2 (sellable in bloom) |
 | Specimen | Large pot | 2 (sellable as specimen) |

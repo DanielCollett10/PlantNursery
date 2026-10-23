@@ -5,13 +5,28 @@ on top as optional modules (`behaviour.md`). A plant with no modules is a plain 
 Species data is in `species.md`.
 
 ## Lifecycle
-1. **Sow** seeds, spores or cuttings into a plug tray (one plant per tray cell; a tray has `cells` = 6).
+1. **Sow** seeds, spores or cuttings into a plug tray or a small pot (see Sowing below).
 2. **Grow on** until rooted.
 3. **Pot on** into bigger pots, where the species allows.
 4. **Sell or harvest:** some species sell whole; others are harvested repeatedly and regrow.
 
 A plant is an individual (id, species, genome, stage, stage progress, quality, counters). Hearthmoss is the
 exception: a tray of moss is **one** plant covering the whole tray (`species.md`).
+
+## Sowing (agreed: one system for every species)
+One sowing rule set, driven by species data, so new species and new seed types are data only.
+- **Hold a seed packet** (from the crate) and interact with an **empty container in a slot**. One click:
+  - **Plug tray:** fills **every empty cell** at once (one seed per cell), or the whole tray as one plant for species
+    with `sowing.trayMode` = `wholeTray` (Hearthmoss). If the packet runs out part-way, the cells sown so far stay sown.
+  - **Pot:** sows **one** plant.
+- **Where you can sow** is per species (`sowing.sowInto`). Lore: seeds start in plug trays or small pots, never straight
+  into medium or large pots; bigger pots are reached by potting on. First pass: Hearthmoss `[plugTray]`,
+  Chimebell `[plugTray, smallPot]`.
+- A packet holds `sowing.packetSeeds` (Chimebell 6; Hearthmoss spores 1 = one tray). An empty packet disappears from your hands.
+- The new plant starts in the species' first stage, which must allow that container.
+- Rejections: `NoSeedPacket`, `PacketEmpty`, `NotSowable` (container not in `sowInto`), `ContainerFull`, `NotInSlot`.
+- Extensibility: the tray/pot fill rule is one strategy per container kind and `trayMode`; cuttings or other seed types
+  add a new packet kind or mode, not a new system.
 
 ## Containers
 | Container | Slot | Water drain per in-game hour | Can charges per watering |

@@ -12,7 +12,7 @@ view sync) that partly exist under other names. It says to extend what exists, n
   lifecycle and mood. Existing code is not converted unless a task touches it.
 - **Content stays in `Assets/StreamingAssets/Content/`** (`0004`); the doc's `Assets/Content` is not used.
 - **Factories:** a sim `EntityFactory` builds containers and plants from definitions (purchases, starter kit, sowing, tests).
-- **Views (proposed, awaiting the human's OK):** views **reconcile from sim state** (the current `WorldView` approach), with a
+- **Views (agreed):** views **reconcile from sim state** (the current `WorldView` approach), with a
   `ViewCatalog` mapping definition ids to prefabs under it. **Events are only for moments**: sounds, a "taken" cue, a
   mood-change shake, a toast. Reason: in co-op, clients hold a copy of the state built from a snapshot plus updates, so one
   reconcile path serves solo, clients, joins and loads, and a lost or late event can't leave a stale view. If reconciling

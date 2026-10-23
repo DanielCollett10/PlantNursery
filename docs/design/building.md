@@ -96,7 +96,7 @@ things down. It holds **things without plants**: tools, sacks, bundles and empty
   | Empty small pot | 2 × 2 | 15 × 2 |
   | Empty medium pot | 3 × 3 | 10 × 1 |
   | Empty plug tray | 6 × 4 (laid lengthwise) | 5 × 1 |
-  | Carry tray (no plants in it) | 6 × 4 | 5 × 1 |
+  | Carry tray (with or without its small pots) | 6 × 4 | 5 × 1 |
   | Watering can | 3 × 3 | 10 × 1 |
   | Grub sack | 3 × 3 | 10 × 1 |
   | Bundle (moss scrapings) | 2 × 2 | 15 × 2 |
@@ -104,8 +104,10 @@ things down. It holds **things without plants**: tools, sacks, bundles and empty
   An empty large pot (6 × 6) doesn't fit a 4-deep strip, so it isn't listed. Changing the depth or the list is data only.
 - **Slots:** same rule as the planting area (fixed slot grid per footprint, `col = u / along`, `row = v / across`, measured
   from the strip's left-front corner). Free if none of its units is used. Address: `(benchId, Strip, itemKind, col, row)`.
-- **No plants on the strip.** Anything holding a plant (a planted pot or tray, a carry tray with planted pots, a caught
-  plant) is rejected with `NoPlantsOnStrip`. Other rejections: `NotAccepted` (not in the list), `NoSuchSlot`, `SlotOccupied`.
+- **No plants on the strip**, with one exception. Anything holding a plant (a planted pot or plug tray, a caught plant)
+  is rejected with `NoPlantsOnStrip`. **Exception: a carry tray may be set down on the strip with its pots in it**
+  (that is how a player frees their hands mid-job). Pots in a carry tray keep draining water and growing as normal,
+  but they are never neighbours. Other rejections: `NotAccepted` (not in the list), `NoSuchSlot`, `SlotOccupied`.
 - **No neighbours:** strip items are never neighbours and play no part in adjacency, on the same or another bench.
 - **Pot on at the strip:** holding a plant in its container, interact with an **empty bigger pot on the strip**. The plant
   moves into that pot, the **new pot (with the plant) goes into your hands**, and the old empty container goes back to the
@@ -118,8 +120,8 @@ things down. It holds **things without plants**: tools, sacks, bundles and empty
 ### Carry trays
 A carry tray (0.4 × 0.6 m) **moves** up to 6 small pots; it **never goes on a bench**. In bench view, take
 small pots into the tray in your hands, carry it, then put the pots into slots one by one, or drop the
-whole tray into a cart or the wagon. A carry tray can be set down on the ground (it then sits on the floor
-cell under the player and blocks nothing).
+whole tray into a cart or the wagon. To free your hands, set the carry tray down on a bench's **working strip**
+(pots and all, see Working strip). Setting it down on the ground is **dropped for now**; it may return with carts and the wagon.
 
 ## Moving a bench
 `MoveItem(player, placedId, anchor, rotation)` moves a placed floor item. For a bench, every pot and tray in it moves
