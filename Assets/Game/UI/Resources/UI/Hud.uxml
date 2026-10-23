@@ -1,0 +1,26 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="hud-root" class="hud-root" picking-mode="Ignore">
+        <ui:VisualElement class="hud-top-left" picking-mode="Ignore">
+            <ui:Label name="day-label" class="hud-text" />
+            <ui:Label name="season-label" class="hud-text" />
+            <ui:Label name="clock-label" class="hud-text" />
+        </ui:VisualElement>
+        <ui:Label name="wallet-label" class="hud-text hud-top-right" picking-mode="Ignore" />
+        <ui:VisualElement class="hud-center" picking-mode="Ignore">
+            <ui:Label name="crosshair" class="hud-crosshair" text="+" picking-mode="Ignore" />
+            <ui:Label name="prompt-label" class="hud-prompt" picking-mode="Ignore" />
+            <ui:Label name="rejection-label" class="hud-rejection" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:Label name="held-label" class="hud-text hud-bottom-left" picking-mode="Ignore" />
+        <ui:Label name="toast-label" class="hud-toast" picking-mode="Ignore" />
+        <ui:VisualElement name="shop-overlay" class="shop-overlay">
+            <ui:VisualElement class="shop-panel">
+                <ui:Label name="shop-title" class="shop-title" />
+                <ui:Label name="shop-wallet" class="shop-wallet" />
+                <ui:ScrollView name="shop-list" class="shop-list" />
+                <ui:Label name="shop-status" class="shop-status" />
+                <ui:Button name="shop-close" class="shop-close" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

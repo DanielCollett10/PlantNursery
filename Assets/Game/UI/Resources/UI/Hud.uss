@@ -1,0 +1,25 @@
+.hud-root { flex-grow: 1; align-items: stretch; }
+.hud-text { font-size: 24px; color: rgb(255,255,255); -unity-font-style: bold; }
+.hud-top-left { position: absolute; left: 20px; top: 16px; }
+.hud-top-right { position: absolute; right: 20px; top: 16px; color: rgb(255,220,100); }
+.hud-bottom-left { position: absolute; left: 20px; bottom: 20px; }
+.hud-center { position: absolute; left: 0; right: 0; top: 0; bottom: 0; align-items: center; justify-content: center; }
+.hud-crosshair { font-size: 28px; color: rgb(255,255,255); }
+.hud-prompt { font-size: 26px; color: rgb(255,255,255); }
+.hud-rejection { font-size: 24px; color: rgb(255,102,102); }
+.hud-toast { position: absolute; bottom: 90px; left: 0; right: 0; -unity-text-align: middle-center; font-size: 26px; color: rgb(255,255,255); display: none; }
+.hud-toast--visible { display: flex; }
+
+.shop-overlay { position: absolute; left: 0; right: 0; top: 0; bottom: 0; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.6); display: none; }
+.shop-overlay--open { display: flex; }
+.shop-panel { width: 640px; max-height: 80%; padding: 24px; background-color: rgb(40,48,40); border-radius: 12px; }
+.shop-title { font-size: 34px; color: rgb(255,255,255); -unity-font-style: bold; }
+.shop-wallet { font-size: 24px; color: rgb(255,220,100); margin-bottom: 12px; }
+.shop-list { flex-shrink: 1; min-height: 120px; }
+.shop-row { flex-direction: row; align-items: center; padding: 6px 4px; }
+.shop-row-name { flex-grow: 1; font-size: 22px; color: rgb(255,255,255); }
+.shop-row-price { width: 120px; font-size: 22px; color: rgb(255,220,100); -unity-text-align: middle-right; }
+.shop-row-buy { width: 90px; margin-left: 12px; font-size: 20px; }
+.shop-status { min-height: 30px; margin-top: 10px; font-size: 22px; color: rgb(255,255,255); }
+.shop-status--error { color: rgb(255,102,102); }
+.shop-close { margin-top: 10px; font-size: 20px; }

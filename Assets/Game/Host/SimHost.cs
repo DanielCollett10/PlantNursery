@@ -84,6 +84,7 @@ namespace PlantNursery.Game
             var hands = new HandsState(content, surface);
             HandsModule.Register(world, hands);
             GrowthSystem.Install(world, content, hands, clock);
+            SoftLockGuard.Install(world, content, wallet, build, surface, hands, clock);
 
             Content = content; Clock = clock; Build = build; Surface = surface; Wallet = wallet; Hands = hands;
             World = world;

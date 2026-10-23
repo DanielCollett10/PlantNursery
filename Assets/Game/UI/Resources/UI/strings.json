@@ -1,0 +1,21 @@
+{
+  "entries": [
+    { "key": "hud.day", "value": "Day {0}" },
+    { "key": "hud.wallet", "value": "{0} coins" },
+    { "key": "hud.held", "value": "Holding: {0}" },
+    { "key": "season.Spring", "value": "Spring" },
+    { "key": "season.Summer", "value": "Summer" },
+    { "key": "season.Autumn", "value": "Autumn" },
+    { "key": "season.Winter", "value": "Winter" },
+    { "key": "toast.neighbourGift", "value": "A neighbour left you some seeds." },
+    { "key": "shop.title", "value": "Supplier" },
+    { "key": "shop.buy", "value": "Buy" },
+    { "key": "shop.close", "value": "Close (Esc)" },
+    { "key": "shop.price", "value": "{0} coins" },
+    { "key": "shop.bought", "value": "Bought {0}." },
+    { "key": "reject.InsufficientFunds", "value": "Not enough coins." },
+    { "key": "reject.InvalidArgument", "value": "That item is not for sale." },
+    { "key": "reject.DeliveryShelfFull", "value": "The delivery shelf is full." },
+    { "key": "reject.Blocked", "value": "Delivery is blocked." }
+  ]
+}
