@@ -44,7 +44,7 @@ Footprints are in data, and rotation (90° steps) swaps width and depth as on th
 ## Footprints and rotation
 - Each item type has a footprint `w × d` in cells (sub-slots for Surface items) and an anchor at its south-west corner.
 - Rotation is 0/90/180/270. Rotating by 90° or 270° swaps `w` and `d`, keeping the anchor cell.
-- Standard bench: 1 × 4 cells, `providesSurface: true`.
+- Standard bench: 2 × 4 cells, `providesSurface: true`.
 
 ## Placement validation
 `PlaceItem(player, itemId, layer, anchor, rotation)` succeeds only if all of these are true. Otherwise it is rejected with the first failing reason:

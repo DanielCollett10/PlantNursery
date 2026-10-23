@@ -27,7 +27,7 @@ namespace PlantNursery.Game.Tests
         [Test]
         public void SurfaceItemUsesTenthMetreUnitsAtSupportHeight()
         {
-            var item = new SurfaceItem(1, "small_pot", new Unit(12, 7), Rotation.Deg0, 1, 1);
+            var item = new SurfaceItem(1, "pot_small", new Unit(12, 7), Rotation.Deg0, 1, 1);
             var p = WorldLayout.SurfacePosition(item, new Vector3(1f, 0f, 1f), 0.8f);
             Assert.AreEqual(2.2f, p.x, 1e-4f);
             Assert.AreEqual(0.8f, p.y, 1e-4f);

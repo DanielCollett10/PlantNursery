@@ -40,8 +40,8 @@ namespace PlantNursery.EditorTools
             new Spec { Name = "DeliveryShelf", Id = "delivery_shelf", Material = "Building", Layer = PlaceableLayer.Floor, W = 1, D = 2, Size = new Vector3(Cell, 1.2f, 2 * Cell) },
             // Surface items: size = units * 0.1 m (building.md surface table).
             new Spec { Name = "PlugTray", Id = "plug_tray", Material = "Plant", Layer = PlaceableLayer.Surface, W = 2, D = 3, Size = new Vector3(2 * Unit, 0.05f, 3 * Unit) },
-            new Spec { Name = "SmallPot", Id = "small_pot", Material = "Plant", Layer = PlaceableLayer.Surface, W = 1, D = 1, Size = new Vector3(Unit * 0.9f, 0.09f, Unit * 0.9f) },
-            new Spec { Name = "MediumPot", Id = "medium_pot", Material = "Plant", Layer = PlaceableLayer.Surface, W = 2, D = 2, Size = new Vector3(0.17f, 0.15f, 0.17f) },
+            new Spec { Name = "SmallPot", Id = "pot_small", Material = "Plant", Layer = PlaceableLayer.Surface, W = 1, D = 1, Size = new Vector3(Unit * 0.9f, 0.09f, Unit * 0.9f) },
+            new Spec { Name = "MediumPot", Id = "pot_medium", Material = "Plant", Layer = PlaceableLayer.Surface, W = 2, D = 2, Size = new Vector3(0.17f, 0.15f, 0.17f) },
             new Spec { Name = "WateringCan", Id = "watering_can", Material = "Water", Layer = PlaceableLayer.Surface, W = 2, D = 3, Size = new Vector3(2 * Unit, 0.2f, 3 * Unit) },
             new Spec { Name = "SeedPacket", Id = "seed_packet", Material = "Plant", Layer = PlaceableLayer.Surface, W = 1, D = 2, Size = new Vector3(Unit, 0.01f, 2 * Unit) },
         };

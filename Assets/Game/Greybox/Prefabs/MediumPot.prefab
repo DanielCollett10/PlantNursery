@@ -157,7 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afd8c6f087da9974db8618c5bb27a411, type: 3}
   m_Name: 
   m_EditorClassIdentifier: PlantNursery.Game::PlantNursery.Game.PlaceableAuthoring
-  itemId: medium_pot
+  itemId: pot_medium
   layer: 1
   footprintWidth: 2
   footprintDepth: 2
