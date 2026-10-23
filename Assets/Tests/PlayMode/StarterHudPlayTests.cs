@@ -37,28 +37,41 @@ namespace PlantNursery.Game.PlayModeTests
         public IEnumerator HudLabelsHaveTextAndAreOnScreen()
         {
             yield return EditorSceneManager.LoadSceneAsyncInPlayMode(ScenePath, new LoadSceneParameters(LoadSceneMode.Single));
-            var t = Time.realtimeSinceStartup;
-            while (Time.realtimeSinceStartup - t < 1.5f) yield return null;
+
+            // The HUD only writes its text once the Sim is running, so wait for SimHost.IsReady first.
+            var host = Object.FindFirstObjectByType<SimHost>();
+            var deadline = Time.realtimeSinceStartup + 15f;
+            while ((host == null || !host.IsReady) && Time.realtimeSinceStartup < deadline)
+            {
+                yield return null;
+                if (host == null) host = Object.FindFirstObjectByType<SimHost>();
+            }
+            Assert.IsNotNull(host, "SimHost in Starter.unity");
+            Assert.IsTrue(host.IsReady, "SimHost.IsReady within 15s");
+            // Let InteractionHud.Update run a few times and UI Toolkit lay the labels out.
+            for (var i = 0; i < 5; i++) yield return null;
 
             var hud = Object.FindFirstObjectByType<InteractionHud>();
             Assert.IsNotNull(hud, "InteractionHud in Starter.unity");
             var root = hud.GetComponent<UIDocument>().rootVisualElement;
+            Assert.IsNotNull(root.panel, "HUD root has no panel");
             var screen = root.panel.visualTree.worldBound;
+            Assert.Greater(screen.width, 0f, "panel width");
+            Assert.Greater(screen.height, 0f, "panel height");
+
             foreach (var name in new[] { "day-label", "season-label", "clock-label", "wallet-label" })
             {
                 var label = root.Q<Label>(name);
-                Assert.IsNotNull(label, name);
+                Assert.IsNotNull(label, name + " exists");
                 Assert.IsFalse(string.IsNullOrEmpty(label.text), name + " text is empty");
                 Assert.AreNotEqual(DisplayStyle.None, label.resolvedStyle.display, name + " display");
-                Assert.Greater(label.worldBound.width, 0f, name + " width");
-            }
-            foreach (var name in new[] { "clock-label", "wallet-label" })
-            {
-                var wb = root.Q<Label>(name).worldBound;
-                Assert.GreaterOrEqual(wb.xMin, screen.xMin, name + " left");
-                Assert.GreaterOrEqual(wb.yMin, screen.yMin, name + " top");
-                Assert.LessOrEqual(wb.xMax, screen.xMax + 0.5f, name + " right");
-                Assert.LessOrEqual(wb.yMax, screen.yMax + 0.5f, name + " bottom");
+                var wb = label.worldBound;
+                Assert.Greater(wb.width, 0f, name + " width");
+                Assert.Greater(wb.height, 0f, name + " height");
+                Assert.GreaterOrEqual(wb.xMin, screen.xMin - 0.5f, name + " left edge on screen");
+                Assert.GreaterOrEqual(wb.yMin, screen.yMin - 0.5f, name + " top edge on screen");
+                Assert.LessOrEqual(wb.xMax, screen.xMax + 0.5f, name + " right edge on screen");
+                Assert.LessOrEqual(wb.yMax, screen.yMax + 0.5f, name + " bottom edge on screen");
             }
         }
     }
