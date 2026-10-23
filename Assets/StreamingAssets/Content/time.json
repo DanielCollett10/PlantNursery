@@ -1,9 +1,11 @@
 {
   "dayStartMinute": 360,
-  "nightStartMinute": 1200,
-  "realSecondsDaylight": 3600,
-  "realSecondsNight": 1200,
+  "morningEndMinute": 540,
+  "eveningStartMinute": 1200,
+  "nightStartMinute": 1320,
+  "realSecondsDay": 600,
+  "nightRateMultiplier": 0.25,
   "seasonLengthDays": 10,
-  "shopOpenMinute": 540,
-  "shopCloseMinute": 1020
+  "shopOpenMinute": 480,
+  "shopCloseMinute": 1080
 }
