@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using PlantNursery.Sim.Building;
 using PlantNursery.Sim.Content;
@@ -14,8 +13,6 @@ namespace PlantNursery.Sim.Economy
     {
         /// <summary>Item id of seed packets.</summary>
         public const string SeedPacketId = "seed_packet";
-        /// <summary>Item id of the delivery shelf.</summary>
-        public const string DeliveryShelfId = "delivery_shelf";
         /// <summary>Message of the rejection when the shelf has no room.</summary>
         public const string DeliveryShelfFull = "DeliveryShelfFull";
 
@@ -77,20 +74,11 @@ namespace PlantNursery.Sim.Economy
             /// <summary>Place qty packets on the delivery shelf; null (and nothing placed) if they do not all fit.</summary>
             private List<SurfaceItem> Deliver(ItemDef def, int qty)
             {
-                var shelf = FindShelf();
-                if (shelf == null) return null;
-                var u0 = shelf.Anchor.X * SurfaceGrid.UnitsPerCell;
-                var v0 = shelf.Anchor.Z * SurfaceGrid.UnitsPerCell;
-                var u1 = u0 + shelf.Width * SurfaceGrid.UnitsPerCell;
-                var v1 = v0 + shelf.Depth * SurfaceGrid.UnitsPerCell;
-                var size = Footprints.Rotate(def.SurfaceFootprint, Rotation.Deg0);
-                var radius = Math.Max(u1 - u0, v1 - v0);
-                var desired = new Unit(u0, v0);
+                if (DeliveryShelf.Find(_build) == null) return null;
                 var placed = new List<SurfaceItem>();
                 for (var i = 0; i < qty; i++)
                 {
-                    var spot = _surface.FindNearestFreeSpot(def.Id, Rotation.Deg0, desired, radius,
-                        a => a.U >= u0 && a.V >= v0 && a.U + size.W <= u1 && a.V + size.D <= v1);
+                    var spot = DeliveryShelf.FindSpotOnShelf(_build, _surface, def);
                     var item = spot.HasValue ? _surface.Place(def.Id, spot.Value, Rotation.Deg0, out _, def.SeedCount) : null;
                     if (item == null)
                     {
@@ -100,14 +88,6 @@ namespace PlantNursery.Sim.Economy
                     placed.Add(item);
                 }
                 return placed;
-            }
-
-            private PlacedItem FindShelf()
-            {
-                PlacedItem best = null;
-                foreach (var p in _build.PlacedItems)
-                    if (p.ItemId == DeliveryShelfId && (best == null || p.Id < best.Id)) best = p;
-                return best;
             }
         }
     }
