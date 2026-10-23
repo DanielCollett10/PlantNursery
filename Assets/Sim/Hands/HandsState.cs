@@ -92,6 +92,9 @@ namespace PlantNursery.Sim.Hands
         /// <summary>What the player holds, or null.</summary>
         public HeldItem GetHeld(PlayerId player) => _held.TryGetValue(player.Value, out var h) ? h : null;
 
+        /// <summary>Everything currently held in any player's hand.</summary>
+        public IEnumerable<HeldItem> HeldItems => _held.Values;
+
         /// <summary>Contents of a surface item on the grid (created on demand; new cans start full).</summary>
         public ItemContents GetContents(SurfaceItem item)
         {
