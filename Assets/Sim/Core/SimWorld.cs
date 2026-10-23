@@ -69,6 +69,12 @@ namespace PlantNursery.Sim.Core
             _pending.Enqueue(command);
         }
 
+        /// <summary>
+        /// Apply all queued commands now, without advancing the tick. Lets the host make player commands
+        /// take effect at once instead of waiting for the next (possibly seconds-long) tick.
+        /// </summary>
+        public void ApplyPending() { ApplyPendingCommands(); }
+
         /// <summary>Report whether the command would be accepted now. Changes no state.</summary>
         public CommandResult Validate(ICommand command)
         {

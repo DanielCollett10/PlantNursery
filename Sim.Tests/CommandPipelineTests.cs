@@ -72,6 +72,19 @@ namespace PlantNursery.Sim.Tests
         }
 
         [Test]
+        public void ApplyPendingAppliesWithoutAdvancingTick()
+        {
+            var (w, c) = Make();
+            w.Submit(new AddCmd(1, 5));
+            w.ApplyPending();
+            Assert.That(c.Value, Is.EqualTo(5));
+            Assert.That(w.PendingCommandCount, Is.EqualTo(0));
+            Assert.That(w.Tick, Is.EqualTo(0));
+            w.Step();
+            Assert.That(c.Value, Is.EqualTo(5));
+        }
+
+        [Test]
         public void CommandsApplyInSubmissionOrderBeforeSystems()
         {
             var (w, c) = Make();
