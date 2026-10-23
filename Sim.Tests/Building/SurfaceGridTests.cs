@@ -34,9 +34,9 @@ namespace PlantNursery.Sim.Tests
             _state.Inventory.Add("bench_standard");
             _state.Inventory.Add("bench_standard");
             _grid = new SurfaceGrid(db, _state);
-            // Benches at cells (10,10) and (11,10): each 1 wide, 4 deep -> units u 50..59, v 50..69.
+            // Benches at cells (10,10) and (12,10): each 2 wide, 4 deep -> units u 50..69, v 50..69; seam between u=59 and u=60.
             Assert.IsNotNull(_state.Place("bench_standard", ItemLayer.Floor, new Cell(10, 10), Rotation.Deg0, out _));
-            Assert.IsNotNull(_state.Place("bench_standard", ItemLayer.Floor, new Cell(11, 10), Rotation.Deg0, out _));
+            Assert.IsNotNull(_state.Place("bench_standard", ItemLayer.Floor, new Cell(12, 10), Rotation.Deg0, out _));
         }
 
         [Test]
@@ -74,18 +74,18 @@ namespace PlantNursery.Sim.Tests
         [Test]
         public void TrayStraddlesTouchingBenches()
         {
-            // Benches cover u 50..59; the seam is between u=54 and u=55.
-            Assert.AreEqual(BuildRejection.None, _grid.CanPlace("plug_tray", new Unit(54, 50), Rotation.Deg0));
-            // Anchor 59 spills onto u=60, which is off the benches.
-            Assert.AreEqual(BuildRejection.NoSurface, _grid.CanPlace("plug_tray", new Unit(59, 50), Rotation.Deg0));
+            // Benches cover u 50..69; the seam is between u=59 and u=60.
+            Assert.AreEqual(BuildRejection.None, _grid.CanPlace("plug_tray", new Unit(59, 50), Rotation.Deg0));
+            // Anchor 69 spills onto u=70, which is off the benches.
+            Assert.AreEqual(BuildRejection.NoSurface, _grid.CanPlace("plug_tray", new Unit(69, 50), Rotation.Deg0));
         }
 
         [Test]
         public void NudgeMovesTrayAcrossSeam()
         {
-            _grid.Place("pot_small", new Unit(54, 50), Rotation.Deg0, out _);
-            // Desired (54,50) is blocked; (55,50) is the nearest valid tray anchor (u 55..56, both on bench 2).
-            Assert.AreEqual(new Unit(55, 50), _grid.FindNearestFreeSpot("plug_tray", Rotation.Deg0, new Unit(54, 50), 2));
+            _grid.Place("pot_small", new Unit(59, 50), Rotation.Deg0, out _);
+            // Desired (59,50) is blocked; (60,50) is the nearest valid tray anchor (u 60..61, both on bench 2).
+            Assert.AreEqual(new Unit(60, 50), _grid.FindNearestFreeSpot("plug_tray", Rotation.Deg0, new Unit(59, 50), 2));
         }
 
         [Test]
@@ -105,7 +105,7 @@ namespace PlantNursery.Sim.Tests
             Assert.AreEqual(BuildRejection.None, _state.CanPickUp(bench.Id));
             var pot = _grid.Place("pot_small", new Unit(52, 65), Rotation.Deg0, out _);
             Assert.AreEqual(BuildRejection.HasItemsOnTop, _state.CanPickUp(bench.Id));
-            Assert.AreEqual(BuildRejection.None, _state.CanPickUp(_state.GetAt(new Cell(11, 10)).Id));
+            Assert.AreEqual(BuildRejection.None, _state.CanPickUp(_state.GetAt(new Cell(12, 10)).Id));
             _grid.Remove(pot.Id);
             Assert.AreEqual(BuildRejection.None, _state.CanPickUp(bench.Id));
         }
@@ -138,7 +138,7 @@ namespace PlantNursery.Sim.Tests
         public void NudgeNoneWithinRadius()
         {
             Assert.IsNull(_grid.FindNearestFreeSpot("pot_small", Rotation.Deg0, new Unit(0, 0), 2));
-            for (var u = 50; u < 60; u++)
+            for (var u = 50; u < 70; u++)
                 for (var v = 50; v < 70; v++)
                     _grid.Place("pot_small", new Unit(u, v), Rotation.Deg0, out _);
             Assert.IsNull(_grid.FindNearestFreeSpot("pot_small", Rotation.Deg0, new Unit(55, 55), 2));

@@ -66,7 +66,8 @@ namespace PlantNursery.Sim.Tests
             Assert.AreEqual(BuildRejection.None, r);
             Assert.AreEqual(new Cell(5, 6), item.Anchor);
             Assert.AreSame(item, _state.GetAt(new Cell(8, 6)));
-            Assert.IsNull(_state.GetAt(new Cell(5, 7)));
+            Assert.AreSame(item, _state.GetAt(new Cell(5, 7))); // 2 cells deep once rotated
+            Assert.IsNull(_state.GetAt(new Cell(5, 8)));
         }
 
         [Test]
@@ -97,7 +98,16 @@ namespace PlantNursery.Sim.Tests
         {
             _state.Place("bench_standard", ItemLayer.Floor, new Cell(2, 2), Rotation.Deg0, out _);
             Assert.AreEqual(BuildRejection.Occupied, _state.CanPlace("bench_standard", ItemLayer.Floor, new Cell(2, 5), Rotation.Deg0));
-            Assert.AreEqual(BuildRejection.None, _state.CanPlace("bench_standard", ItemLayer.Floor, new Cell(3, 2), Rotation.Deg0));
+            Assert.AreEqual(BuildRejection.Occupied, _state.CanPlace("bench_standard", ItemLayer.Floor, new Cell(3, 2), Rotation.Deg0));
+            Assert.AreEqual(BuildRejection.None, _state.CanPlace("bench_standard", ItemLayer.Floor, new Cell(4, 2), Rotation.Deg0));
+        }
+
+        [Test]
+        public void StandardBenchIsTwoByFourCells()
+        {
+            var item = _state.Place("bench_standard", ItemLayer.Floor, new Cell(2, 2), Rotation.Deg0, out _);
+            Assert.AreSame(item, _state.GetAt(new Cell(3, 5)));
+            Assert.IsNull(_state.GetAt(new Cell(4, 2)));
         }
 
         [Test]

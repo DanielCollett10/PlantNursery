@@ -63,7 +63,7 @@ namespace PlantNursery.Sim.Tests
             var db = ContentLoader.Load(RealFiles(false));
             var bench = db.ItemDefs["bench_standard"];
             Assert.AreEqual(ItemLayer.Floor, bench.Layer);
-            Assert.AreEqual(1, bench.FloorFootprint.W);
+            Assert.AreEqual(2, bench.FloorFootprint.W);
             Assert.AreEqual(4, bench.FloorFootprint.D);
             Assert.IsTrue(bench.ProvidesSurface);
             Assert.AreEqual(40, bench.Price);
@@ -204,7 +204,7 @@ namespace PlantNursery.Sim.Tests
         public void MissingItemFootprintThrows()
         {
             var files = RealFiles(false);
-            files["items.json"] = files["items.json"].Replace("\"floorFootprint\": { \"w\": 1, \"d\": 4 }, ", "");
+            files["items.json"] = files["items.json"].Replace("\"floorFootprint\": { \"w\": 2, \"d\": 4 }, ", "");
             Assert.AreEqual("items[0].floorFootprint", Fails(files).Field);
         }
 

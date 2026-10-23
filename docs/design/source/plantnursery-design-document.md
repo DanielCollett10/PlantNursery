@@ -156,8 +156,8 @@ The MVP uses coloured placeholder shapes. The finished look is stylised low poly
 | --- | --- |
 | Grid cell | 0.5 m × 0.5 m |
 | Player height | 1.8 m |
-| Bench top height | 0.8 m |
-| Standard bench | 1 × 4 cells (0.5 m × 2.0 m) |
+| Bench top height | 0.9 m |
+| Standard bench | 2 × 4 cells (1.0 m × 2.0 m) |
 | Door and path width | 2 cells (1.0 m) minimum |
 
 ## Technical architecture
