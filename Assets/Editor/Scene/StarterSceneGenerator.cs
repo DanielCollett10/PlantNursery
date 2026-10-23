@@ -19,6 +19,8 @@ namespace PlantNursery.EditorTools
         private const string GhostInvalidPath = "Assets/Game/Greybox/Materials/GhostInvalid.mat";
         private const string InputPath = "Assets/Input/PlayerControls.inputactions";
         private const float CellSize = 0.5f;
+        private const int BuildPanelSortOrder = 10;
+        private const int HudSortOrder = 20;
 
         [MenuItem("Plant Nursery/Generate Starter Scene")]
         public static void Generate()
@@ -81,12 +83,19 @@ namespace PlantNursery.EditorTools
             var heldGo = new GameObject("HeldItem");
             heldGo.transform.SetParent(camGo.transform, false);
             heldGo.AddComponent<HeldItemView>().Configure(interaction, prefabs);
+            // Both UI documents share GamePanelSettings (decision 0008). The HUD draws above the build panel.
+            var panelSettings = GamePanelSettingsBuilder.Ensure();
+            if (panelSettings == null) Debug.LogError("[PlantNursery] GamePanelSettings could not be created; UI will not render.");
             var hud = new GameObject("HUD");
-            hud.AddComponent<UnityEngine.UIElements.UIDocument>();
+            var hudDoc = hud.AddComponent<UnityEngine.UIElements.UIDocument>();
+            hudDoc.panelSettings = panelSettings;
+            hudDoc.sortingOrder = HudSortOrder;
             hud.AddComponent<InteractionHud>().Configure(interaction);
 
             var buildGo = new GameObject("BuildMode");
-            buildGo.AddComponent<UnityEngine.UIElements.UIDocument>();
+            var buildDoc = buildGo.AddComponent<UnityEngine.UIElements.UIDocument>();
+            buildDoc.panelSettings = panelSettings;
+            buildDoc.sortingOrder = BuildPanelSortOrder;
             buildGo.AddComponent<BuildModeController>().Configure(simHost.GetComponent<SimHost>(), cam, input, prefabs,
                 AssetDatabase.LoadAssetAtPath<Material>(GhostValidPath),
                 AssetDatabase.LoadAssetAtPath<Material>(GhostInvalidPath));

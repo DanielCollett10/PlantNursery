@@ -14,4 +14,5 @@ Known problems and their fixes. Agents: add an entry when you find a new one.
 
 ## "No Theme Style Sheet set to PanelSettings"
 - **Cause:** a UIDocument uses a PanelSettings created at runtime with no theme.
-- **Fix:** the draft task to fix this assigns a committed PanelSettings asset that has the default runtime theme set.
+- **Fix (T-043):** the HUD and build panel use the committed `Assets/Game/UI/GamePanelSettings.asset`, which has `Assets/Game/UI/UnityDefaultRuntimeTheme.tss` set. Run **Plant Nursery → Rebuild Greybox World** to recreate it. Scripts must not create PanelSettings at runtime; a UIDocument without one logs a single error.
+- **Note:** creating a PanelSettings in the Editor makes Unity also write a copy of the default theme under `Assets/UI Toolkit/`. Delete that folder; only `Assets/Game/UI/` is committed.
