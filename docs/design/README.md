@@ -4,8 +4,9 @@ _The human owns this folder. The lead writes up agreed decisions here; dev agent
 
 **PlantNursery** is a cosy 1–4 player co-op **medieval fantasy** plant nursery for Steam, seen from above.
 Players breed, grow and ship misbehaving magical plants to the guilds of a medieval town.
-The source design is `source/planetnursery-updated-with-theming.md` (23 Oct 2026). The files below are the
-source of truth when they differ from it. The older first-person design (`source/plantnursery-design-document.md`)
+The source design is `source/medieval-fantasy-plant-nursery-design-document.md` (23 Oct 2026; same content as
+the earlier `source/planetnursery-updated-with-theming.md`), with `source/architecture.md` for technical patterns and
+`source/grid.png` for the bench worktop layout. The files below are the source of truth when they differ from them. The older first-person design (`source/plantnursery-design-document.md`)
 is history only; see `docs/decisions/0009` and `migration.md`.
 
 | File | System |
