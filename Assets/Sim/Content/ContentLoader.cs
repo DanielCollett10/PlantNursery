@@ -291,6 +291,7 @@ namespace PlantNursery.Sim.Content
                 PlotWidth = plot.Int("w", 1),
                 PlotDepth = plot.Int("d", 1),
                 NudgeRadius = root.Int("nudgeRadius"),
+                InteractReach = root.Has("interactReach") ? root.Float("interactReach", 0.1f) : 3.0f,
             };
         }
     }

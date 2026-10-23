@@ -5,6 +5,8 @@ using PlantNursery.Sim.Building;
 using PlantNursery.Sim.Content;
 using PlantNursery.Sim.Core;
 using PlantNursery.Sim.Economy;
+using PlantNursery.Sim.Hands;
+using PlantNursery.Sim.Plants;
 using PlantNursery.Sim.Time;
 using UnityEngine;
 
@@ -40,6 +42,8 @@ namespace PlantNursery.Game
         public BuildState Build { get; private set; }
         /// <summary>Surface mini-grid.</summary>
         public SurfaceGrid Surface { get; private set; }
+        /// <summary>Held items and container contents.</summary>
+        public HandsState Hands { get; private set; }
         /// <summary>Shared coins.</summary>
         public Wallet Wallet { get; private set; }
         /// <summary>True once content is loaded and the world exists.</summary>
@@ -77,8 +81,11 @@ namespace PlantNursery.Game
             var wallet = new Wallet(content.Economy.StartingMoney);
             BuildingModule.Register(world, build);
             SupplierModule.Register(world, content, wallet, build, surface);
+            var hands = new HandsState(content, surface);
+            HandsModule.Register(world, hands);
+            GrowthSystem.Install(world, content, hands, clock);
 
-            Content = content; Clock = clock; Build = build; Surface = surface; Wallet = wallet;
+            Content = content; Clock = clock; Build = build; Surface = surface; Wallet = wallet; Hands = hands;
             World = world;
         }
 
