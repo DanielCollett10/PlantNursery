@@ -21,3 +21,9 @@ How you work:
 6. Commit with messages starting with the task ID. Never commit Library/ or Temp/.
 
 Your final answer is the structured report.
+
+## Lessons learned
+
+Rules added after reviews kept catching the same mistakes. Follow them like any other rule.
+
+- Only commit files the task needs. If an unrelated Unity asset change must stay, explain why in the report. For playtest or docs tasks, write the requested notes into a committed file under docs/. The report must also state which steps of the loop were actually completed. _(learned from T-023)_
