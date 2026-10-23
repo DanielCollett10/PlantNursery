@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &73624701
+--- !u!1 &41239975
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,31 +127,91 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 73624702}
+  - component: {fileID: 41239976}
+  - component: {fileID: 41239979}
+  - component: {fileID: 41239978}
+  - component: {fileID: 41239977}
   m_Layer: 0
-  m_Name: PlayerSpawn
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &73624702
+--- !u!4 &41239976
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 73624701}
+  m_GameObject: {fileID: 41239975}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 10, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 190256974}
+  - {fileID: 143356157}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &190256973
+--- !u!114 &41239977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41239975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8baba4445dae40a40bf976d3974f6e40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PlantNursery.Game::PlantNursery.Game.InteractionController
+  host: {fileID: 1602596166}
+  viewCamera: {fileID: 143356155}
+  actions: {fileID: -944628639613478452, guid: 3b266b2966b3c634fb507f7b57c10f84, type: 3}
+--- !u!114 &41239978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41239975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a912f88d63f6c694683cfdd33b51529e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PlantNursery.Game::PlantNursery.Game.FirstPersonController
+  actions: {fileID: -944628639613478452, guid: 3b266b2966b3c634fb507f7b57c10f84, type: 3}
+  cameraPivot: {fileID: 143356157}
+  walkSpeed: 4
+  lookSensitivity: 0.1
+  gravity: -20
+--- !u!143 &41239979
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41239975}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &143356154
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -159,9 +219,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 190256974}
-  - component: {fileID: 190256976}
-  - component: {fileID: 190256975}
+  - component: {fileID: 143356157}
+  - component: {fileID: 143356155}
+  - component: {fileID: 143356156}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -169,36 +229,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &190256974
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 190256973}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.6, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 73624702}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!81 &190256975
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 190256973}
-  m_Enabled: 1
---- !u!20 &190256976
+--- !u!20 &143356155
 Camera:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 190256973}
+  m_GameObject: {fileID: 143356154}
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
@@ -243,7 +280,31 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!1 &997241465
+--- !u!81 &143356156
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143356154}
+  m_Enabled: 1
+--- !u!4 &143356157
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143356154}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.65, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 166744831}
+  m_Father: {fileID: 41239976}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &161058997
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -251,8 +312,166 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 997241467}
-  - component: {fileID: 997241466}
+  - component: {fileID: 161058998}
+  m_Layer: 0
+  m_Name: PlayerSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &161058998
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161058997}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &166744830
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 166744831}
+  - component: {fileID: 166744832}
+  m_Layer: 0
+  m_Name: HeldItem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &166744831
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 166744830}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 143356157}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &166744832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 166744830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88542efc5db56e446b932667640f3496, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PlantNursery.Game::PlantNursery.Game.HeldItemView
+  interaction: {fileID: 41239977}
+  prefabs:
+  - {fileID: 1956084662652165912, guid: ac1f1c83dea872742a6a42c93a9ce154, type: 3}
+  - {fileID: 8033611114166569253, guid: 800366ea3004b7943b14af0cfdf12220, type: 3}
+  - {fileID: 7274924199052158411, guid: a02ed63bac7e1834c8248a8a84e43ae0, type: 3}
+  - {fileID: 8630359084969431414, guid: b9c6aac107d93934fa6662eb325ff710, type: 3}
+  - {fileID: 3514060114228961168, guid: 2bb551a9d7f3ed44c9d1e193c6fc6216, type: 3}
+  - {fileID: 1005016348381781111, guid: 3edb51c91eddfdc449bb4b32bde4df05, type: 3}
+  - {fileID: 2469146529518862690, guid: b0208f2429a6e484fb772f13a51bb461, type: 3}
+  - {fileID: 5672606247439539330, guid: 4a8d8db7cef62cd45bffc85faedb25de, type: 3}
+  - {fileID: 1551778174819236747, guid: ace5c53dfb2f6c9499710bc873a03023, type: 3}
+  - {fileID: 6845157887128779118, guid: 27e1127546241e74fa2d8d21d8099750, type: 3}
+  offset: {x: 0.3, y: -0.3, z: 0.6}
+--- !u!1 &839671360
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 839671363}
+  - component: {fileID: 839671362}
+  - component: {fileID: 839671361}
+  m_Layer: 0
+  m_Name: HUD
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &839671361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 839671360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea58ab05fbe4285419a39952f762f28c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PlantNursery.Game::PlantNursery.Game.InteractionHud
+  interaction: {fileID: 41239977}
+--- !u!114 &839671362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 839671360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 0}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 0}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &839671363
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 839671360}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &865147594
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 865147597}
+  - component: {fileID: 865147596}
+  - component: {fileID: 865147595}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -260,13 +479,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!108 &997241466
+--- !u!114 &865147595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 865147594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2cee3a95ba92ec40bcf796922280fcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PlantNursery.Game::PlantNursery.Game.DayNightLighting
+  host: {fileID: 1602596166}
+  sun: {fileID: 865147596}
+  driveAmbient: 1
+--- !u!108 &865147596
 Light:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 997241465}
+  m_GameObject: {fileID: 865147594}
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 1
@@ -325,13 +559,13 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
---- !u!4 &997241467
+--- !u!4 &865147597
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 997241465}
+  m_GameObject: {fileID: 865147594}
   serializedVersion: 2
   m_LocalRotation: {x: 0.40821794, y: -0.23456973, z: 0.10938166, w: 0.8754261}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -340,7 +574,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1359091508
+--- !u!1 &1165280807
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -348,10 +582,152 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1359091512}
-  - component: {fileID: 1359091511}
-  - component: {fileID: 1359091510}
-  - component: {fileID: 1359091509}
+  - component: {fileID: 1165280810}
+  - component: {fileID: 1165280809}
+  - component: {fileID: 1165280808}
+  m_Layer: 0
+  m_Name: BuildMode
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1165280808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1165280807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d27271855857397498e1defb020b1d91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PlantNursery.Game::PlantNursery.Game.BuildModeController
+  host: {fileID: 1602596166}
+  viewCamera: {fileID: 143356155}
+  actions: {fileID: -944628639613478452, guid: 3b266b2966b3c634fb507f7b57c10f84, type: 3}
+  prefabs:
+  - {fileID: 1956084662652165912, guid: ac1f1c83dea872742a6a42c93a9ce154, type: 3}
+  - {fileID: 8033611114166569253, guid: 800366ea3004b7943b14af0cfdf12220, type: 3}
+  - {fileID: 7274924199052158411, guid: a02ed63bac7e1834c8248a8a84e43ae0, type: 3}
+  - {fileID: 8630359084969431414, guid: b9c6aac107d93934fa6662eb325ff710, type: 3}
+  - {fileID: 3514060114228961168, guid: 2bb551a9d7f3ed44c9d1e193c6fc6216, type: 3}
+  - {fileID: 1005016348381781111, guid: 3edb51c91eddfdc449bb4b32bde4df05, type: 3}
+  - {fileID: 2469146529518862690, guid: b0208f2429a6e484fb772f13a51bb461, type: 3}
+  - {fileID: 5672606247439539330, guid: 4a8d8db7cef62cd45bffc85faedb25de, type: 3}
+  - {fileID: 1551778174819236747, guid: ace5c53dfb2f6c9499710bc873a03023, type: 3}
+  - {fileID: 6845157887128779118, guid: 27e1127546241e74fa2d8d21d8099750, type: 3}
+  validMaterial: {fileID: 2100000, guid: f38dc7295c3173243be58330522c2acd, type: 2}
+  invalidMaterial: {fileID: 2100000, guid: a45442471a6ef964a960e8205ce8818d, type: 2}
+  plotOrigin: {x: 0, y: 0, z: 0}
+--- !u!114 &1165280809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1165280807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 0}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 0}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &1165280810
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1165280807}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1361769432
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1361769434}
+  - component: {fileID: 1361769433}
+  m_Layer: 0
+  m_Name: WorldView
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1361769433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1361769432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c8d454e3f26bef4a9f20daae0b20c4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PlantNursery.Game::PlantNursery.Game.WorldView
+  host: {fileID: 1602596166}
+  prefabs:
+  - {fileID: 1956084662652165912, guid: ac1f1c83dea872742a6a42c93a9ce154, type: 3}
+  - {fileID: 8033611114166569253, guid: 800366ea3004b7943b14af0cfdf12220, type: 3}
+  - {fileID: 7274924199052158411, guid: a02ed63bac7e1834c8248a8a84e43ae0, type: 3}
+  - {fileID: 8630359084969431414, guid: b9c6aac107d93934fa6662eb325ff710, type: 3}
+  - {fileID: 3514060114228961168, guid: 2bb551a9d7f3ed44c9d1e193c6fc6216, type: 3}
+  - {fileID: 1005016348381781111, guid: 3edb51c91eddfdc449bb4b32bde4df05, type: 3}
+  - {fileID: 2469146529518862690, guid: b0208f2429a6e484fb772f13a51bb461, type: 3}
+  - {fileID: 5672606247439539330, guid: 4a8d8db7cef62cd45bffc85faedb25de, type: 3}
+  - {fileID: 1551778174819236747, guid: ace5c53dfb2f6c9499710bc873a03023, type: 3}
+  - {fileID: 6845157887128779118, guid: 27e1127546241e74fa2d8d21d8099750, type: 3}
+  plotOrigin: {x: 0, y: 0, z: 0}
+--- !u!4 &1361769434
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1361769432}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1505178008
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1505178012}
+  - component: {fileID: 1505178011}
+  - component: {fileID: 1505178010}
+  - component: {fileID: 1505178009}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Untagged
@@ -359,13 +735,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!23 &1359091509
+--- !u!23 &1505178009
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1359091508}
+  m_GameObject: {fileID: 1505178008}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -384,7 +760,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: eccf8712adcc4254c88d4d6697aef140, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -408,13 +784,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1359091510
+--- !u!64 &1505178010
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1359091508}
+  m_GameObject: {fileID: 1505178008}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -430,21 +806,21 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!33 &1359091511
+--- !u!33 &1505178011
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1359091508}
+  m_GameObject: {fileID: 1505178008}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &1359091512
+--- !u!4 &1505178012
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1359091508}
+  m_GameObject: {fileID: 1505178008}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 10, y: 0, z: 7.5}
@@ -453,7 +829,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1876923415
+--- !u!1 &1602596165
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -461,8 +837,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1876923417}
-  - component: {fileID: 1876923416}
+  - component: {fileID: 1602596167}
+  - component: {fileID: 1602596166}
   m_Layer: 0
   m_Name: SimHost
   m_TagString: Untagged
@@ -470,26 +846,26 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1876923416
+--- !u!114 &1602596166
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1876923415}
+  m_GameObject: {fileID: 1602596165}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d290a594db8e6804f9d5e5eb93034b58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: PlantNursery.Game::PlantNursery.Game.SimHost
   useDemoProfile: 0
---- !u!4 &1876923417
+--- !u!4 &1602596167
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1876923415}
+  m_GameObject: {fileID: 1602596165}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -502,7 +878,11 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1876923417}
-  - {fileID: 1359091512}
-  - {fileID: 73624702}
-  - {fileID: 997241467}
+  - {fileID: 1602596167}
+  - {fileID: 1505178012}
+  - {fileID: 161058998}
+  - {fileID: 41239976}
+  - {fileID: 1361769434}
+  - {fileID: 839671363}
+  - {fileID: 1165280810}
+  - {fileID: 865147597}

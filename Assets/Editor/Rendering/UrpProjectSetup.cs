@@ -27,8 +27,8 @@ namespace PlantNursery.EditorTools
             };
         }
 
-        [MenuItem("PlantNursery/Setup URP")]
-        static void Apply()
+        [MenuItem("Plant Nursery/Setup URP")]
+        internal static void Apply()
         {
             if (!AssetDatabase.IsValidFolder(Folder))
                 AssetDatabase.CreateFolder("Assets", "Settings");
