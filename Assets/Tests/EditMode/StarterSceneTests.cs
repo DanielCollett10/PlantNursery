@@ -56,6 +56,23 @@ namespace PlantNursery.Game.Tests
         }
 
         [Test]
+        public void UiDocumentsShareGamePanelSettingsWithTheme()
+        {
+            var panel = AssetDatabase.LoadAssetAtPath<PanelSettings>("Assets/Game/UI/GamePanelSettings.asset");
+            Assert.IsNotNull(panel, "Assets/Game/UI/GamePanelSettings.asset");
+            Assert.AreEqual(PanelScaleMode.ScaleWithScreenSize, panel.scaleMode);
+            Assert.AreEqual(new Vector2Int(1920, 1080), panel.referenceResolution);
+            Assert.IsNotNull(panel.themeStyleSheet, "GamePanelSettings.themeStyleSheet");
+
+            var hud = Object.FindFirstObjectByType<InteractionHud>();
+            Assert.AreSame(panel, hud.GetComponent<UIDocument>().panelSettings, "HUD panelSettings");
+            var build = Object.FindFirstObjectByType<BuildModeController>();
+            Assert.AreSame(panel, build.GetComponent<UIDocument>().panelSettings, "BuildMode panelSettings");
+            Assert.Greater(hud.GetComponent<UIDocument>().sortingOrder, build.GetComponent<UIDocument>().sortingOrder,
+                "HUD sorts above the build panel");
+        }
+
+        [Test]
         public void SunHasDayNightLighting()
         {
             DayNightLighting found = null;
