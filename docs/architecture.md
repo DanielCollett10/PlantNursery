@@ -40,6 +40,7 @@ Key decisions: `docs/decisions/0003` (Unity owns bodies, the sim owns things),
 
 ## Unity layer (planned for M1)
 - Implemented: `Assets/Game/Host/SimHost.cs` (asmdef `PlantNursery.Game`). `Initialize()` loads `StreamingAssets/Content/*.json` (`UseDemoProfile` keeps/drops `time.demo.json`), builds SimWorld + GameClock + BuildState + SurfaceGrid + Wallet; `Advance(realSeconds)` steps ticks at `Clock.RealSecondsPerTick`; `Submit`/`Validate` pass commands; an accepted `SleepCommand` steps immediately to the next morning; `EventDispatched` relays drained events. `Plant Nursery/Generate Starter Scene` (`Assets/Editor/Scene`) writes `Assets/Scenes/Starter.unity`. EditMode tests: `Assets/Tests/EditMode`.
+- UI (`Assets/Game/UI`, `Player/InteractionHud.cs`): HUD and shop are UI Toolkit, loaded from `Resources/UI/Hud.uxml` + `Hud.uss`; all text comes from `UiStrings` (`Resources/UI/strings.json`). `InteractionHud` shows day/season/clock/wallet/held/prompt, the NeighbourGift toast, and the computer shop (Buy sends `BuyItem`; rejections shown). Opening the shop disables `FirstPersonController` (frees the cursor); Esc/gamepad B/Close re-enables it. `SimHost` installs `SoftLockGuard`.
 - `SimHost` MonoBehaviour owns the `SimWorld`, loads content, steps ticks at the real-time pace from `time.json`, and drains events.
 - View scripts mirror sim state into prefabs (placeholder mesh as a child). The first-person controller sends commands.
 
