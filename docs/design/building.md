@@ -107,7 +107,8 @@ things down. It holds **things without plants**: tools, sacks, bundles and empty
 - **No plants on the strip**, with one exception. Anything holding a plant (a planted pot or plug tray, a caught plant)
   is rejected with `NoPlantsOnStrip`. **Exception: a carry tray may be set down on the strip with its pots in it**
   (that is how a player frees their hands mid-job). Pots in a carry tray keep draining water and growing as normal,
-  but they are never neighbours. Other rejections: `NotAccepted` (not in the list), `NoSuchSlot`, `SlotOccupied`.
+  but they are never neighbours. This is intended (agreed): a small "quarantine" spot that costs strip space and holds
+  at most 6 small pots. Revisit after the M3 playtest if it undercuts Snapjaw. Other rejections: `NotAccepted` (not in the list), `NoSuchSlot`, `SlotOccupied`.
 - **No neighbours:** strip items are never neighbours and play no part in adjacency, on the same or another bench.
 - **Pot on at the strip:** holding a plant in its container, interact with an **empty bigger pot on the strip**. The plant
   moves into that pot, the **new pot (with the plant) goes into your hands**, and the old empty container goes back to the
