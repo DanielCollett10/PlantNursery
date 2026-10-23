@@ -76,6 +76,12 @@ namespace PlantNursery.EditorTools
             hud.AddComponent<UnityEngine.UIElements.UIDocument>();
             hud.AddComponent<InteractionHud>().Configure(interaction);
 
+            var buildGo = new GameObject("BuildMode");
+            buildGo.AddComponent<UnityEngine.UIElements.UIDocument>();
+            buildGo.AddComponent<BuildModeController>().Configure(simHost.GetComponent<SimHost>(), cam, input, prefabs,
+                AssetDatabase.LoadAssetAtPath<Material>("Assets/Game/Greybox/Materials/GhostValid.mat"),
+                AssetDatabase.LoadAssetAtPath<Material>("Assets/Game/Greybox/Materials/GhostInvalid.mat"));
+
             var lightGo = new GameObject("Directional Light");
             var light = lightGo.AddComponent<Light>();
             light.type = LightType.Directional;

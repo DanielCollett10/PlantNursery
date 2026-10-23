@@ -1,0 +1,8 @@
+.build-root { flex-grow: 1; }
+.build-panel { position: absolute; right: 20px; top: 70px; width: 320px; padding: 14px; background-color: rgba(30,38,30,0.85); border-radius: 10px; display: none; }
+.build-panel--open { display: flex; }
+.build-title { font-size: 26px; color: rgb(255,255,255); -unity-font-style: bold; margin-bottom: 8px; }
+.build-row { font-size: 21px; color: rgb(220,220,220); padding: 3px 6px; border-radius: 4px; }
+.build-row--selected { color: rgb(255,255,255); background-color: rgba(64,255,64,0.35); }
+.build-hint { font-size: 16px; color: rgb(180,190,180); margin-top: 8px; white-space: normal; }
+.build-status { position: absolute; left: 0; right: 0; bottom: 140px; -unity-text-align: middle-center; font-size: 26px; color: rgb(255,102,102); }
