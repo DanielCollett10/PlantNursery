@@ -46,7 +46,7 @@ namespace PlantNursery.EditorTools
         };
 
         /// <summary>Menu entry: creates or updates all greybox materials and prefabs.</summary>
-        [MenuItem("PlantNursery/Generate Greybox")]
+        [MenuItem("Plant Nursery/Generate Greybox")]
         public static void Generate()
         {
             EnsureFolder("Assets/Game", "Greybox");
