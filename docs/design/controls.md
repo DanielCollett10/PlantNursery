@@ -69,5 +69,6 @@ actions so gamepad can be added later; gamepad rows in this doc (slot-stepping, 
 
 ## First-person debug view
 The old first-person controller stays as a **debug option** (off by default, toggled from SimHost or a debug key in
-the editor). It isn't maintained for gameplay features and nothing new may depend on it. We may revisit a first-person
+the editor). It isn't maintained for gameplay features and nothing new may depend on it. Once the pre-pivot code
+is removed, the debug view is **walk and look only**: its old raycast interactions (surface put-down, tap, computer) go away. We may revisit a first-person
 view one day.

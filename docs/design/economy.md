@@ -22,7 +22,9 @@ is rejected with `InsufficientFunds`. **No fixed daily costs in the MVP;** water
 ## Starting kit
 One 3 m bench, 6 plug trays with Hearthmoss spores, 2 carry trays, a watering can, a rain barrel, the storage
 crate, the order desk with its ledger, the shop counter, a bed, and 200 coin. (Data: `starterKit`.)
-The 6 plug trays start **sown with Hearthmoss, in the bench's plug-tray slots, watered to 100**.
+The 6 plug trays start **sown with Hearthmoss, in the bench's plug-tray slots 0–5, watered to 100**.
+The **watering can starts in the storage crate** (full), as do the 2 carry trays. Floor items are placed at anchors
+given in `starterKit.placements`.
 
 ## Taking stock from the crate
 Interacting with the storage crate (empty hands) opens a small list of what it holds; choosing an item puts **one**

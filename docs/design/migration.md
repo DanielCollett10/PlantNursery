@@ -8,7 +8,7 @@ Dev agents: don't extend anything marked **Retire**; tasks will remove or replac
 |---|---|---|
 | `SimWorld` ticks, pause, commands, events | `Sim/Core` | Unchanged |
 | Content loader and validation | `Sim/Content` | New files/fields added; loader pattern stays |
-| Floor grid, footprints, rotation, `PlaceItem`/`PickUpItem` | `Sim/Building` | Bench pick-up must now carry its pots |
+| Floor grid, footprints, rotation, `PlaceItem`/`PickUpItem` | `Sim/Building` | New `MoveItem` moves a bench **with** its pots; `PickUpItem` (back to inventory) still needs an empty bench (`building.md`, Moving a bench) |
 | Wallet, `BuyItem` | `Sim/Economy` | Destination changes (storage crate) |
 | `Genome`, `Phenotype` | `Sim/Genetics` | New genes are data |
 | `GameClock`, sleep, seasons | `Sim/Time` | New numbers; night rules added |

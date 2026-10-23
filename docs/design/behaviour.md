@@ -51,6 +51,10 @@ Plants are processed in ascending plant id so results are deterministic.
 6. Placing it in an empty pot (any size its current stage allows) re-pots it → mood recomputed from hunger (usually Acting out until fed). Raise `PlantRepotted`.
 7. Hunger keeps rising while escaped or held; water doesn't drain while out of a pot.
 
+### Escapee API (what views and tests read)
+- Pathfinding uses `FloorPathfinder` over `BuildState`: a cell is walkable if it's inside the plot and holds no floor item. 4-way moves, A*, ties broken by fixed neighbour order (N, E, S, W) then lowest `(x, z)`.
+- `BehaviourState.Escapees`: read-only list of `Escapee { Id, PlantId, X, Z (float, in floor cells), State (Moving, Grazing, Wandering, Waiting), TargetPlantId? }`, ascending id. Views poll it each frame and interpolate; events `PlantEscaped`, `PlantCaught`, `PlantRepotted`, `PlantGrazed` mark changes.
+
 ### At the moss, or no moss (agreed)
 - **Reaching the moss:** once on its target floor cell (any floor cell touching the bench's working edge nearest the
   target moss's slot), the escapee **grazes that moss from the floor** on the normal timer (`everyHours` = 2: moss −1
