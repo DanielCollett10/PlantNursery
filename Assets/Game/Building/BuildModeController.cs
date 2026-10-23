@@ -101,10 +101,8 @@ namespace PlantNursery.Game
             var doc = GetComponent<UIDocument>();
             if (doc.panelSettings == null)
             {
-                var ps = ScriptableObject.CreateInstance<PanelSettings>();
-                ps.scaleMode = PanelScaleMode.ScaleWithScreenSize;
-                ps.referenceResolution = new Vector2Int(1920, 1080);
-                doc.panelSettings = ps;
+                Debug.LogError("[PlantNursery] BuildModeController: UIDocument has no PanelSettings. Assign Assets/Game/UI/GamePanelSettings.asset (run Plant Nursery/Rebuild Greybox World).", this);
+                return;
             }
             var root = doc.rootVisualElement;
             root.Clear();
