@@ -138,6 +138,12 @@ namespace PlantNursery.Game
                 _tickAccumulator = 0;
                 DispatchEvents();
             }
+            else if (result.IsAccepted)
+            {
+                // A tick can last seconds of real time; apply now so views update this frame.
+                World.ApplyPending();
+                DispatchEvents();
+            }
             return result;
         }
 
