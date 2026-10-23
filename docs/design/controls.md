@@ -29,7 +29,7 @@ See `docs/decisions/0010-top-down-cameras-and-bench-view.md`. There is **no firs
 | Job | How the target is chosen |
 |---|---|
 | Water | **Bench view, click and drag** with the watering can held: every pot or tray the drag passes over is watered once per drag. Gamepad: hold the button while stepping through slots |
-| Water (walking around) | **Smart targeting** with the can held: the driest container in reach (lowest meter, then nearest). Quick one-at-a-time watering off the bench; bench view drag stays the fast way |
+| Water (walking around) | **Smart targeting** with the can held: the driest container in reach (lowest meter, then nearest). Quick one-at-a-time watering off the bench; bench view drag stays the fast way. **Trial:** both are kept until the M3 playtest decides which players prefer (the can starting on the strip is part of the same trial) |
 | Feed, scrape, catch (walking around) | **Smart targeting** within reach: hungriest plant for feed, most-ready moss for scrape, nearest escapee for catch |
 | Place, pick up, pot on, fill a carry tray | **Bench view:** point at a slot and interact |
 | Load the wagon or a cart | **Carry and drop:** walk to it holding an item and press interact |
