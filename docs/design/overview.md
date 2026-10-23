@@ -43,10 +43,12 @@ want the plants for. Each turn pays for equipment and bloodlines that make the n
 | ID | Name | Playable result |
 |---|---|---|
 | M1 | First sprout | Done. First-person greybox (pre-pivot): buy, place, sow, water, grow, sleep |
-| M2 (agreed) | A calm bench | See below |
-| M3 (agreed) | Snapjaw prototype | See below; planned after M2 and its tweaks |
+| M2 (agreed) | Moss on the bench | All new sim rules (headless 5-day scenario), plus walking the top-down nursery: the starter kit's moss grows, wilts if left, day turns to night, sleep at the bed |
+| M3 (agreed) | A calm bench | Bench view, crate, order desk, inspect card, build mode, cleanup. See below |
+| M4 (agreed) | Snapjaw prototype | See below; planned after M3 and its tweaks |
 
-**M2 A calm bench (agreed scope).** A solid base before the complicated mechanics. One player on screen, but built
+**M2 + M3 together, "A calm bench" (agreed scope).** Split in two so there is something to play halfway (M2). A solid base
+before the complicated mechanics. One player on screen, but built
 co-op ready (`coop.md`). Keyboard and mouse **and gamepad** (`docs/decisions/0012`). Top-down follow camera with zoom-out
 on a small greybox nursery with the starter kit; a second bench can be bought and placed back to back.
 - **In:** Hearthmoss (water, scrape into a bundle, regrow) and Chimebell (sow, pot on through sizes); bench slots,
@@ -55,8 +57,8 @@ on a small greybox nursery with the starter kit; a second bench can be bought an
   barrel refill; water gauges; inspect card; bed and sleep; day-night lighting; retiring the pre-pivot code (`0011`).
 - **Out:** Snapjaw and all behaviour, **selling of any kind**, wagon, carts, loading yard, networking, saves, cold
   frames, breeding, weather (`0013`). Coin only goes down; the starting 200 covers M2's purchases.
-- **After M2:** a playtest and a round of adjustments to the foundation before M3 starts.
+- **After M3:** a playtest and a round of adjustments to the foundation before M4 starts.
 
-**M3 Snapjaw prototype.** Snapjaw with all four modules, grub feeding, mood indicators, off-screen alerts, catch and
+**M4 Snapjaw prototype.** Snapjaw with all four modules, grub feeding, mood indicators, off-screen alerts, catch and
 re-pot, smart targeting for feed and catch, and a loading-yard rush zone with a fixed camera (no wagon yet).
 **If it's fun, the full MVP follows.** Later milestones (contracts and wagon, co-op networking, saves) are planned after it.

@@ -83,6 +83,9 @@ Rejections: `PotNotEmpty`, `PotTooSmall`, `PotTooBig` (more than one size up is 
 - A plant starts at **good**.
 - Care history: over the plant's life, the share of ticks it was not Dry. ≥ 0.9 → can reach **excellent**; < 0.6 → drops to **poor**. Thresholds are data (`qualityCareThresholds`).
 - **Quality steps:** behaviour can knock a plant down one step (e.g. a Snapjaw grazing moss). Quality = care grade minus the steps lost, never below poor.
+  In M2 nothing loses steps (no behaviour yet); the counter `qualityStepsLost` exists and stays 0.
+- **Counters** on each plant: `ticksAlive` and `ticksNotDry` (added with container water, updated every tick the plant is alive).
+  Care share = `ticksNotDry / ticksAlive`; a plant with `ticksAlive` = 0 counts as good.
 - Neglect costs value and time; it never ends the game.
 
 ## Death

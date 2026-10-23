@@ -20,6 +20,21 @@ from the first day, so breeding can arrive later without changing saves or plant
 
 Each species ships with 1–2 varieties in data.
 
+## Where a new plant's genes come from (agreed for M2)
+- Varieties live **inside each species** in `species.json` (`species[].varieties[]`: `id`, two alleles per gene of that species).
+  The old top-level `varieties.json` is a separate, pre-pivot file (`docs/decisions/0011`).
+- A **seed packet** (and spores) is an item with a fixed `speciesId` and `varietyId`. Sowing copies that variety's alleles
+  **exactly** into every plant it sows; the starter kit's moss uses its configured variety. **No randomness in M2**:
+  the same content always gives the same genes. (`SimRandom` is kept for crosses later.)
+- Phenotype (what shows) uses the built `Phenotype` rules (T-010): Mendelian = most dominant allele, Blend = mean.
+
+| Variety id | Species | Alleles |
+|---|---|---|
+| `hearthmoss_amber` | Hearthmoss | glowColour amber/teal · regrowthSpeed 0.5/0.5 |
+| `hearthmoss_violet` | Hearthmoss | glowColour violet/violet · regrowthSpeed 0.3/0.4 |
+| `chimebell_white` | Chimebell | bloomColour white/rose · bellPattern plain/spotted |
+| `chimebell_blue` | Chimebell | bloomColour blue/blue · bellPattern striped/striped |
+
 ## Later (post-MVP)
 - **Deliberate crosses:** two plants → seeds mixing their genes; stabilising a line takes generations.
 - **Accidental crosses:** neighbouring plants can cross by accident (a `pollinate` neighbour effect).

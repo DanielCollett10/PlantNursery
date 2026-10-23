@@ -16,13 +16,28 @@ is rejected with `InsufficientFunds`. **No fixed daily costs in the MVP;** water
 | Bench 3 m / 4 m | 40 / 50 | Sell back at half price |
 | Carry tray (6 small pots) | 6 | — |
 
+**Item ids (M2).** Seed items are packets with `speciesId`, `varietyId` and `packetSeeds` (`plants.md`, Sowing; `genetics.md`).
+| Item id | What | Buy | packetSeeds |
+|---|---|---|---|
+| `spores_hearthmoss_amber` | Hearthmoss spores (one tray) | 10 | 1 |
+| `spores_hearthmoss_violet` | Hearthmoss spores (one tray) | 10 | 1 |
+| `seeds_chimebell_white` | Chimebell seeds | 12 | 6 |
+| `seeds_chimebell_blue` | Chimebell seeds | 12 | 6 |
+| `pot_small` / `pot_medium` / `pot_large` | Empty pots | 2 / 4 / 8 | — |
+| `plug_tray` | Empty plug tray | 5 | — |
+| `carry_tray` | Carry tray | 6 | — |
+| `bench_3m` / `bench_4m` | Benches | 40 / 50 | — |
+| `watering_can`, `rain_barrel`, `storage_crate`, `order_desk`, `bed`, `bundle_hearthmoss` | Starter kit / produced, not sold by the supplier | 0 | — |
+
+The soft-lock guard's "spores" are `spores_hearthmoss_amber`; "cheapest seed price" is the lowest Buy among items with `packetSeeds`.
+
 - Sale price = listed price × quality multiplier (poor 0.6, good 1.0, excellent 1.4), rounded down. The pot-size cap (`plants.md`) is already in the listed prices.
 - Supplier purchases arrive in the storage crate at once.
 
 ## Starting kit
 One 3 m bench, 6 plug trays with Hearthmoss spores, 2 carry trays, a watering can, a rain barrel, the storage
 crate, the order desk with its ledger, the shop counter, a bed, and 200 coin. (Data: `starterKit`.)
-The 6 plug trays start **sown with Hearthmoss, in the bench's plug-tray slots 0–5, watered to 100**.
+The 6 plug trays start **sown with Hearthmoss (`hearthmoss_amber`), in the bench's plug-tray slots 0–5, watered to 100**.
 The **watering can starts in the storage crate** (full), as do the 2 carry trays. Floor items are placed at anchors
 given in `starterKit.placements`.
 
