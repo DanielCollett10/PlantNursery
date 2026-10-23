@@ -39,6 +39,19 @@ namespace PlantNursery.Game
 
         private void OnEnable()
         {
+            _cancel = new InputAction("Cancel", InputActionType.Button);
+            _cancel.AddBinding("<Keyboard>/escape");
+            _cancel.AddBinding("<Gamepad>/buttonEast");
+            _cancel.Enable();
+            if (interaction != null) interaction.ShopRequested += OpenShop;
+            // The UI tree is built in Start, not here: UIDocument resets its root visual element after
+            // our OnEnable runs, which wiped the tree and left every label null/blank (T-052).
+        }
+
+        private void Start() { BuildUi(); }
+
+        private void BuildUi()
+        {
             var doc = GetComponent<UIDocument>();
             if (doc.panelSettings == null)
             {
@@ -48,12 +61,21 @@ namespace PlantNursery.Game
             var root = doc.rootVisualElement;
             root.Clear();
             root.style.flexGrow = 1;
+            root.style.width = Length.Percent(100);
+            root.style.height = Length.Percent(100);
             root.pickingMode = PickingMode.Ignore;
             var tree = Resources.Load<VisualTreeAsset>("UI/Hud");
-            var sheet = Resources.Load<StyleSheet>("UI/Hud");
+            var sheet = Resources.Load<StyleSheet>("UI/HudStyle");
             if (tree == null) { Debug.LogError("Resources/UI/Hud.uxml missing"); return; }
             if (sheet != null) root.styleSheets.Add(sheet);
             tree.CloneTree(root);
+            // Make every wrapper (TemplateContainer) fill the screen so right/bottom anchors resolve on-screen.
+            foreach (var child in root.Children())
+            {
+                child.style.flexGrow = 1;
+                child.style.width = Length.Percent(100);
+                child.style.height = Length.Percent(100);
+            }
 
             _day = root.Q<Label>("day-label");
             _season = root.Q<Label>("season-label");
@@ -71,12 +93,6 @@ namespace PlantNursery.Game
             var close = root.Q<Button>("shop-close");
             close.text = UiStrings.Get("shop.close");
             close.clicked += CloseShop;
-
-            _cancel = new InputAction("Cancel", InputActionType.Button);
-            _cancel.AddBinding("<Keyboard>/escape");
-            _cancel.AddBinding("<Gamepad>/buttonEast");
-            _cancel.Enable();
-            if (interaction != null) interaction.ShopRequested += OpenShop;
         }
 
         private void OnDisable()
@@ -92,7 +108,7 @@ namespace PlantNursery.Game
 
         private void Update()
         {
-            if (_prompt == null) return;
+            if (_prompt == null || _prompt.panel == null) { BuildUi(); if (_prompt == null) return; }
             if (_host == null) _host = FindAnyObjectByType<SimHost>();
             if (_host == null || !_host.IsReady) return;
             if (!_subscribed) { _host.EventDispatched += OnEvent; _subscribed = true; }
