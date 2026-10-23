@@ -8,8 +8,8 @@
 | Grid cell | 0.5 m × 0.5 m (1 Unity unit = 1 m) |
 | Surface mini-grid unit | 0.1 m × 0.1 m (5 × 5 per cell) |
 | Player height / eye height | 1.8 m / 1.65 m |
-| Bench top height | 0.8 m |
-| Standard bench | 1 × 4 cells |
+| Bench top height | 0.9 m (half player height) |
+| Standard bench | 2 × 4 cells (1 m × 2 m) |
 | Door and path width | 2 cells minimum |
 | Interaction reach | 3.0 m (data) |
 

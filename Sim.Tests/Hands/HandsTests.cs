@@ -43,7 +43,6 @@ namespace PlantNursery.Sim.Tests
             _grid = new SurfaceGrid(_db, state);
             // Units u 50..59, v 50..69 are surface.
             state.Place("bench_standard", ItemLayer.Floor, new Cell(10, 10), Rotation.Deg0, out _);
-            state.Place("bench_standard", ItemLayer.Floor, new Cell(11, 10), Rotation.Deg0, out _);
             _hands = new HandsState(_db, _grid);
             _world = new SimWorld();
             HandsModule.Register(_world, _hands);

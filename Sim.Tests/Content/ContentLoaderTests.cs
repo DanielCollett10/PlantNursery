@@ -63,7 +63,7 @@ namespace PlantNursery.Sim.Tests
             var db = ContentLoader.Load(RealFiles(false));
             var bench = db.ItemDefs["bench_standard"];
             Assert.AreEqual(ItemLayer.Floor, bench.Layer);
-            Assert.AreEqual(1, bench.FloorFootprint.W);
+            Assert.AreEqual(2, bench.FloorFootprint.W);
             Assert.AreEqual(4, bench.FloorFootprint.D);
             Assert.IsTrue(bench.ProvidesSurface);
             Assert.AreEqual(40, bench.Price);

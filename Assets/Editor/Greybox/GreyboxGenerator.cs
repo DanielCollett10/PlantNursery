@@ -31,8 +31,8 @@ namespace PlantNursery.EditorTools
 
         private static readonly Spec[] Specs =
         {
-            // Floor items: size = cells * 0.5 m. Bench top at 0.8 m, 1 x 4 cells.
-            new Spec { Name = "Bench", Id = "bench", Material = "Furniture", Layer = PlaceableLayer.Floor, W = 1, D = 4, Size = new Vector3(Cell, 0.8f, 4 * Cell) },
+            // Floor items: size = cells * 0.5 m. Bench top at 0.9 m (half player height), 2 x 4 cells (1 m x 2 m).
+            new Spec { Name = "Bench", Id = "bench", Material = "Furniture", Layer = PlaceableLayer.Floor, W = 2, D = 4, Size = new Vector3(2 * Cell, 0.9f, 4 * Cell) },
             new Spec { Name = "Tap", Id = "tap", Material = "Water", Layer = PlaceableLayer.Floor, W = 1, D = 1, Size = new Vector3(0.3f, 0.9f, 0.3f) },
             new Spec { Name = "Computer", Id = "computer", Material = "Building", Layer = PlaceableLayer.Floor, W = 2, D = 1, Size = new Vector3(2 * Cell, 0.8f, Cell) },
             new Spec { Name = "Bed", Id = "bed", Material = "Building", Layer = PlaceableLayer.Floor, W = 2, D = 4, Size = new Vector3(2 * Cell, 0.5f, 4 * Cell) },

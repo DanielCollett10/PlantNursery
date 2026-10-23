@@ -1,6 +1,6 @@
 {
   "items": [
-    { "id": "bench_standard", "name": "Standard bench", "layer": "Floor", "floorFootprint": { "w": 1, "d": 4 }, "providesSurface": true, "price": 40 },
+    { "id": "bench_standard", "name": "Standard bench", "layer": "Floor", "floorFootprint": { "w": 2, "d": 4 }, "providesSurface": true, "price": 40 },
     { "id": "tap", "name": "Tap", "layer": "Floor", "floorFootprint": { "w": 1, "d": 1 }, "providesSurface": false, "price": 0 },
     { "id": "computer", "name": "Computer", "layer": "Floor", "floorFootprint": { "w": 1, "d": 1 }, "providesSurface": false, "price": 0 },
     { "id": "bed", "name": "Bed", "layer": "Floor", "floorFootprint": { "w": 2, "d": 3 }, "providesSurface": false, "price": 0 },
