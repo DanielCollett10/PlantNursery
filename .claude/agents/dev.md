@@ -24,3 +24,9 @@ Boundaries:
 
 Your final answer is the structured report. Be honest in not_done: a partial
 result reported clearly is better than a hidden gap.
+
+## Lessons learned
+
+Rules added after reviews kept catching the same mistakes. Follow them like any other rule.
+
+- When you change a value in a content data file (e.g. items.json), grep Sim.Tests/ for the old value and update every test that references it, especially tests that build bad input with string Replace. Make each such test assert that the Replace changed the string. Then run the full `dotnet test Sim.Tests/Sim.Tests.csproj` and confirm it is fully green before reporting. _(learned from T-058)_
