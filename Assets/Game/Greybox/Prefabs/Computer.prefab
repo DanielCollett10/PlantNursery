@@ -28,8 +28,8 @@ Transform:
   m_GameObject: {fileID: 4071647720240496214}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0.4, z: 0.25}
-  m_LocalScale: {x: 1, y: 0.8, z: 0.5}
+  m_LocalPosition: {x: 0.25, y: 0.4, z: 0.25}
+  m_LocalScale: {x: 0.5, y: 0.8, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5819946538580414270}
@@ -159,5 +159,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: PlantNursery.Game::PlantNursery.Game.PlaceableAuthoring
   itemId: computer
   layer: 0
-  footprintWidth: 2
+  footprintWidth: 1
   footprintDepth: 1
