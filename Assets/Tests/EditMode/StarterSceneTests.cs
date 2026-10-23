@@ -73,6 +73,19 @@ namespace PlantNursery.Game.Tests
         }
 
         [Test]
+        public void PanelSettingsThemeIsValidUss()
+        {
+            var panel = AssetDatabase.LoadAssetAtPath<PanelSettings>("Assets/Game/UI/GamePanelSettings.asset");
+            Assert.IsNotNull(panel, "Assets/Game/UI/GamePanelSettings.asset");
+            Assert.IsNotNull(Prop(panel, "themeUss").objectReferenceValue, "GamePanelSettings.themeUss");
+
+            const string themePath = "Assets/Game/UI/UnityDefaultRuntimeTheme.tss";
+            var text = System.IO.File.ReadAllText(System.IO.Path.GetFullPath(themePath));
+            Assert.IsFalse(text.StartsWith("%YAML"), themePath + " is serialized YAML, not USS");
+            StringAssert.Contains("@import url(\"unity-theme://default\");", text, themePath);
+        }
+
+        [Test]
         public void SunHasDayNightLighting()
         {
             DayNightLighting found = null;
