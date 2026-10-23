@@ -1,31 +1,52 @@
 # Overview
 
-## Pillars
-A feature that serves none of these four pillars waits.
+A cosy co-op fantasy nursery where 1–4 players breed, grow and ship misbehaving magical plants to the
+guilds of a medieval town. Grid building, growth, genes, orders and co-op, with **plants that have behaviour** on top.
 
-1. **Co-op from the start.** 1–4 players share one nursery. Solo is the same game with one player.
-2. **Cosy with occasional crunch.** Calm daily rhythm. Pressure comes in short, mostly optional bursts (loading a wagon before it leaves).
-3. **Grow your nursery.** Start small (6 plug trays, carrying by hand) and feel every upgrade.
-4. **Plants worth caring about.** Plants are individuals with visible traits. Breeding comes later.
+## Pillars
+Every feature is judged against these; a feature that serves none of them waits.
+
+1. **Co-op from the start.** 1–4 players share one nursery from the first build. Solo is the same game with one player.
+2. **Cosy, with chaos you choose.** The everyday rhythm is calm. Chaos is the price of ambition: volatile,
+   valuable plants bring trouble, and players decide how much to take on.
+3. **Grow your nursery.** Start small and feel every upgrade, up to commercial scale.
+4. **Plants with personality.** Plants have behaviour and temperament; breeding uncovers new traits and species.
 
 ## Core loop
-Buy seeds → sow into plug trays → water and care → pot on as plants outgrow their container →
-sell at the shop front or load website orders → spend money on equipment that makes the next loop bigger.
+Breed and grow → take contracts → survive the loading rush → unlock → slowly uncover what clients really
+want the plants for. Each turn pays for equipment and bloodlines that make the next one bigger and calmer.
 
-## MVP scope (agreed)
-- First person for everything (see `controls.md`).
-- Start-tier **and** Tier 2 equipment can simply be bought: trolley, hose, small tunnel, medium pots.
-  There is no unlock tree in the MVP. XP is tracked but unlocks nothing yet (see `progression.md`).
-- One plant line, a few fixed varieties with genes. Growth in plug trays and two pot sizes (small and medium).
-- Seasons run from spring to autumn, then loop back to spring. No winter yet.
-- **No reputation in the MVP.**
-- Coloured placeholder art in the GDD colours (see `visuals.md`), with basic day–night lighting.
+## Build order
+1. **Shared systems:** grid, growth, watering, genes, orders, co-op. Works with plain plants (Hearthmoss, Chimebell).
+2. **The prototype:** one bench, the Snapjaw with all four modules, a player who catches it, the follow camera
+   with bench view, and a fixed camera for the loading yard. **If it's fun, the full MVP follows.**
+
+## MVP scope
+| Area | In the MVP | Later |
+|---|---|---|
+| Co-op | Steam host and join, mid-game join, sleep ready-up, shared purse and XP | — |
+| Camera | Top-down follow camera, zoom-out, off-screen alerts, bench view, fixed rush cameras | Refinements |
+| Building | Grid placement of benches and pots; cold frames | Glasshouse, warded enclosure, overhead watering |
+| Plants | Hearthmoss, Chimebell, Snapjaw | More species (supplier, quests, wild, recipes) |
+| Behaviour | Need, Mood, Neighbour effect, Mobility | More modules, tool-plants |
+| Care | Watering can, feeding, re-potting caught plants | Lids, cages, sedating, wards |
+| Genetics | Genes stored and shown | Breeding, accidental crosses, recipes, catalogue |
+| Sales | Shop counter, guild contracts with departures and XP | Rush contracts, reputation tiers |
+| Logistics | Hand carry, then handcart, onto a wagon | Mule cart, floating barrow, crates |
+| Progression | First tier of each track | Higher tiers, land |
+| World | The nursery | The town, wild zones |
+| Time | Days, sleep, spring to autumn | Winter |
+| Saves | Host save and load, autosave | — |
+| Art | Coloured placeholders, mood indicators, day-night lighting | Stylised low poly |
 
 ## Milestones
 | ID | Name | Playable result |
 |---|---|---|
-| M1 | First sprout | Solo greybox: buy seeds, place benches and trays, sow, water, watch plants grow over days, sleep |
-| M2 | First sale | Pot on, display shelving, walk-in customers, till, wallet loop |
-| M3 | Together | Steam host/join for 1–4 players, mid-game join, sleep ready-up |
-| M4 | Orders and delivery | Website orders, trolley, vehicle pickup with deadlines, XP |
-| M5 | Keep going | Host save/load and autosave, small tunnel, season polish |
+| M1 | First sprout | Done. First-person greybox (pre-pivot): buy, place, sow, water, grow, sleep |
+| M2 (proposed) | Snapjaw prototype | See below |
+
+**M2 Snapjaw prototype (proposed, scope being agreed).** Top-down follow camera on a small greybox nursery.
+A bench (or two back to back) with Hearthmoss, Chimebell and a Snapjaw. Bench view to place pots and
+click-drag water. The Snapjaw gets hungry, twitches, grazes neighbouring moss, escapes and crawls towards
+moss; the player catches it, re-pots it and feeds it. Later milestones (contracts and wagon, co-op, saves)
+are planned after the prototype playtest.

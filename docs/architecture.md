@@ -2,6 +2,11 @@
 
 _Living document. Agents update it when they change how parts fit together._
 
+> **Direction change (Oct 2026).** The game pivoted to a top-down medieval fantasy nursery with plant behaviour
+> (`docs/decisions/0009`, `0010`). The sections below describe what is built today; `docs/design/migration.md`
+> lists which parts are kept, reworked or retired. Planned additions: a behaviour system ticked after growth,
+> bench slots with a neighbour query, and escaped plants as sim entities with floor positions.
+
 ## Layers
 
 | Layer | Folder | Depends on | Tested by |

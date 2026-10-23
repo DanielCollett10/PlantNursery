@@ -1,19 +1,28 @@
 # Progression
 
-## MVP
-- **No unlock tree.** Start and Tier 2 items are all buyable from the start: trolley, hose, small tunnel, medium pots.
-- The nursery has a shared **XP** total, earned from website orders (M4) and shown in the HUD. It unlocks nothing yet.
-- The goal is to see whether the game is fun with everything available. Items can be locked again once the tech system exists.
+The nursery earns shared **XP** from contracts and milestones. XP unlocks an upgrade; coin buys it.
+Progress decides what is available, coin decides when. The tree, XP costs, prices and capacities are data.
 
-## Later: tracks
 | Track | Start | Tier 2 | Tier 3 | Tier 4 |
 |---|---|---|---|---|
-| Handling | Hands | Trolley | Pallet jack | Forklift |
+| Handling | Carry by hand | Handcart | Mule cart | Enchanted floating barrow |
 | Propagation | 6 plug trays | More and larger trays | Seed benches | Propagation house |
-| Containers | Small pots | Medium pots | Large pots | Specimen sizes |
-| Watering | Watering can | Hose | Sprinklers | Timed irrigation |
-| Structures | Open benches | Small tunnel | Large tunnel | Heated glasshouse |
-| Shop and sales | Basic till | Display shelving and signage | Bigger website orders | Second channel |
-| Land | Starter plot | Expansion | Expansion | Expansion |
+| Containers | Small pots | Medium pots | Large pots | Specimen urns |
+| Watering | Watering can | Rain barrels and buckets | Gravity-fed channels | Enchanted rain charms |
+| Structures | Open benches | Cold frames | Glasshouse | Warded enclosure |
+| Containment | Hand feeding | Lidded pots | Cages | Calming wards |
+| Trade | Shop counter | Order desk and ledger | Guild notice board contracts | Second guild |
+| Land | Starter plot | Plot expansion | Plot expansion | Plot expansion |
+| Benches | 3 m bench | 4 m bench | Wide bench (1.5 × 4 m) | — |
 
-XP unlocks an upgrade, and money buys it. Each upgrade should raise capacity, not just speed. Target: the first unlock comes 20–30 minutes into play, checked by a headless balancing harness.
+- **Upgrades raise capacity, not just speed.** Cart size caps what can be loaded before a departure, so it caps which contracts a team can take.
+- **First-hour pacing:** first unlock (handcart, 20 XP) within 20–30 minutes of play, checked by a headless balancing harness. Later unlocks cost a few contracts each.
+- MVP: first tier of each track. Tier names beyond Tier 2 are a first pass.
+
+## Getting new species
+| Source | Stock | When |
+|---|---|---|
+| Supplier unlocks (XP) | Common | MVP |
+| Client questline rewards | Rare | Post-MVP |
+| Wild zones | Exotic | Post-MVP |
+| Breeding recipes | New species | Post-MVP |

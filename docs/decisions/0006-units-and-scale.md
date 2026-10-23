@@ -16,4 +16,8 @@
 - Sim coordinates are integer cells `(x, z)` with the origin at the plot's south-west corner. Unity's world position = `cell × 0.5 + plotOrigin`.
 - Surface items use integer mini-grid units `(u, v)` = cell × 5 + offset. World position = `unit × 0.1 + plotOrigin`, at the height of the supporting item's top.
 
+**Update (0009/0010 pivot).** Grid cell and 0.1 m unit stay. Standard benches are now 3 m and 4 m long with a
+0.6 m planting area (footprint depth: `docs/design/building.md`, open point A). Reach is 1.5 m (smart targeting).
+Eye height is unused (no first person). Scale table: `docs/design/visuals.md`.
+
 **Consequences.** Art briefs use these numbers. Changing the cell size means re-checking every footprint.

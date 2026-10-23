@@ -1,41 +1,38 @@
-# Time and seasons
+# Time, days and seasons
 
 ## Ticks
-- **1 sim tick = 1 in-game minute.** A day is 1440 ticks. All rules use in-game time, never real time.
-- The Unity layer decides how fast ticks happen in real time. The pace is set in the `time` data block:
+- **1 sim tick = 1 in-game minute.** A day is 1440 ticks. Rules use in-game time only.
+- Unity decides how fast ticks happen in real time, from data.
 
-| Setting | Default (release target) | Demo profile (M1) |
+| Setting | Data key | First pass |
 |---|---|---|
-| `dayStartMinute` (morning) | 360 (06:00) | 360 |
-| `nightStartMinute` | 1200 (20:00) | 1200 |
-| `realSecondsDaylight` (06:00→20:00) | 3600 (1 h) | 600 (10 min) |
-| `realSecondsNight` (20:00→06:00) | 1200 (20 min) | 120 (2 min) |
+| Playable day | `dayStartMinute` / `nightStartMinute` | 360 (06:00) / 1320 (22:00) |
+| Real time for the playable day | `realSecondsDay` | 600 (10 min), so 0.625 s per tick |
+| Night | — | 22:00–06:00, skipped by sleep |
+| Shop opening hours | `shopOpenMinute` / `shopCloseMinute` | 480 (08:00) / 1080 (18:00) |
+| Season length | `seasonLengthDays` | 10 (demo profile may shorten) |
 
-  Real seconds per tick in each phase = real seconds for that phase ÷ in-game minutes in that phase.
-- The real-time pacing is still open. Plants should take about 4–7 days to "get going" at release. The demo profile is shorter so M1 can be shown in minutes.
+## Day shape
+Morning care and planning → trading through the day → any wagon departures booked for today (each with a
+countdown) → evening wind-down → sleep. Many days have no departure.
 
-## Day phases
-Derived from the time of day; used by lighting, customers and the HUD.
-
-| Phase | From | To |
-|---|---|---|
-| Morning | `dayStartMinute` | +180 min |
-| Daytime | Morning end | `nightStartMinute` − 120 |
-| Evening | Daytime end | `nightStartMinute` |
-| Night | `nightStartMinute` | next `dayStartMinute` |
-
-Shop opening hours (for M2) are separate data: `shopOpenMinute`, `shopCloseMinute`.
+Phases (lighting, HUD): Morning = 06:00–09:00, Daytime = 09:00–20:00, Evening = 20:00–22:00, Night = 22:00–06:00. Boundaries are data.
 
 ## Sleep
-- **Solo:** interacting with the bed while it's Evening or Night sleeps. Sleep is rejected during Morning and Daytime.
-- Sleeping advances the sim tick by tick to the next `dayStartMinute`, as fast as possible. Plants keep growing and drying overnight, so the result is the same as waiting.
-- Co-op ready-up rules are in `coop.md` (M3).
+- Sleep is possible in Evening or Night. Solo: interact with the bed. Co-op: every player readies up; the host can force it (`coop.md`).
+- Sleeping steps the sim tick by tick to the next `dayStartMinute`, so the result equals waiting.
+- If the day reaches 22:00 with nobody asleep, time continues (Night rules apply) until everyone sleeps.
+
+## Night rules
+Nobody can act while everyone sleeps, so nothing may go wrong overnight that players couldn't have prevented.
+During Night (`nightStartMinute` to `dayStartMinute`):
+- Needs (e.g. hunger) and drying tick at `nightRateMultiplier` = 0.25 of their daytime rate.
+- Moods can't pass **Restless**: no grazing or escapes at night. A hungry Snapjaw wakes up Restless.
+- Growth continues at the normal rate.
 
 ## Seasons
-- Order: Spring → Summer → Autumn → Spring (loops in the MVP). Winter will slot in later as data.
-- `seasonLengthDays` is in data (default 10, demo 3). Day 1 is Spring day 1.
-- Each variety has a growth multiplier per season (see `plants.md`).
+- Spring → Summer → Autumn are growing seasons. Each species has a growth multiplier per season (`species.md`).
+- MVP: Autumn loops back to Spring. **Winter** is undecided (`open-questions.md`); the season list is data so it can be added or skipped.
 
 ## Pause
-- `SimWorld` can pause: while paused, `Step` does nothing (T-001).
-- Pausing is available **only in single-player sessions**. In co-op, time never pauses.
+Solo only (`SimWorld` pause). In co-op, time never pauses.

@@ -1,59 +1,67 @@
-# Plants
+# Plants and care
 
-## Plants are individuals
-- Every plant has: `id`, `varietyId`, `genes` (see `genetics.md`), `growth` (float), `stage`, `moisture` 0–100,
-  `health` 0–100, `rootBoundMinutes`, `goodCareMinutes`, `aliveMinutes`, `isDead`.
-- **One plant per plug cell, one plant per pot. Always.** Water, care and sale are per plant.
+Every plant shares one base definition: growth stages, care needs, genes, pot sizes and value. Behaviour comes
+on top as optional modules (`behaviour.md`). A plant with no modules is a plain nursery plant.
+Species data is in `species.md`.
+
+## Lifecycle
+1. **Sow** seeds, spores or cuttings into a plug tray (one plant per tray cell; a tray has `cells` = 6).
+2. **Grow on** until rooted.
+3. **Pot on** into bigger pots, where the species allows.
+4. **Sell or harvest:** some species sell whole; others are harvested repeatedly and regrow.
+
+A plant is an individual (id, species, genome, stage, stage progress, quality, counters). Hearthmoss is the
+exception: a tray of moss is **one** plant covering the whole tray (`species.md`).
 
 ## Containers
-| Container | Holds | Max stage (cap) | Accepts plants from stage | Dry rate (moisture/hour) |
-|---|---|---|---|---|
-| Plug tray | 6 cells, 1 plant each | Rooted | sown as Seed | 4.0 |
-| Small pot | 1 plant | Established | Rooted | 2.5 |
-| Medium pot | 1 plant | Mature | Established | 1.5 |
+| Container | Slot | Water drain per in-game hour | Can charges per watering |
+|---|---|---|---|
+| Plug tray | 0.6 × 0.4 m | 8 | 1 |
+| Small pot | 0.2 m | 6 | 1 |
+| Medium pot | 0.3 m | 4 | 1 |
+| Large pot | 0.6 m | 3 | 2 |
 
-All values come from data. Each tray type defines its cell count (the starter tray has 6).
+Data keys: `containers[].drainPerHour`, `containers[].wateringCost`.
 
-## Stages
-`Seed → Seedling → Rooted → Young → Established → Mature`
+## Watering
+- **The water meter belongs to the container** (pot or tray), 0–100. Every plant in a tray shares it.
+- One watering sets the meter to 100 (`wateringAmount` = 100, capped at 100).
+- The watering can holds `canCharges` = 10 charges; a watering uses the container's cost. Not enough charges → `CanEmpty`.
+- Refill at a rain barrel to full in `refillSeconds` = 1 (Unity timing; the sim refill is instant). Water is free.
+- Each tick: `meter -= drainPerHour / 60` (× night multiplier, `time.md`), floored at 0.
 
-Each variety defines the `growth` threshold for each stage (in growth points). Stage = the highest threshold reached.
-Sellable stages and prices are in `economy.md` (M2).
+**At 0:**
+| State | Rule | Data key |
+|---|---|---|
+| Dry | Meter = 0: growth stops | — |
+| Wilted | Dry for 12 in-game hours continuously | `wiltAfterHours` |
+| Dead | Wilted for 3 in-game days continuously | `dieAfterWiltedDays` |
 
-## Growth per tick
-Each tick, for each living plant:
-1. `moisture -= dryRate / 60`, floored at 0.
-2. Water factor: moisture ≥ 30 → 1.0. Moisture 1–29 (**dry**) → 0.5. Moisture 0 (**wilting**) → 0.
-3. Season factor: the variety's `seasonGrowth[season]` (e.g. good 1.0, slow 0.4, none 0).
-4. If the plant is **root-bound** (its stage has reached the container's cap), growth factor is 0.
-5. `growth += variety.growthPerHour / 60 × waterFactor × seasonFactor`.
-   Growth is clamped so it never passes the container cap's threshold.
+Watering clears Dry and Wilted at once (the counters reset); growth resumes next tick. Wilted plants droop on screen.
 
-## Root-bound
-- A plant is root-bound when its stage equals its container's cap. `rootBoundMinutes` counts up while root-bound.
-- After `rootBoundGraceHours` (default 24), the plant loses `rootBoundHealthLossPerHour` health (default 2/h). It can die of this.
-- Potting on to a bigger container resets `rootBoundMinutes` to 0, and growth resumes.
+## Growth
+- Each species lists its **stages** with a duration in in-game days and the container sizes allowed for each stage (`species.md`).
+- Each tick a living plant that isn't Dry or root-bound gains `1 / (stageDays × 1440) × seasonMultiplier` stage progress. At 1.0 it moves to the next stage.
+- **Root-bound:** a plant that finishes a stage while its container is too small for the next stage stops at progress 1.0. Growth pauses with **no other harm** until it is potted on.
+- Season multipliers come from the species (e.g. `good` 1.0, `slow` 0.5, `none` 0), using the zone's row if inside a structure.
 
-## Water and health
-- `WaterPlant(player, plantId)` with a watering can that has water: plant moisture = 100, can water −1.
-  Rejected if the plant is dead (`PlantDead`), the can is empty (`CanEmpty`) or the player isn't holding a can (`NoCan`).
-- While wilting, the plant loses `wiltHealthLossPerHour` health (default 2/h, so roughly 2 days of wilting kills it).
-- While moisture ≥ 30 and the plant isn't root-bound past its grace period, it regains `recoverPerHour` health (default 1/h), up to 100.
-- Health 0 → `isDead = true`. Dead plants stop all updates.
-- Over-watering, feed, pests and disease come later.
+## Potting on
+Carry the plant in its old container to an **empty bigger pot sitting in a slot** and interact.
+The plant moves across with all its stats; the old pot (now empty) goes back to the storage crate.
+From a plug tray, one plant (the one in the cell the player picked, or the first ready cell) moves.
+Rejections: `PotNotEmpty`, `PotTooSmall`, `PotTooBig` (more than one size up is allowed only if the species allows that size), `NotReady` (stage not finished).
 
-## Dead plants
-- A dead plant stays visibly dead in its cell or pot until a player clears it ("Compost"). Clearing gives nothing and frees the cell or pot.
-- There is no other fail state. Neglect costs value only.
+## Value
+- **Pot size caps value:** small ×0.5, medium ×0.8, the species' final size ×1.0 (`potValueCaps`). Sale prices in `economy.md` already include this.
+- **Quality** has three steps: **poor ×0.6, good ×1.0, excellent ×1.4** (`qualityMultipliers`).
 
-## Quality (used from M2)
-- Each tick alive: `aliveMinutes += 1`. The tick counts as good care if moisture ≥ 30 and the plant isn't root-bound past its grace period: `goodCareMinutes += 1`.
-- `careScore = goodCareMinutes / aliveMinutes`. Grade **A** ≥ 0.9, **B** ≥ 0.7, otherwise **C**. Thresholds are in data.
+## Quality
+_The care-history thresholds below are the lead's first pass, to confirm._
+- A plant starts at **good**.
+- Care history: over the plant's life, the share of ticks it was not Dry. ≥ 0.9 → can reach **excellent**; < 0.6 → drops to **poor**. Thresholds are data (`qualityCareThresholds`).
+- **Quality steps:** behaviour can knock a plant down one step (e.g. a Snapjaw grazing moss). Quality = care grade minus the steps lost, never below poor.
+- Neglect costs value and time; it never ends the game.
 
-## Sowing and potting on
-- `Sow(player, trayId, cellIndex)`: the player holds a seed packet with ≥ 1 seed, and the cell is empty.
-  This creates a plant at stage Seed with moisture 50 and health 100, and uses one seed.
-- `PotOn(player, plantId, potId)` (M2): the target pot is empty and accepts the plant's stage. The plant moves and keeps its stats.
-
-## Tunnels (M5)
-- Plants inside a tunnel zone use the `tunnel` row of their variety's season table. It is warmer, so growth is better in spring and autumn.
+## Death
+A dead plant stays visible until a player clears it (compost). Clearing gives nothing and frees the container.
+Escapes never kill plants.

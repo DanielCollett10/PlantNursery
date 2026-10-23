@@ -1,17 +1,28 @@
 # Logistics
 
 ## The container chain
-Goods are containers inside containers from day one:
-`plant → plug tray / pot → trolley → (pallet, later) → vehicle`.
+Goods are containers inside containers from day one: **plant → tray or pot → cart → crate or pallet → wagon**.
+Upgrades add links (handcart, mule cart, floating barrow) without changing how orders work.
+Every holder (hands, bench slots, carry tray, cart, wagon, storage crate) is a sim holder with a capacity; moves
+over capacity are rejected. The sim owns who holds what; Unity owns where bodies are (`docs/decisions/0003`).
 
-- Every holder (player hand, bench surface, trolley, vehicle bed) is a **holder** in the sim with a capacity.
-  Moving goods means moving an item from one holder to another, and the sim rejects moves that would go over capacity.
-- The sim owns *who holds what*. Unity owns *where bodies are* (see `docs/decisions/0003-sim-unity-boundary.md`).
+## Hands
+One thing per player (see `controls.md`). Players can't take from another player's hands.
 
-## MVP handling
-- **Hands:** one item (see `controls.md`).
-- **Trolley (M4):** a pushable Floor-sized item whose shelves are their own small surface mini-grid (default 2 shelves of 5 × 10 units, see `building.md`), so trolley capacity is physical space. Pots and trays go on and off it by hand.
-- **Vehicle (M4):** a pickup truck or wagon with a bed capacity. Goods are loaded by hand from hands or the trolley.
+## Carts and the wagon
+They are **containers, not benches**: dropping an item fills the next free space, with no slot picking.
+Capacity uses the bench slot sizes.
 
-## Later
-Pallets, pallet jack, forklift (physics). These add links to the chain. Orders and economy don't change.
+| Carrier | Bed | Small | Medium | Large |
+|---|---|---|---|---|
+| Handcart (unlock 1) | 0.6 × 1.2 m | 18 | 8 | 2 |
+| Mule cart (later) | 0.6 × 2.4 m | 36 | 16 | 4 |
+| Wagon | 1.2 × 3 m (two 0.6 m beds) | 90 | 40 | 10 |
+
+Mixed loads: each bed is filled like a bench planting area (same mini-grid, next free slot from one end).
+
+## Loading (PlateUp style)
+Carry one item at a time (a pot, a plug tray, a carry tray of up to 6 small pots, a bundle) to the wagon and
+press interact to drop it in. A cart parked near the wagon shortens the walk; it never loads anything by itself.
+With several players, loading becomes a relay. The loading yard is a rush zone with a fixed camera (`controls.md`).
+An escaped plant on the loading yard is the classic rush-hour problem.

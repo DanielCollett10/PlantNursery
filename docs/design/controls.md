@@ -1,33 +1,64 @@
-# Controls and interaction
+# Cameras, targeting and controls
 
-## View
-- **First person, always**, including building. A top-down zoom-out view may be added later, but nothing should depend on it.
-- Mouse and keyboard first, using Unity's Input System so every action can be rebound. Gamepad comes later.
+See `docs/decisions/0010-top-down-cameras-and-bench-view.md`. There is **no first-person view**.
 
-## Interaction
-- The player looks at something. A raycast from the camera finds the target within **reach** (default 3.0 m, in data).
-- The HUD shows a prompt for the target's main action (e.g. "E: Water", "E: Sow", "E: Use computer").
-- The target can be a placed item, a single plug cell, a pot, a plant, the tap, the computer or the bed.
-- Only one action is offered per target and held item. The held item decides which (see table).
+## Cameras (Unity only)
+| Camera | When | Behaviour |
+|---|---|---|
+| Follow | Default | Top-down or angled, tracks the local player. Each player has their own |
+| Zoomed out | Zoom button, or standing still for `autoZoomOutSeconds` (default 4) | Pulls back to show more of the nursery; any movement or input returns |
+| Fixed rush | Player is inside a rush zone (loading yard; later the shop counter) | Pans to a fixed view of the whole zone, PlateUp style. Leaving the zone returns to Follow |
+| Bench view | Player interacts with a bench | Pans to look straight down on that bench (and any bench touching it back to back) |
+
+- Camera transitions are smooth pans (default 0.4 s), never cuts.
+- The world is bigger than the screen. **Off-screen alerts:** an arrow at the screen edge plus a sound
+  points at trouble out of view (a Restless or worse plant, an escapee).
+
+## Bench view
+- Entered by interacting with a bench while standing at it. Exited by walking away (more than `benchViewExitDistance`, default 1.0 m, from the bench edge). **No menu to close; movement stays live.**
+- **Mouse and keyboard:** the cursor points at a slot. **Gamepad:** d-pad or bumpers step through the slot grid. Same rules, two pointers.
+- The pointed slot lights up in the player's highlight colour; a held pot's ghost snaps into it (green valid, red invalid with reason).
+- **Neighbour lines** show while holding a pot (see `behaviour.md`, Neighbours on screen).
+- Back-to-back benches share one bench view so cross-bench neighbours are visible.
+
+## Targeting
+| Job | How the target is chosen |
+|---|---|
+| Water | **Bench view, click and drag** with the watering can held: every pot or tray the drag passes over is watered once per drag. Gamepad: hold the button while stepping through slots |
+| Feed, scrape, catch (walking around) | **Smart targeting** within reach: hungriest plant for feed, most-ready moss for scrape, nearest escapee for catch |
+| Place, pick up, pot on, fill a carry tray | **Bench view:** point at a slot and interact |
+| Load the wagon or a cart | **Carry and drop:** walk to it holding an item and press interact |
+| Inspect | Hover (or select in bench view): a card shows needs, mood, genes and neighbours |
+
+- **Reach** for smart targeting: `reachMetres` = 1.5 from the player. Bench view needs the player standing at the bench.
+- Unity collects candidates in reach; the **sim** picks the target (it's a rule). Ties: lowest entity id.
+- Smart targeting skips a plant another player is already feeding or catching (see `coop.md`).
+- A drag waters a pot at most once, even if the cursor passes it twice. Each watering uses can charges (`plants.md`); the drag stops watering when the can is empty.
 
 ## Hands
-Each player has **one hand slot** and holds at most one item. Interact picks up the item you're looking at
-(only if your hands are empty), and a separate drop/put-down key puts it back.
+Each player holds **one thing**: one pot (any size, with or without a plant), one plug tray, one carry tray
+(up to 6 small pots), one sack (e.g. grubs) or one caught plant. Players can't take from another player's hands.
 
-| Holding | Looking at | Action |
+| Holding | Target | Action |
 |---|---|---|
-| Nothing | Holdable item (can, seed packet, tray, pot) | Pick up |
-| Watering can with water | Plant in a cell or pot | Water that plant |
-| Watering can | Tap | Refill can to full |
-| Seed packet with seeds left | Empty plug cell | Sow one seed (one click = one cell; revisit after the M1 playtest) |
-| Anything | Computer | Open shop UI |
-| Anything | Bed | Sleep (see `time.md`) |
-
-Picking up a tray or pot carries the plants in it. While you hold a surface item and aim at a bench, a ghost shows where it will land.
-The ghost snaps to the surface mini-grid and auto-nudges to the nearest free spot (see `building.md`). The put-down key places it there.
+| Nothing | Pot / tray in a slot (bench view) | Pick it up |
+| Pot, plug tray | Empty slot (bench view) | Put it down |
+| Plant in its pot | Empty bigger pot in a slot | Pot on (`plants.md`) |
+| Carry tray | Small pot in a slot | Take it into the tray (if < 6) |
+| Carry tray with pots | Empty small slot | Put one pot down |
+| Watering can | Pots (drag) | Water |
+| Watering can | Rain barrel | Refill (`refillSeconds` = 1) |
+| Grubs sack | Hungry plant (smart target) | Feed one portion |
+| Nothing | Escaped plant in reach | Catch it (it goes into your hands) |
+| Caught plant | Empty pot in a slot | Re-pot it |
+| Anything | Cart or wagon | Drop it in the next free space |
+| Anything | Order desk | Open the ledger / supplier UI |
+| Anything | Bed | Ready up for sleep |
 
 ## Build mode
-- A key toggles build mode. A small UI Toolkit panel lists the items you own but haven't placed (the **build inventory**, see `economy.md`).
-- After you choose an item, a ghost follows the aimed cell. It snaps to the grid on the layer that item belongs to.
-- **R** rotates the ghost 90°. The ghost is **green** if the sim says the placement is valid, otherwise **red**, with the reason shown.
-- Click places it. Looking at a placed item and pressing the pick-up key returns it to the build inventory, if allowed (see `building.md`).
+- A key toggles build mode; a UI Toolkit panel lists owned, unplaced floor items.
+- The ghost follows the cursor on the ground plane, snaps to floor cells, **R** rotates 90°, green/red from the sim's `CanPlace`.
+- Click places; interacting with a placed item picks it up (a bench takes its pots with it, see `building.md`).
+
+## Inputs
+Keyboard and mouse **and** gamepad from the start, through the Input System, all rebindable.

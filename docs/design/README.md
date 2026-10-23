@@ -2,25 +2,32 @@
 
 _The human owns this folder. The lead writes up agreed decisions here; dev agents read it and don't make design decisions._
 
-**PlantNursery** is a cosy 1–4 player co-op plant nursery sim for Steam, played in first person.
-Players build a nursery on a grid, grow plants to sale, fulfil shop and website orders, and
-unlock better equipment. The original design document is `source/plantnursery-design-document.md`.
-The files below are the source of truth when they differ from it.
+**PlantNursery** is a cosy 1–4 player co-op **medieval fantasy** plant nursery for Steam, seen from above.
+Players breed, grow and ship misbehaving magical plants to the guilds of a medieval town.
+The source design is `source/planetnursery-updated-with-theming.md` (23 Oct 2026). The files below are the
+source of truth when they differ from it. The older first-person design (`source/plantnursery-design-document.md`)
+is history only; see `docs/decisions/0009` and `migration.md`.
 
 | File | System |
 |---|---|
-| `overview.md` | Pillars, MVP scope, milestones |
-| `controls.md` | First-person view, interaction, hands, build mode |
-| `time.md` | Clock, days, seasons, sleep, pause |
-| `building.md` | Grid, layers, footprints, placement, plot |
-| `plants.md` | Containers, growth stages, water, root-bound, health, quality, death |
-| `genetics.md` | Genes and how they show on placeholder plants |
-| `logistics.md` | The container chain, carrying, trolley, vehicles |
-| `sales.md` | Supplier, shop front, website orders |
-| `economy.md` | Wallet, prices, sell-back |
-| `progression.md` | XP and upgrade tracks |
-| `coop.md` | Host authority, joining, sleeping together |
-| `visuals.md` | Placeholder colours, art direction, scale |
+| `overview.md` | Pitch, pillars, core loop, MVP scope, prototype, milestones |
+| `controls.md` | Cameras, bench view, targeting, hands, build mode |
+| `time.md` | Clock, day shape, seasons, sleep, night rules |
+| `building.md` | Floor grid, layers, structures, **benches and slots**, neighbours, carry trays |
+| `plants.md` | Base plant: containers, watering, growth, potting on, quality, death |
+| `species.md` | Hearthmoss, Chimebell, Snapjaw |
+| `behaviour.md` | Behaviour modules (Need, Mood, Neighbour effect, Mobility), chaos rules, Snapjaw numbers |
+| `genetics.md` | Genes, phenotype, breeding (later) |
+| `sales.md` | Buyers, shop counter, guild contracts, departures, stock ledger |
+| `economy.md` | Purse, prices, quality, starting kit, storage, soft-lock guard |
+| `logistics.md` | Container chain, carrying, carts, wagon loading |
+| `progression.md` | XP, unlock tracks, new species |
+| `coop.md` | Host authority, joining, clashes, disconnects |
+| `visuals.md` | Placeholder colours, mood cues, scale |
+| `world.md` | The town and wild zones (post-MVP) |
+| `open-questions.md` | Undecided questions with suggested defaults |
+| `migration.md` | What from the first-person build no longer fits |
 
-Numbers in these docs are **defaults**. They all live in content data files (see
-`docs/decisions/0004-content-data-format.md`) so they can be tuned without code changes.
+**Numbers are defaults.** Every number in these docs lives in content data (`docs/decisions/0004`)
+so it can be tuned in playtests without code changes. Where a doc gives a **data key**, use that name
+unless the content task says otherwise.

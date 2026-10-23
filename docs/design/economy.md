@@ -1,43 +1,38 @@
 # Economy
 
-## Wallet
-- One shared wallet per nursery, as a whole number of coins. Starting money is in data (default 200).
-- A purchase is rejected with `InsufficientFunds` if the wallet would go below 0.
-
-## Build inventory
-- Shared per nursery: a count per item type of things owned but not placed.
-- Starting inventory (data): 2 standard benches, 6 plug trays, 1 watering can, 1 tap, 1 computer, 1 bed, 1 delivery shelf.
-  The tap, computer, bed and delivery shelf start already placed in the starter layout.
+## Purse
+One shared purse per nursery, whole coins, starting at `startingMoney` = 200. A purchase that would go below 0
+is rejected with `InsufficientFunds`. **No fixed daily costs in the MVP;** water is free, grubs are the running cost.
 
 ## Prices (first pass, all data)
-| Item | Buy |
-|---|---|
-| Seed packet (6 seeds) | 10 |
-| Plug tray | 15 |
-| Standard bench | 40 |
-| Small pot | 2 |
-| Medium pot | 5 |
+| Item | Buy | Sell |
+|---|---|---|
+| Small / medium / large pot (empty) | 2 / 4 / 8 | — |
+| Plug tray | 5 | — |
+| Hearthmoss spores (one tray) | 10 | Bundle: 4 |
+| Chimebell seeds (6) | 12 | Medium in bloom: 15 · large specimen: 35 |
+| Snapjaw seedling (in a small pot) | 15 | Mature: 30 · tooth: 2 |
+| Grubs (one feed) | 1 | — |
+| Bench 3 m / 4 m | 40 / 50 | Sell back at half price |
+| Carry tray (6 small pots) | 6 | — |
 
-Sale prices (M2) are `basePrice[variety] × stageMultiplier × potMultiplier × qualityMultiplier`. Values are in data.
+- Sale price = listed price × quality multiplier (poor 0.6, good 1.0, excellent 1.4), rounded down. The pot-size cap (`plants.md`) is already in the listed prices.
+- Supplier purchases arrive in the storage crate at once.
 
-## Sell-back
-Placed equipment can be sold back for `sellBackFraction` (default 0.5) of its price, rounded down. This comes later, not in M1.
+## Starting kit
+One 3 m bench, 6 plug trays with Hearthmoss spores, 2 carry trays, a watering can, a rain barrel, the storage
+crate, the order desk with its ledger, the shop counter, a bed, and 200 coin. (Data: `starterKit`.)
+_Whether the trays start sown and on the bench is to confirm; suggested: sown, on the bench, watered._
 
-## Soft-lock guard: "a neighbour's gift" (MVP)
-A cosy game must never leave players stuck. The check runs once at each `DayStarted`.
+## Storage crate
+Unlimited in the MVP. Holds bought stock, empty pots and harvested bundles. A capacity and a bigger storeroom can come later.
 
-**Trigger:** all of these are true:
-1. wallet < price of the cheapest seed packet,
-2. no living plant exists anywhere,
-3. no seed packet with ≥ 1 seed exists anywhere (shelf, hands or surfaces).
+## Soft-lock guard: "a neighbour's gift" (built, rethemed)
+Runs at each day start. If the purse is below the cheapest spores/seed price **and** no living plant exists
+**and** no unsown spores or seeds exist anywhere, one free pack of Hearthmoss spores is put in the storage crate
+(plus a plug tray if the nursery owns none). Raises `NeighbourGift`; the HUD shows "A neighbour left you some spores."
 
-**Effect:**
-- One free seed packet of the cheapest variety is delivered to the delivery shelf, using the normal shelf placement.
-- If the nursery owns no plug tray at all (placed, carried or in inventory), one free plug tray is added to the build inventory.
-- Raises a `NeighbourGift` event. The HUD shows a short message: "A neighbour left you some seeds."
-- If the delivery shelf has no free spot, the packet goes to the nearest free spot on any surface. If there is none, the gift waits until the next morning.
-
-**Data:** `softLockGuard.enabled` (default true), `softLockGuard.giftVarietyId` (default: cheapest).
-
-## Open
-- Running costs (water, heating): none in the MVP. Revisit after M2.
+## First-hour check
+Six trays of Hearthmoss give 6 bundles (≈24 coin) a day. A first 10-bundle contract pays ≈48 coin and 24 XP and
+takes about two days. The handcart unlocks at 20 XP, so it lands around day 2–3 (20–30 real minutes).
+The balancing harness checks this.

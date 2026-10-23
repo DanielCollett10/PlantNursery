@@ -1,29 +1,38 @@
-# Sales
+# Buyers, orders and the shop
 
-## Supplier (M1)
-- The shop computer opens a UI Toolkit shop. Players buy seed packets and equipment with the shared wallet.
-- **Delivery is instant in the MVP:**
-  - Equipment goes into the build inventory.
-  - Seed packets appear on the **delivery shelf** next to the computer as holdable items. If the shelf is full, the purchase is rejected with `DeliveryShelfFull`.
-- Supplier visits come later.
+Three kinds of buyer want plants for different reasons; wagon departures are where the day's pressure peaks.
 
-## Shop front (M2)
-- Only plants on **display shelving** (a Floor item with surface) are for sale. Everything else is growing stock.
-- During opening hours, walk-in customers arrive at a rate set in data. Each one browses, chooses 1–5 sellable plants on display, and queues at the till.
-  - Customer preferences by season come later. In M2, choices are random from what's on display, using a seeded RNG.
-- A player must **interact with the customer at the till** to complete the sale. The money goes to the wallet and the plants leave.
-- Customers don't need supervising otherwise. There is no theft.
-- A queued customer waits up to `customerPatienceMinutes` (default 120). If nobody serves them, they put the plants back and leave, with no penalty.
-- If a customer finds nothing they want, they leave.
+| Buyer | Use | Values |
+|---|---|---|
+| Alchemists and apothecaries | Ingredients harvested repeatedly (sap, petals, spores) | Potency |
+| Collectors and noble gardens | Live specimens | Looks and rarity |
+| The town | Working plants (guard hedges, pest-eaters, lantern blooms) | Temperament and a specific behaviour |
 
-## Website orders (M4)
-- Orders arrive on the shop computer with a spec (variety, minimum stage/pot, minimum quality, quantity), a price per plant, XP and a pickup time.
-- Players accept the orders they want. The pickup schedule is visible days ahead.
-- At pickup time a vehicle arrives, waits until departure, then leaves with whatever is loaded.
-- **Partial loads:** the order pays for each loaded plant that meets the spec. Plants that don't meet the spec are left behind, not taken.
-  XP scales with the fraction fulfilled. When reputation exists, it drops by the unfulfilled fraction.
-- Missing an order entirely: the order lapses. No money or stock is lost.
-- Rush orders come later.
+## Supplier (order desk)
+The order desk opens a UI Toolkit panel to buy stock with the shared purse. **Purchases arrive in the storage
+crate by the order desk at once** (unlimited capacity in the MVP). Floor items go to the build inventory.
 
-## Reputation
-Not in the MVP. It may later drive unlocks or order size (undecided).
+## Shop counter (walk-ins)
+- Benches can be **marked for sale**. During opening hours (`time.md`) `walkInsPerDay` = 4–8 customers arrive (seeded RNG).
+- Each buys 1–3 sellable plants from marked benches and **pays automatically at the till**. No theft, no penalty if nothing suits.
+
+## Guild contracts
+| Setting | First pass | Data key |
+|---|---|---|
+| Guild board | 3 offers, refreshed every morning | `board.offers` |
+| Courier letters | About one every 3 days, bigger and better paid | `courier.everyDays` |
+| A contract asks for | Species, minimum pot size, minimum quality, quantity (5–20) | — |
+| Pay | 1.2 × the plants' sale value | `contractPayMultiplier` |
+| XP | Half the contract's pay | `xpPerCoin` = 0.5 |
+| Pickup | Players choose the day, 2–7 days ahead | `pickupWindowDays` |
+| Part-loads | Pays for what is loaded if ≥ half the quantity; below half = missed | `partLoadMinFraction` = 0.5 |
+| Reputation | +1 full, 0 partial, −1 missed (per guild) | — |
+
+- **Departures are booked, not daily.** On the pickup day the wagon arrives, waits until its departure time (data), then leaves with whatever is loaded. Several departures can stack on one day.
+- Only items meeting the spec count; others are left behind.
+- A missed departure lapses the order and dents reputation; **no money or stock is lost**.
+- Rush contracts (tighter departure, better pay, optional) come later. Reputation tiers come later.
+
+## Stock ledger
+The order desk's ledger lists stock by species, pot size and quality, next to each accepted contract's needs and
+pickup day, plus empty pots and trays in the storage crate. Booked departures show on a calendar.
