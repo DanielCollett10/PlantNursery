@@ -67,7 +67,9 @@ namespace PlantNursery.EditorTools
                 var a = p != null ? p.GetComponent<PlaceableAuthoring>() : null;
                 if (a != null) prefabs.Add(a);
             }
-            var heldGo = new GameObject("HeldItem");
+            var worldGo = new GameObject("WorldView");
+            worldGo.AddComponent<WorldView>().Configure(simHost.GetComponent<SimHost>(), prefabs);
+            var heldGo =new GameObject("HeldItem");
             heldGo.transform.SetParent(camGo.transform, false);
             heldGo.AddComponent<HeldItemView>().Configure(interaction, prefabs);
             var hud = new GameObject("HUD");
