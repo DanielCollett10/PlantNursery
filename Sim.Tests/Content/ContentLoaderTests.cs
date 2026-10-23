@@ -204,7 +204,7 @@ namespace PlantNursery.Sim.Tests
         public void MissingItemFootprintThrows()
         {
             var files = RealFiles(false);
-            files["items.json"] = files["items.json"].Replace("\"floorFootprint\": { \"w\": 1, \"d\": 4 }, ", "");
+            files["items.json"] = files["items.json"].Replace("\"floorFootprint\": { \"w\": 2, \"d\": 4 }, ", "");
             Assert.AreEqual("items[0].floorFootprint", Fails(files).Field);
         }
 
