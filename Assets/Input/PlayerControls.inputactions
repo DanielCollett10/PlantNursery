@@ -148,7 +148,7 @@
                     "id": "b2e1d002-0000-4000-8000-000000000006",
                     "path": "<Mouse>/delta",
                     "interactions": "",
-                    "processors": "scaleVector2(x=0.1,y=0.1)",
+                    "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Look",
                     "isComposite": false,
