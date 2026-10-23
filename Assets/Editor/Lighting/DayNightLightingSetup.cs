@@ -30,7 +30,7 @@ namespace PlantNursery.EditorTools
             var lighting = sunLight.GetComponent<DayNightLighting>();
             if (lighting == null) lighting = Undo.AddComponent<DayNightLighting>(sunLight.gameObject);
 
-            var host = Object.FindObjectOfType<SimHost>();
+            var host = Object.FindFirstObjectByType<SimHost>();
             var serialized = new SerializedObject(lighting);
             serialized.FindProperty("host").objectReferenceValue = host;
             serialized.FindProperty("sun").objectReferenceValue = sunLight;
@@ -44,7 +44,7 @@ namespace PlantNursery.EditorTools
 
         private static Light FindDirectionalLight()
         {
-            foreach (var light in Object.FindObjectsOfType<Light>())
+            foreach (var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
                 if (light.type == LightType.Directional) return light;
             return null;
         }
