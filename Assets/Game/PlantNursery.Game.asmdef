@@ -2,7 +2,8 @@
     "name": "PlantNursery.Game",
     "rootNamespace": "PlantNursery.Game",
     "references": [
-        "PlantNursery.Sim"
+        "PlantNursery.Sim",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

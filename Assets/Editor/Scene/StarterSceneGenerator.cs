@@ -29,8 +29,7 @@ namespace PlantNursery.EditorTools
             }
             finally { Object.DestroyImmediate(host.gameObject); }
 
-            Directory.CreateDirectory("Assets/Scenes");
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            Directory.CreateDirectory("Assets/Scenes");            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
             var simHost = new GameObject("SimHost");
             simHost.AddComponent<SimHost>();
@@ -48,11 +47,32 @@ namespace PlantNursery.EditorTools
             spawn.transform.position = new Vector3(size.x / 2f, 0f, 1f);
             spawn.transform.rotation = Quaternion.identity;
 
+            // Player: CharacterController body, camera at eye height, interaction, HUD and held item view.
+            var player = new GameObject("Player");
+            player.transform.SetPositionAndRotation(spawn.transform.position, spawn.transform.rotation);
+            player.AddComponent<CharacterController>();
             var camGo = new GameObject("Main Camera") { tag = "MainCamera" };
-            camGo.AddComponent<Camera>();
+            var cam = camGo.AddComponent<Camera>();
             camGo.AddComponent<AudioListener>();
-            camGo.transform.SetParent(spawn.transform, false);
-            camGo.transform.localPosition = new Vector3(0f, 1.6f, 0f);
+            camGo.transform.SetParent(player.transform, false);
+            camGo.transform.localPosition = new Vector3(0f, FirstPersonController.EyeHeight, 0f);
+            var input = AssetDatabase.LoadAssetAtPath<UnityEngine.InputSystem.InputActionAsset>("Assets/Input/PlayerControls.inputactions");
+            player.AddComponent<FirstPersonController>().Configure(input, camGo.transform);
+            var interaction = player.AddComponent<InteractionController>();
+            interaction.Configure(simHost.GetComponent<SimHost>(), cam, input);
+            var prefabs = new System.Collections.Generic.List<PlaceableAuthoring>();
+            foreach (var guid in AssetDatabase.FindAssets("t:Prefab", new[] { "Assets/Game/Greybox/Prefabs" }))
+            {
+                var p = AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid));
+                var a = p != null ? p.GetComponent<PlaceableAuthoring>() : null;
+                if (a != null) prefabs.Add(a);
+            }
+            var heldGo = new GameObject("HeldItem");
+            heldGo.transform.SetParent(camGo.transform, false);
+            heldGo.AddComponent<HeldItemView>().Configure(interaction, prefabs);
+            var hud = new GameObject("HUD");
+            hud.AddComponent<UnityEngine.UIElements.UIDocument>();
+            hud.AddComponent<InteractionHud>().Configure(interaction);
 
             var lightGo = new GameObject("Directional Light");
             var light = lightGo.AddComponent<Light>();

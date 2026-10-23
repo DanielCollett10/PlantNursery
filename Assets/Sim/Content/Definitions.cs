@@ -160,5 +160,7 @@ namespace PlantNursery.Sim.Content
         public int PlotDepth;
         /// <summary>Auto-nudge radius in mini-grid units.</summary>
         public int NudgeRadius;
+        /// <summary>How far (metres) the player can reach to interact.</summary>
+        public float InteractReach = 3.0f;
     }
 }
