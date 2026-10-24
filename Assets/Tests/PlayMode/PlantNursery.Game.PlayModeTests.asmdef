@@ -3,6 +3,7 @@
     "rootNamespace": "PlantNursery.Game.PlayModeTests",
     "references": [
         "PlantNursery.Game",
+        "PlantNursery.Sim",
         "Unity.InputSystem",
         "Unity.InputSystem.TestFramework",
         "UnityEngine.TestRunner"
