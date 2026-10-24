@@ -29,12 +29,14 @@ namespace PlantNursery.Sim.Content
             foreach (var g in allGenes.Values) if (g.SpeciesId == null) genes[g.Id] = g;
             var containers = LoadContainers(Root(filesByName, ContainersFile), items);
             var varieties = LoadVarieties(Root(filesByName, VarietiesFile), genes);
-            var economy = LoadEconomy(Root(filesByName, EconomyFile), items, varieties);
+            var economyRoot = Root(filesByName, EconomyFile);
+            var economy = LoadEconomy(economyRoot, items, varieties);
             var building = LoadBuilding(Root(filesByName, BuildingFile));
             var species = SpeciesLoader.Load(Root(filesByName, SpeciesFile), allGenes, containers, varieties);
             ValidateSeedItems(Root(filesByName, ItemsFile), items, species);
             BenchLoader.ValidateAcceptedIds(Root(filesByName, ItemsFile).ObjArray("items"), items);
-            return new ContentDb(time, items, containers, varieties, genes, economy, building, species, allGenes);
+            var starterKit = StarterKitLoader.Load(economyRoot.Obj("starterKit"), items, containers, species, building);
+            return new ContentDb(time, items, containers, varieties, genes, economy, building, species, allGenes, starterKit);
         }
 
         private static ContentNode Root(IDictionary<string, string> files, string name)
@@ -318,6 +320,17 @@ namespace PlantNursery.Sim.Content
             };
             if (cfg.SellBackFraction > 1f) throw root.Error("sellBackFraction", "must be at most 1");
 
+            cfg.QualityMultipliers = ReadNamedFloats(root.Obj("qualityMultipliers"), "poor", "good", "excellent");
+            cfg.PotValueCaps = ReadNamedFloats(root.Obj("potValueCaps"), "small", "medium", "large");
+            foreach (var cap in cfg.PotValueCaps)
+                if (cap > 1f) throw root.Error("potValueCaps", "each cap must be at most 1");
+            var care = ReadNamedFloats(root.Obj("qualityCareThresholds"), "excellent", "poor");
+            cfg.ExcellentCareThreshold = care[0];
+            cfg.PoorCareThreshold = care[1];
+            if (cfg.ExcellentCareThreshold > 1f) throw root.Error("qualityCareThresholds", "excellent must be at most 1");
+            if (cfg.PoorCareThreshold > cfg.ExcellentCareThreshold)
+                throw root.Error("qualityCareThresholds", "poor must not be above excellent");
+
             var g = root.Obj("softLockGuard");
             var guard = new SoftLockGuardConfig { Enabled = g.Bool("enabled"), GiftVarietyId = g.OptStr("giftVarietyId") };
             if (guard.GiftVarietyId != null && !varieties.ContainsKey(guard.GiftVarietyId))
@@ -333,6 +346,16 @@ namespace PlantNursery.Sim.Content
             }
             cfg.StarterInventory = counts;
             return cfg;
+        }
+
+        /// <summary>Reads an object of non-negative numbers whose keys must be exactly <paramref name="names"/> (in that order).</summary>
+        private static float[] ReadNamedFloats(ContentNode n, params string[] names)
+        {
+            foreach (var k in n.Keys())
+                if (Array.IndexOf(names, k) < 0) throw n.Error(k, "unknown key (expected " + string.Join(", ", names) + ")");
+            var values = new float[names.Length];
+            for (int i = 0; i < names.Length; i++) values[i] = n.Float(names[i]);
+            return values;
         }
 
         private static BuildingConfig LoadBuilding(ContentNode root)
