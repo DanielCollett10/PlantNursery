@@ -26,7 +26,8 @@ namespace PlantNursery.EditorTools
         [MenuItem("Plant Nursery/Generate Starter Scene")]
         public static void Generate()
         {
-            if (!HasPrefabs()) GreyboxGenerator.Generate();
+            if (!HasPrefabs() || AssetDatabase.LoadAssetAtPath<ViewCatalog>("Assets/Game/Greybox/ViewCatalog.asset") == null)
+                GreyboxGenerator.Generate();
             if (!AssetsPresent()) return;
 
             // Read plot size through the real loader so the scene matches content.
@@ -97,7 +98,8 @@ namespace PlantNursery.EditorTools
                 if (a != null) prefabs.Add(a);
             }
             var worldGo = new GameObject("WorldView");
-            worldGo.AddComponent<WorldView>().Configure(simHost.GetComponent<SimHost>(), prefabs);
+            worldGo.AddComponent<WorldView>().Configure(simHost.GetComponent<SimHost>(),
+                AssetDatabase.LoadAssetAtPath<ViewCatalog>("Assets/Game/Greybox/ViewCatalog.asset"));
             var heldGo = new GameObject("HeldItem");
             heldGo.transform.SetParent(camGo.transform, false);
             heldGo.AddComponent<HeldItemView>().Configure(interaction, prefabs);

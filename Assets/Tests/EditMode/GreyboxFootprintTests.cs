@@ -43,12 +43,14 @@ namespace PlantNursery.Game.Tests
 
                 float cell = auth.Layer == PlaceableLayer.Floor ? FloorCell : SurfaceUnit;
                 float expectX = fp.w * cell, expectZ = fp.d * cell;
-                var mesh = prefab.transform.Find("Mesh");
+                var mesh = prefab.transform.Find("Visual/Mesh");
                 if (mesh == null)
                 {
-                    problems.AppendLine(path + ": no child 'Mesh'");
+                    problems.AppendLine(path + ": no child 'Visual/Mesh'");
                     continue;
                 }
+                if (prefab.transform.Find(WorldView.SlotAnchorName) == null)
+                    problems.AppendLine(path + ": no child '" + WorldView.SlotAnchorName + "'");
 
                 var s = mesh.localScale;
                 if (Mathf.Abs(s.x - expectX) > Tolerance || Mathf.Abs(s.z - expectZ) > Tolerance)
@@ -67,7 +69,7 @@ namespace PlantNursery.Game.Tests
             Assert.IsNotNull(prefab, "Bench.prefab");
             var auth = prefab.GetComponent<PlaceableAuthoring>();
             Assert.AreEqual("bench_standard", auth.ItemId);
-            var s = prefab.transform.Find("Mesh").localScale;
+            var s = prefab.transform.Find("Visual/Mesh").localScale;
             Assert.AreEqual(1f, s.x, Tolerance, "bench width (2 cells)");
             Assert.AreEqual(2f, s.z, Tolerance, "bench depth (4 cells)");
         }
