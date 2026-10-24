@@ -1,5 +1,6 @@
 {
   "plot": { "w": 40, "d": 30 },
   "nudgeRadius": 2,
-  "interactReach": 3.0
+  "interactReach": 3.0,
+  "camera": { "autoZoomOutSeconds": 4, "panSeconds": 0.4 }
 }
