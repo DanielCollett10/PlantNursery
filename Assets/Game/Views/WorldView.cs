@@ -61,6 +61,65 @@ namespace PlantNursery.Game
         /// <summary>The view of a plant, or null.</summary>
         public PlantView PlantViewOf(int plantId) => _plants.TryGetValue(plantId, out var v) ? v : null;
 
+        /// <summary>Container id to view root, for tests and debug tools (read only).</summary>
+        public IEnumerable<KeyValuePair<int, GameObject>> ContainerViews => _containerViews;
+
+        /// <summary>
+        /// The sim container (pot or planting tray) whose view the ray hits first (by renderer bounds grown by
+        /// <paramref name="inflate"/> metres so small pots are easy to hit), or null. <paramref name="scratch"/> is a reusable
+        /// list so the call allocates nothing. Used by the debug overlay.
+        /// </summary>
+        public Container ContainerAt(Ray ray, List<Renderer> scratch, float inflate = 0.05f)
+        {
+            if (host == null || !host.IsReady) return null;
+            var best = float.MaxValue;
+            Container hit = null;
+            foreach (var kv in _containerViews)
+            {
+                if (kv.Value == null) continue;
+                kv.Value.GetComponentsInChildren(scratch);
+                foreach (var r in scratch)
+                {
+                    if (r is ParticleSystemRenderer) continue;
+                    var b = r.bounds;
+                    b.Expand(inflate * 2f);
+                    if (!b.IntersectRay(ray, out var d) || d >= best) continue;
+                    var c = host.Nursery.FindContainer(kv.Key);
+                    if (c == null) continue;
+                    best = d; hit = c;
+                }
+            }
+            return hit;
+        }
+
+        /// <summary>
+        /// Fallback hover: the container whose view centre is nearest the screen position, within
+        /// <paramref name="maxPixels"/>, or null. Used when the ray hits nothing.
+        /// </summary>
+        public Container ContainerNear(Camera cam, Vector2 screenPos, float maxPixels, List<Renderer> scratch)
+        {
+            if (host == null || !host.IsReady || cam == null) return null;
+            var best = maxPixels;
+            Container hit = null;
+            foreach (var kv in _containerViews)
+            {
+                if (kv.Value == null) continue;
+                kv.Value.GetComponentsInChildren(scratch);
+                foreach (var r in scratch)
+                {
+                    if (r is ParticleSystemRenderer) continue;
+                    var sp = cam.WorldToScreenPoint(r.bounds.center);
+                    if (sp.z <= 0f) continue;
+                    var d = Vector2.Distance(new Vector2(sp.x, sp.y), screenPos);
+                    if (d >= best) continue;
+                    var c = host.Nursery.FindContainer(kv.Key);
+                    if (c == null) continue;
+                    best = d; hit = c;
+                }
+            }
+            return hit;
+        }
+
         private void LateUpdate() { Sync(); }
 
         /// <summary>Destroy every view and rebuild from the full sim state (e.g. after load).</summary>
