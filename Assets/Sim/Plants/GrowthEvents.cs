@@ -12,7 +12,17 @@ namespace PlantNursery.Sim.Plants
         public PlantStage From { get; }
         /// <summary>New stage.</summary>
         public PlantStage To { get; }
-        public PlantStageChanged(int plantId, PlantStage from, PlantStage to) { PlantId = plantId; From = from; To = to; }
+        /// <summary>Species stage index before the change (-1 for old-variety plants).</summary>
+        public int FromIndex { get; }
+        /// <summary>Species stage index after the change (-1 for old-variety plants).</summary>
+        public int ToIndex { get; }
+        /// <summary>Species stage name after the change (null for old-variety plants).</summary>
+        public string StageName { get; }
+        /// <summary>Creates the event for an old-variety plant.</summary>
+        public PlantStageChanged(int plantId, PlantStage from, PlantStage to) { PlantId = plantId; From = from; To = to; FromIndex = -1; ToIndex = -1; }
+        /// <summary>Creates the event for a species plant.</summary>
+        public PlantStageChanged(int plantId, PlantStage from, PlantStage to, int fromIndex, int toIndex, string stageName)
+            : this(plantId, from, to) { FromIndex = fromIndex; ToIndex = toIndex; StageName = stageName; }
     }
 
     /// <summary>Raised once when a plant's health reaches 0.</summary>
