@@ -150,10 +150,13 @@ namespace PlantNursery.Game
             }
         }
 
-        /// <summary>Open the shop screen and free the cursor.</summary>
+        /// <summary>False in M2: the old computer shop is hidden (BuyItem is not registered; replaced in M3).</summary>
+        public static bool ShopEnabled => false;
+
+        /// <summary>Open the shop screen and free the cursor. Does nothing while <see cref="ShopEnabled"/> is false.</summary>
         public void OpenShop()
         {
-            if (_shopOpen || _host == null || !_host.IsReady) return;
+            if (!ShopEnabled || _shopOpen || _host == null || !_host.IsReady) return;
             _shopOpen = true;
             BuildShopList();
             _shopStatus.text = string.Empty;

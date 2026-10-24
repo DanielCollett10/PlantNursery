@@ -51,6 +51,34 @@ namespace PlantNursery.Game.Tests
         }
 
         [Test]
+        public void BuildsStarterKitNurseryWithNewRules()
+        {
+            _host.Initialize();
+            Assert.IsNotNull(_host.Nursery);
+            Assert.AreSame(_host.Nursery.Build, _host.Build);
+            Assert.AreSame(_host.Nursery.Wallet, _host.Wallet);
+            Assert.IsNotEmpty(_host.Build.PlacedItems, "starter kit floor items");
+            Assert.IsNotEmpty(_host.Nursery.Plants, "starter moss");
+            Assert.IsEmpty(_host.Surface.Items, "old surface path stays empty");
+        }
+
+        [Test]
+        public void StepsAFullDayWithoutErrors()
+        {
+            _host.Initialize();
+            Assert.DoesNotThrow(() => _host.World.Step(PlantNursery.Sim.Time.GameClock.MinutesPerDay));
+            Assert.AreEqual(2, _host.Clock.Day);
+            Assert.IsFalse(_host.World.DrainEvents().OfType<CommandRejectedEvent>().Any());
+        }
+
+        [Test]
+        public void ShopAndSurfaceGhostAreHiddenInM2()
+        {
+            Assert.IsFalse(InteractionHud.ShopEnabled);
+            Assert.IsFalse(BuildModeController.SurfaceGhostEnabled);
+        }
+
+        [Test]
         public void DemoProfileLoads()
         {
             _host.UseDemoProfile = true;

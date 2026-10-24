@@ -135,7 +135,8 @@ namespace PlantNursery.Game
             if (_rotate.WasPressedThisFrame()) _rotation = BuildAim.Next(_rotation);
 
             _hasAim = false;
-            var held = host.Hands.GetHeld(LocalPlayer);
+            // M2: the surface put-down ghost is disabled (old hands path is not installed; replaced in M3).
+            var held = SurfaceGhostEnabled ? host.Hands.GetHeld(LocalPlayer) : null;
             if (held != null && IsSurfaceItem(held.ItemId)) UpdateSurfaceGhost(held.ItemId);
             else if (IsBuildMode && _selectedId != null) UpdateFloorGhost(_selectedId);
             else { HideGhost(); _reason = string.Empty; }
@@ -151,6 +152,9 @@ namespace PlantNursery.Game
             _listSignature = string.Empty;
             if (!on) { HideGhost(); _reason = string.Empty; }
         }
+
+        /// <summary>False in M2: the surface put-down ghost (old hands path) is hidden. Floor build mode is unaffected.</summary>
+        public static bool SurfaceGhostEnabled => false;
 
         private bool IsSurfaceItem(string id)
             => host.Content.ItemDefs.TryGetValue(id, out var def) && def.Layer == ItemLayer.Surface;

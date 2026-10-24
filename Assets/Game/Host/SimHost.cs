@@ -7,6 +7,7 @@ using PlantNursery.Sim.Core;
 using PlantNursery.Sim.Economy;
 using PlantNursery.Sim.Hands;
 using PlantNursery.Sim.Plants;
+using PlantNursery.Sim.Storage;
 using PlantNursery.Sim.Time;
 using UnityEngine;
 
@@ -44,9 +45,11 @@ namespace PlantNursery.Game
         public GameClock Clock { get; private set; }
         /// <summary>Floor grid and placed items.</summary>
         public BuildState Build { get; private set; }
-        /// <summary>Surface mini-grid.</summary>
+        /// <summary>The nursery built from the starter kit (benches, crate, hands, plants), or null before <see cref="Initialize"/>.</summary>
+        public Nursery Nursery { get; private set; }
+        /// <summary>Legacy surface mini-grid. Empty in M2 (old hands path is not installed).</summary>
         public SurfaceGrid Surface { get; private set; }
-        /// <summary>Held items and container contents.</summary>
+        /// <summary>Legacy held items and container contents. Empty in M2; use <see cref="Nursery"/>.</summary>
         public HandsState Hands { get; private set; }
         /// <summary>Shared coins.</summary>
         public Wallet Wallet { get; private set; }
@@ -80,17 +83,21 @@ namespace PlantNursery.Game
             var content = ContentLoader.Load(ReadContentFiles(useDemoProfile));
             var world = new SimWorld();
             var clock = GameClock.Install(world, content.Time);
-            var build = new BuildState(content);
-            var surface = new SurfaceGrid(content, build);
-            var wallet = new Wallet(content.Economy.StartingMoney);
+            // New rules (decisions 0011, 0014): the nursery comes from the starter kit; containers hold the water
+            // and the plants grow by stage. The old GrowthSystem/HandsState/DeliveryShelf/SupplierModule are not installed.
+            var nursery = NurseryBuilder.Build(world, content);
+            var build = nursery.Build;
             BuildingModule.Register(world, build);
-            SupplierModule.Register(world, content, wallet, build, surface);
-            var hands = new HandsState(content, surface);
-            HandsModule.Register(world, hands);
-            GrowthSystem.Install(world, content, hands, clock);
-            SoftLockGuard.Install(world, content, wallet, build, surface, hands, clock);
+            WaterSystem.Install(world, nursery.AllContainers, nursery.PlantById, clock);
+            SpeciesGrowthSystem.Install(world, content, nursery.AllContainers, nursery.PlantById, clock);
+            CrateSoftLockGuard.Install(world, content, nursery, clock);
 
-            Content = content; Clock = clock; Build = build; Surface = surface; Wallet = wallet; Hands = hands;
+            // Legacy surface/hands objects stay empty so old Unity views and the interaction probe read "nothing there".
+            var surface = new SurfaceGrid(content, build);
+            var hands = new HandsState(content, surface);
+
+            Content = content; Clock = clock; Build = build; Surface = surface; Wallet = nursery.Wallet; Hands = hands;
+            Nursery = nursery;
             World = world;
             Sink = new LoopbackCommandSink(world);
         }
