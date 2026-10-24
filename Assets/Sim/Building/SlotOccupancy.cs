@@ -27,7 +27,13 @@ namespace PlantNursery.Sim.Building
         private readonly ContentDb _content;
         private readonly BuildState _build;
         private readonly Dictionary<long, string> _units = new Dictionary<long, string>();
-        private readonly HashSet<string> _slots = new HashSet<string>();
+        private readonly Dictionary<string, SlotRef> _slots = new Dictionary<string, SlotRef>();
+
+        /// <summary>Increases on every successful slot place or remove; lets caches know to rebuild.</summary>
+        public int Version { get; private set; }
+
+        /// <summary>Every occupied slot, with the address it was placed at.</summary>
+        public IEnumerable<SlotRef> PlacedSlots => _slots.Values;
 
         /// <summary>Creates occupancy over a build state.</summary>
         public SlotOccupancy(ContentDb content, BuildState build)
@@ -57,7 +63,8 @@ namespace PlantNursery.Sim.Building
             for (var u = layout.StartU(col); u < layout.StartU(col) + layout.AlongUnits; u++)
                 for (var v = layout.StartV(row); v < layout.StartV(row) + layout.AcrossUnits; v++)
                     _units[Key(benchId, u, v)] = tag;
-            _slots.Add(tag);
+            _slots[tag] = new SlotRef(benchId, size, col, row);
+            Version++;
             return SlotRejection.None;
         }
 
@@ -66,7 +73,7 @@ namespace PlantNursery.Sim.Building
         {
             var r = Resolve(benchId, size, col, row, out _, out _);
             if (r != SlotRejection.None) return r;
-            return _slots.Contains(Tag(benchId, size, col, row)) ? SlotRejection.None : SlotRejection.SlotEmpty;
+            return _slots.ContainsKey(Tag(benchId, size, col, row)) ? SlotRejection.None : SlotRejection.SlotEmpty;
         }
 
         /// <summary>Free the units of a slot that was placed with exactly this address.</summary>
@@ -79,6 +86,7 @@ namespace PlantNursery.Sim.Building
                 for (var v = layout.StartV(row); v < layout.StartV(row) + layout.AcrossUnits; v++)
                     _units.Remove(Key(benchId, u, v));
             _slots.Remove(Tag(benchId, size, col, row));
+            Version++;
             return SlotRejection.None;
         }
 

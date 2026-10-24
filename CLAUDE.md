@@ -46,3 +46,9 @@ touching the simulation.
 - When you change how things fit together, update `docs/architecture.md`.
 - Record a decision that future agents should not re-argue as
   `docs/decisions/NNNN-short-title.md` (context, decision, consequences; 10–20 lines).
+
+## Lessons learned
+
+Rules added after reviews kept catching the same mistakes. Follow them like any other rule.
+
+- Sim tests that read content JSON from Assets/StreamingAssets/Content and then use string Replace or Contains must not use multi-line search strings that assume "\n". Normalise the text first with .Replace("\r\n", "\n"), or search single-line fragments. Keep the assertion that the Replace changed the string. Also make sure a .gitattributes rule (`*.json text eol=lf`) exists for the content files. _(learned from T-127, T-169)_
