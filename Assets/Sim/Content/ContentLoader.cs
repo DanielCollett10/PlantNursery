@@ -13,7 +13,7 @@ namespace PlantNursery.Sim.Content
         /// <summary>File names the loader requires.</summary>
         public const string TimeFile = "time.json", TimeDemoFile = "time.demo.json", ItemsFile = "items.json",
             ContainersFile = "containers.json", VarietiesFile = "varieties.json", GenesFile = "genes.json",
-            EconomyFile = "economy.json", BuildingFile = "building.json";
+            EconomyFile = "economy.json", BuildingFile = "building.json", SpeciesFile = "species.json";
 
         /// <summary>Loads and validates all content. time.demo.json is optional and overrides time.json values.</summary>
         /// <exception cref="ContentException">On malformed JSON, missing files/fields, unknown ids or negative values.</exception>
@@ -23,12 +23,16 @@ namespace PlantNursery.Sim.Content
 
             var time = LoadTime(filesByName);
             var items = LoadItems(Root(filesByName, ItemsFile));
-            var genes = LoadGenes(Root(filesByName, GenesFile));
+            var allGenes = LoadGenes(Root(filesByName, GenesFile));
+            // Old varieties only use the pre-pivot genes (no speciesId); species genes belong to species.json.
+            var genes = new Dictionary<string, GeneDef>();
+            foreach (var g in allGenes.Values) if (g.SpeciesId == null) genes[g.Id] = g;
             var containers = LoadContainers(Root(filesByName, ContainersFile), items);
             var varieties = LoadVarieties(Root(filesByName, VarietiesFile), genes);
             var economy = LoadEconomy(Root(filesByName, EconomyFile), items, varieties);
             var building = LoadBuilding(Root(filesByName, BuildingFile));
-            return new ContentDb(time, items, containers, varieties, genes, economy, building);
+            var species = SpeciesLoader.Load(Root(filesByName, SpeciesFile), allGenes, containers, varieties);
+            return new ContentDb(time, items, containers, varieties, genes, economy, building, species, allGenes);
         }
 
         private static ContentNode Root(IDictionary<string, string> files, string name)
@@ -150,7 +154,7 @@ namespace PlantNursery.Sim.Content
             var result = new Dictionary<string, GeneDef>();
             foreach (var n in root.ObjArray("genes"))
             {
-                var def = new GeneDef { Id = n.Str("id"), Kind = n.Enum<GeneKind>("kind") };
+                var def = new GeneDef { Id = n.Str("id"), Kind = n.Enum<GeneKind>("kind"), SpeciesId = n.OptStr("speciesId") };
                 if (def.Kind == GeneKind.Mendelian)
                 {
                     var alleles = new List<string>();
@@ -232,7 +236,7 @@ namespace PlantNursery.Sim.Content
             return result;
         }
 
-        private static AllelePair ReadPair(ContentNode genesNode, string gid, GeneDef gene)
+        internal static AllelePair ReadPair(ContentNode genesNode, string gid, GeneDef gene)
         {
             var arr = genesNode.Array(gid);
             if (arr.Count != 2) throw genesNode.Error(gid, "must have exactly 2 alleles");

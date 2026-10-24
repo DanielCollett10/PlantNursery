@@ -2,6 +2,10 @@
   "genes": [
     { "id": "leafColour", "kind": "Mendelian", "alleles": ["green", "red", "yellow"] },
     { "id": "variegation", "kind": "Mendelian", "alleles": ["plain", "striped"] },
-    { "id": "spotSize", "kind": "Blend", "min": 0, "max": 1 }
+    { "id": "spotSize", "kind": "Blend", "min": 0, "max": 1 },
+    { "id": "glowColour", "speciesId": "hearthmoss", "kind": "Mendelian", "alleles": ["amber", "teal", "violet"] },
+    { "id": "regrowthSpeed", "speciesId": "hearthmoss", "kind": "Blend", "min": 0, "max": 1 },
+    { "id": "bloomColour", "speciesId": "chimebell", "kind": "Mendelian", "alleles": ["white", "blue", "rose"] },
+    { "id": "bellPattern", "speciesId": "chimebell", "kind": "Mendelian", "alleles": ["plain", "striped", "spotted"] }
   ]
 }
