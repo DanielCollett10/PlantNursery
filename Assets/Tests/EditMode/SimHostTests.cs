@@ -1,4 +1,6 @@
+using System.Linq;
 using NUnit.Framework;
+using PlantNursery.Sim.Core;
 using PlantNursery.Sim.Time;
 using UnityEngine;
 
@@ -26,6 +28,26 @@ namespace PlantNursery.Game.Tests
             Assert.IsTrue(_host.IsReady);
             Assert.Greater(_host.Content.Building.PlotWidth, 0);
             Assert.AreEqual(0, _host.LocalPlayerId.Value);
+        }
+
+        [Test]
+        public void SessionHoldsLocalPlayerAndSinkIsLoopback()
+        {
+            Assert.AreEqual(0, _host.Session.LocalPlayer.Value);
+            Assert.IsNull(_host.Sink);
+            _host.Initialize();
+            Assert.IsInstanceOf<PlantNursery.Sim.Core.LoopbackCommandSink>(_host.Sink);
+        }
+
+        [Test]
+        public void SubmitCarriesSessionPlayerThroughTheSink()
+        {
+            _host.Initialize();
+            // Sleep at the start of the day is rejected (NotTired); the rejection event names the submitting player.
+            _host.Submit(new SleepCommand(_host.Session.LocalPlayer));
+            _host.World.Step(1);
+            var rejected = _host.World.DrainEvents().OfType<CommandRejectedEvent>().Single();
+            Assert.AreEqual(_host.Session.LocalPlayer, rejected.Command.PlayerId);
         }
 
         [Test]

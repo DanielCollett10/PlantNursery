@@ -32,7 +32,7 @@ namespace PlantNursery.Game
         /// <summary>Latest rejection message while it is still fresh, else empty.</summary>
         public string Rejection => Time.time < _rejectUntil ? _rejection : string.Empty;
         /// <summary>The held item id, or empty.</summary>
-        public string HeldItemId => host != null && host.IsReady ? host.Hands.GetHeld(SimHost.LocalPlayer)?.ItemId ?? string.Empty : string.Empty;
+        public string HeldItemId => host != null && host.IsReady ? host.Hands.GetHeld(host.Session.LocalPlayer)?.ItemId ?? string.Empty : string.Empty;
 
         /// <summary>Wire references (used by the scene generator).</summary>
         public void Configure(SimHost simHost, Camera cam, InputActionAsset asset)
@@ -59,7 +59,7 @@ namespace PlantNursery.Game
             var ray = new Ray(viewCamera.transform.position, viewCamera.transform.forward);
             if (!Physics.Raycast(ray, out var hit, host.Content.Building.InteractReach, ~0, QueryTriggerInteraction.Ignore))
                 return null;
-            return Interaction.Offer(SimHost.LocalPlayer, Resolve(hit.collider), host.Hands, host.Surface);
+            return Interaction.Offer(host.Session.LocalPlayer,Resolve(hit.collider), host.Hands, host.Surface);
         }
 
         private static InteractTarget Resolve(Collider c)
