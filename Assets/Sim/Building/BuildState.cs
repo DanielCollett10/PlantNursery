@@ -35,6 +35,8 @@ namespace PlantNursery.Sim.Building
         private readonly Dictionary<int, PlacedItem> _placed = new Dictionary<int, PlacedItem>();
         private int _nextId = 1;
 
+        /// <summary>Increases on every successful place or pick-up; lets caches know to rebuild.</summary>
+        public int Version { get; private set; }
         /// <summary>Plot width in cells.</summary>
         public int PlotWidth { get; }
         /// <summary>Plot depth in cells.</summary>
@@ -90,6 +92,7 @@ namespace PlantNursery.Sim.Building
             Inventory.TryRemove(itemId);
             var item = new PlacedItem(_nextId++, itemId, anchor, rotation, size.W, size.D);
             _placed[item.Id] = item;
+            Version++;
             for (var dx = 0; dx < size.W; dx++)
                 for (var dz = 0; dz < size.D; dz++)
                     _cells[new Cell(anchor.X + dx, anchor.Z + dz)] = item.Id;
@@ -110,6 +113,7 @@ namespace PlantNursery.Sim.Building
             if (rejection != BuildRejection.None) return null;
             var item = _placed[placedId];
             _placed.Remove(placedId);
+            Version++;
             for (var dx = 0; dx < item.Width; dx++)
                 for (var dz = 0; dz < item.Depth; dz++)
                     _cells.Remove(new Cell(item.Anchor.X + dx, item.Anchor.Z + dz));
