@@ -31,7 +31,7 @@ namespace PlantNursery.Sim.Plants
         public static GrowthSystem Install(SimWorld world, ContentDb content, HandsState hands, GameClock clock, GrowthConfig config = null)
         {
             var s = new GrowthSystem(content, hands, clock, config);
-            world.AddSystem(s);
+            world.AddSystem(s, SystemPhase.Growth);
             return s;
         }
 

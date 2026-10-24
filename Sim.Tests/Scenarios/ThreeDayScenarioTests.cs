@@ -171,6 +171,16 @@ namespace PlantNursery.Sim.Tests
         }
 
         [Test]
+        public void DefaultSetup_RegistersNothingInWeatherPhase()
+        {
+            var n = Nursery.Create();
+            Assert.That(n.World.SystemCount(SystemPhase.Weather), Is.EqualTo(0));
+            Assert.That(n.World.SystemCount(SystemPhase.Time), Is.EqualTo(1));
+            Assert.That(n.World.SystemCount(SystemPhase.Growth), Is.EqualTo(1));
+            Assert.That(n.World.SystemCount(SystemPhase.Economy), Is.EqualTo(1));
+        }
+
+        [Test]
         public void ThreeDays_WateredTrayGrowsToRootedAndUnwateredTrayWilts()
         {
             var sw = Stopwatch.StartNew();
