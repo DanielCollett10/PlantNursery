@@ -8,6 +8,7 @@ namespace PlantNursery.Sim.Storage
     {
         private readonly Dictionary<int, Container> _containers = new Dictionary<int, Container>();
         private readonly List<int> _order = new List<int>();
+        private readonly List<HeldThing> _things = new List<HeldThing>();
         private readonly Dictionary<string, int> _stock = new Dictionary<string, int>();
 
         /// <summary>Number of container entities held.</summary>
@@ -31,6 +32,29 @@ namespace PlantNursery.Sim.Storage
             if (!_containers.TryGetValue(id, out var c)) return null;
             _containers.Remove(id); _order.Remove(id);
             return c;
+        }
+
+        /// <summary>Loose things (cans, bundles, packets) returned with their state, oldest first.</summary>
+        public IReadOnlyList<HeldThing> Things => _things;
+
+        /// <summary>Add a returned non-container thing, keeping its charges, quality or seeds.</summary>
+        public void AddThing(HeldThing t) { _things.Add(t); }
+
+        /// <summary>Remove and return the oldest loose thing with this item id; null if none.</summary>
+        public HeldThing TakeThing(string itemId)
+        {
+            for (var i = 0; i < _things.Count; i++)
+                if (_things[i].ItemId == itemId) { var t = _things[i]; _things.RemoveAt(i); return t; }
+            return null;
+        }
+
+        /// <summary>True if a container, loose thing or counted stock of this item id is held.</summary>
+        public bool HasItem(string itemId)
+        {
+            if (StockCount(itemId) > 0) return true;
+            foreach (var c in _containers.Values) if (c.Def.ItemId == itemId) return true;
+            foreach (var t in _things) if (t.ItemId == itemId) return true;
+            return false;
         }
 
         /// <summary>Count of counted stock (e.g. seed packets) for an item id.</summary>
