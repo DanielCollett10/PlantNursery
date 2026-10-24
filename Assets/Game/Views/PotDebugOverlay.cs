@@ -53,9 +53,10 @@ namespace PlantNursery.Game
             if (container == null) { _text = null; _textContainer = -1; return; }
 
             Plant plant = null;
-            foreach (var id in container.PlantIds)
+            var ids = container.PlantIds;
+            for (var i = 0; i < ids.Count; i++)
             {
-                var p = host.Nursery.PlantById(id);
+                var p = host.Nursery.PlantById(ids[i]);
                 if (p != null && !p.IsDead) { plant = p; break; }
             }
             var percent = plant != null ? PercentOf(host.Content, plant) : 0;
