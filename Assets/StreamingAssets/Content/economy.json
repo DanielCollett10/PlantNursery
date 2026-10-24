@@ -1,6 +1,9 @@
 {
   "startingMoney": 200,
   "sellBackFraction": 0.5,
+  "qualityMultipliers": { "poor": 0.6, "good": 1.0, "excellent": 1.4 },
+  "potValueCaps": { "small": 0.5, "medium": 0.8, "large": 1.0 },
+  "qualityCareThresholds": { "excellent": 0.9, "poor": 0.6 },
   "softLockGuard": { "enabled": true, "giftVarietyId": null },
   "starterInventory": {
     "bench_standard": 2,
@@ -10,5 +13,27 @@
     "computer": 1,
     "bed": 1,
     "delivery_shelf": 1
+  },
+  "starterKit": {
+    "placements": [
+      {
+        "item": "bench_3m", "x": 4, "z": 20, "rotation": 0,
+        "planting": [
+          { "slot": 0, "container": "plug_tray", "sow": "hearthmoss_amber", "moisture": 100 },
+          { "slot": 1, "container": "plug_tray", "sow": "hearthmoss_amber", "moisture": 100 },
+          { "slot": 2, "container": "plug_tray", "sow": "hearthmoss_amber", "moisture": 100 },
+          { "slot": 3, "container": "plug_tray", "sow": "hearthmoss_amber", "moisture": 100 },
+          { "slot": 4, "container": "plug_tray", "sow": "hearthmoss_amber", "moisture": 100 },
+          { "slot": 5, "container": "plug_tray", "sow": "hearthmoss_amber", "moisture": 100 }
+        ],
+        "strip": [
+          { "slot": 0, "item": "watering_can" }
+        ]
+      },
+      { "item": "rain_barrel", "x": 11, "z": 20, "rotation": 0 },
+      { "item": "storage_crate", "x": 13, "z": 20, "rotation": 0, "holds": [ { "item": "carry_tray", "count": 2 } ] },
+      { "item": "order_desk", "x": 16, "z": 20, "rotation": 0 },
+      { "item": "bed", "x": 4, "z": 23, "rotation": 0 }
+    ]
   }
 }

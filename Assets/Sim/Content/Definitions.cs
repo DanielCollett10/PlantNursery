@@ -14,6 +14,12 @@ namespace PlantNursery.Sim.Content
     /// <summary>Seasons in order; growth multipliers are keyed by these.</summary>
     public enum Season { Spring, Summer, Autumn }
 
+    /// <summary>Plant quality steps in order (docs/design/plants.md, Quality); value multipliers are keyed by these.</summary>
+    public enum QualityGrade { Poor, Good, Excellent }
+
+    /// <summary>Pot sizes in order; value caps are keyed by these. <c>Large</c> is the species' final size (no cap).</summary>
+    public enum PotSize { Small, Medium, Large }
+
     /// <summary>Integer width x depth.</summary>
     public readonly struct Size2
     {
@@ -173,6 +179,71 @@ namespace PlantNursery.Sim.Content
         public SoftLockGuardConfig SoftLockGuard;
         /// <summary>Starting build inventory: item id to count.</summary>
         public IReadOnlyDictionary<string, int> StarterInventory;
+        /// <summary>Value multiplier per <see cref="QualityGrade"/> (index = (int)grade): poor 0.6, good 1.0, excellent 1.4.</summary>
+        public IReadOnlyList<float> QualityMultipliers;
+        /// <summary>Value cap per <see cref="PotSize"/> (index = (int)size): small 0.5, medium 0.8, large 1.0.</summary>
+        public IReadOnlyList<float> PotValueCaps;
+        /// <summary>Care share (ticks not dry / ticks alive) at or above which a plant can reach excellent (0.9).</summary>
+        public float ExcellentCareThreshold;
+        /// <summary>Care share below which a plant drops to poor (0.6).</summary>
+        public float PoorCareThreshold;
+    }
+
+    /// <summary>A plant placed in a bench's planting area at the start (plants.md, Sowing).</summary>
+    public sealed class StarterSowing
+    {
+        /// <summary>Plug-tray slot index on the bench's planting area.</summary>
+        public int Slot;
+        /// <summary>Container item id (for example <c>plug_tray</c>).</summary>
+        public string ContainerItemId;
+        /// <summary>Variety sown into the container.</summary>
+        public string VarietyId;
+        /// <summary>Starting water meter, 0..100.</summary>
+        public float Moisture;
+    }
+
+    /// <summary>An item on a bench's working strip at the start.</summary>
+    public sealed class StarterStripItem
+    {
+        /// <summary>Slot index on the strip (row-major, from the strip's left-front corner).</summary>
+        public int Slot;
+        /// <summary>Item id; must be in the bench's <c>workStrip.accepts</c>.</summary>
+        public string ItemId;
+    }
+
+    /// <summary>A count of an item a placed item starts holding (for example carry trays in the storage crate).</summary>
+    public sealed class StarterStock
+    {
+        /// <summary>Item id.</summary>
+        public string ItemId;
+        /// <summary>How many, at least 1.</summary>
+        public int Count;
+    }
+
+    /// <summary>One floor item of the day-one kit, with what it starts holding.</summary>
+    public sealed class StarterPlacement
+    {
+        /// <summary>Floor item id.</summary>
+        public string ItemId;
+        /// <summary>South-west anchor cell, x.</summary>
+        public int X;
+        /// <summary>South-west anchor cell, z.</summary>
+        public int Z;
+        /// <summary>Rotation in degrees: 0, 90, 180 or 270.</summary>
+        public int RotationDegrees;
+        /// <summary>Sown plug trays (benches only). Empty for other items.</summary>
+        public IReadOnlyList<StarterSowing> Planting;
+        /// <summary>Strip items (benches only). Empty for other items.</summary>
+        public IReadOnlyList<StarterStripItem> Strip;
+        /// <summary>Stock the item starts holding. Empty for other items.</summary>
+        public IReadOnlyList<StarterStock> Holds;
+    }
+
+    /// <summary>The day-one kit (economy.json <c>starterKit</c>): floor placements with their starting contents.</summary>
+    public sealed class StarterKitDef
+    {
+        /// <summary>Placements in file order. Footprints never overlap.</summary>
+        public IReadOnlyList<StarterPlacement> Placements = new List<StarterPlacement>();
     }
 
     /// <summary>Building values (docs/design/building.md).</summary>
