@@ -29,7 +29,7 @@ namespace PlantNursery.Game
         private float _toastUntil;
         private bool _shopOpen;
         private InputAction _cancel;
-        private FirstPersonController _player;
+        private bool _controlsWereOn;
 
         /// <summary>True while the shop screen is open.</summary>
         public bool IsShopOpen => _shopOpen;
@@ -158,8 +158,8 @@ namespace PlantNursery.Game
             BuildShopList();
             _shopStatus.text = string.Empty;
             _shopOverlay.AddToClassList("shop-overlay--open");
-            _player = FindAnyObjectByType<FirstPersonController>();
-            if (_player != null) _player.enabled = false; // its OnDisable frees the cursor and stops look/move
+            _controlsWereOn = PlayerControllers.Active;
+            PlayerControllers.SetActive(false); // frees the cursor and stops move/look
             UnityEngine.Cursor.lockState = CursorLockMode.None;
             UnityEngine.Cursor.visible = true;
         }
@@ -170,8 +170,8 @@ namespace PlantNursery.Game
             if (!_shopOpen) return;
             _shopOpen = false;
             _shopOverlay?.RemoveFromClassList("shop-overlay--open");
-            if (_player != null) _player.enabled = true; // relocks the cursor
-            _player = null;
+            if (_controlsWereOn) PlayerControllers.SetActive(true); // relocks the cursor in first person
+            _controlsWereOn = false;
         }
 
         private void BuildShopList()

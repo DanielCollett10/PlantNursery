@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using PlantNursery.Sim.Core;
 
 namespace PlantNursery.Game
@@ -14,7 +15,11 @@ namespace PlantNursery.Game
         public Session(PlayerId localPlayer)
         {
             LocalPlayer = localPlayer;
+            Players = new List<PlayerId> { localPlayer };
         }
+
+        /// <summary>Every player in the session (only the local player for now).</summary>
+        public IReadOnlyList<PlayerId> Players { get; }
 
         /// <summary>The local player's id (solo play uses player 0).</summary>
         public PlayerId LocalPlayer { get; }

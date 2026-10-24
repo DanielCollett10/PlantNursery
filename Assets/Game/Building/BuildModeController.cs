@@ -45,7 +45,6 @@ namespace PlantNursery.Game
         private Renderer[] _ghostRenderers = new Renderer[0];
         private bool _ghostValid;
         private string _reason = string.Empty;
-        private FirstPersonController _player;
         private WorldView _world;
         private Material _fallbackValid, _fallbackInvalid;
 
@@ -127,8 +126,7 @@ namespace PlantNursery.Game
         private void Update()
         {
             if (host == null || !host.IsReady || viewCamera == null || _toggle == null) return;
-            if (_player == null) _player = FindAnyObjectByType<FirstPersonController>();
-            if (_player != null && !_player.enabled) { HideGhost(); return; } // a UI screen owns the input
+            if (!PlayerControllers.Active) { HideGhost(); return; } // a UI screen owns the input
 
             if (_toggle.WasPressedThisFrame()) SetBuildMode(!IsBuildMode);
             else if (IsBuildMode && _cancel.WasPressedThisFrame()) SetBuildMode(false);
@@ -219,8 +217,11 @@ namespace PlantNursery.Game
             _hasAim = true; _aimIsSurface = false; _floorAnchor = anchor;
         }
 
+        private CharacterController _player;
+
         private bool PlayerStandsIn(Cell anchor, Size2 size)
         {
+            if (_player == null) _player = FindAnyObjectByType<CharacterController>();
             if (_player == null) return false;
             var rect = BuildAim.FloorRect(anchor, size.W, size.D, plotOrigin);
             var height = _ghostRenderers.Length > 0 ? 0f : 1f;
