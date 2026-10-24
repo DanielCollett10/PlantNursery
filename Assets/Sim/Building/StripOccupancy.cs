@@ -53,6 +53,15 @@ namespace PlantNursery.Sim.Building
         {
             _content = content;
             _build = build;
+            _build?.AddPickUpBlocker(p => HasAny(p.Id));
+        }
+
+        /// <summary>True if anything sits on the bench's working strip.</summary>
+        public bool HasAny(int benchId)
+        {
+            var prefix = benchId + "|";
+            foreach (var t in _slots) if (t.StartsWith(prefix, System.StringComparison.Ordinal)) return true;
+            return false;
         }
 
         /// <summary>Number of slot columns for an item on a bench's strip; 0 if there is no strip or it is not accepted.</summary>

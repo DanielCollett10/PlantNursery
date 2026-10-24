@@ -40,6 +40,14 @@ namespace PlantNursery.Sim.Building
         {
             _content = content;
             _build = build;
+            _build?.AddPickUpBlocker(p => HasAny(p.Id));
+        }
+
+        /// <summary>True if any slot of the bench is occupied.</summary>
+        public bool HasAny(int benchId)
+        {
+            foreach (var s in _slots.Values) if (s.BenchId == benchId) return true;
+            return false;
         }
 
         /// <summary>Query-only: would placing into this slot be accepted? Never changes state.</summary>

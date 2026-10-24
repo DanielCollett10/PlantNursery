@@ -190,7 +190,10 @@ namespace PlantNursery.Sim.Tests
             var ae = Put(a, "pot_small", 14, 1);
             Put(b, "pot_small", 0, 1);
             Assert.AreEqual(1, _nb.Of(ae).Count);
-            _state.PickUp(b, out _);
+            // A bench holding pots can no longer be picked up (T-129); empty it first.
+            Assert.AreEqual(BuildRejection.HasItemsOnTop, _state.CanPickUp(b));
+            _occ.RemoveFromSlot(b, "pot_small", 0, 1);
+            Assert.IsNotNull(_state.PickUp(b, out _));
             Assert.AreEqual(0, _nb.Of(ae).Count);
         }
     }
