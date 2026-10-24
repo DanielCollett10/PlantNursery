@@ -1,4 +1,5 @@
 using PlantNursery.Sim.Content;
+using PlantNursery.Sim.Core;
 using PlantNursery.Sim.Genetics;
 
 namespace PlantNursery.Sim.Plants
@@ -32,6 +33,38 @@ namespace PlantNursery.Sim.Plants
         public int CellIndex { get; set; }
         /// <summary>True once the plant has died.</summary>
         public bool IsDead { get; set; }
+
+        /// <summary>Species id (null for old-variety plants, which keep the old growth rules).</summary>
+        public string SpeciesId { get; private set; }
+        /// <summary>Container definition id the plant sits in (species plants).</summary>
+        public string ContainerId { get; set; }
+        /// <summary>Index into the species' stage list.</summary>
+        public int StageIndex { get; set; }
+        /// <summary>Progress through the current stage, 0 to 1.</summary>
+        public float StageProgress { get; set; }
+        /// <summary>Quality steps lost to bad care (0 = none).</summary>
+        public int QualityStepsLost { get; set; }
+        /// <summary>True when this plant follows the species rules.</summary>
+        public bool IsSpeciesPlant => SpeciesId != null;
+        /// <summary>Lifecycle machine: Growing, RootBound, Wilted, Dead. Null for old-variety plants.</summary>
+        public StateMachine<PlantLifecycle> Lifecycle { get; private set; }
+
+        /// <summary>Creates a species plant (use <see cref="SpeciesPlantFactory"/>).</summary>
+        public Plant(int id, string speciesId, string varietyId, Genome genome, string containerId, int cell)
+            : this(id, varietyId, genome)
+        {
+            SpeciesId = speciesId;
+            ContainerId = containerId;
+            CellIndex = cell;
+            Lifecycle = new StateMachine<PlantLifecycle>(PlantLifecycle.Growing)
+                .Allow(PlantLifecycle.Growing, PlantLifecycle.RootBound)
+                .Allow(PlantLifecycle.RootBound, PlantLifecycle.Growing)
+                .Allow(PlantLifecycle.Growing, PlantLifecycle.Wilted)
+                .Allow(PlantLifecycle.RootBound, PlantLifecycle.Wilted)
+                .Allow(PlantLifecycle.Wilted, PlantLifecycle.Growing)
+                .Allow(PlantLifecycle.Wilted, PlantLifecycle.RootBound)
+                .Allow(PlantLifecycle.Wilted, PlantLifecycle.Dead);
+        }
 
         /// <summary>Creates a plant without a genome.</summary>
         public Plant(int id, string varietyId) { Id = id; VarietyId = varietyId; }

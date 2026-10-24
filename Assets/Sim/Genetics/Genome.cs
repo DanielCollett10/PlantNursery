@@ -39,6 +39,44 @@ namespace PlantNursery.Sim.Genetics
                     throw new GenomeException("missing alleles for gene '" + id + "'");
         }
 
+        /// <summary>
+        /// Creates the genome of a species variety: an exact copy of its alleles, validated against the species' genes.
+        /// </summary>
+        /// <exception cref="GenomeException">If the species or variety is unknown.</exception>
+        public Genome(ContentDb db, string speciesId, string varietyId)
+            : this(SpeciesGenes(db, speciesId), SpeciesVariety(db, speciesId, varietyId).Genes)
+        {
+        }
+
+        private static SpeciesDef Species(ContentDb db, string speciesId)
+        {
+            if (db == null) throw new ArgumentNullException(nameof(db));
+            if (speciesId == null || !db.SpeciesDefs.TryGetValue(speciesId, out var species))
+                throw new GenomeException("unknown species id '" + speciesId + "'");
+            return species;
+        }
+
+        private static SpeciesVarietyDef SpeciesVariety(ContentDb db, string speciesId, string varietyId)
+        {
+            var species = Species(db, speciesId);
+            if (varietyId == null || !species.Varieties.TryGetValue(varietyId, out var variety))
+                throw new GenomeException("unknown variety id '" + varietyId + "' for species '" + speciesId + "'");
+            return variety;
+        }
+
+        private static IReadOnlyDictionary<string, GeneDef> SpeciesGenes(ContentDb db, string speciesId)
+        {
+            var species = Species(db, speciesId);
+            var genes = new Dictionary<string, GeneDef>();
+            foreach (var id in species.GeneIds)
+            {
+                if (!db.AllGeneDefs.TryGetValue(id, out var gene))
+                    throw new GenomeException("unknown gene id '" + id + "'");
+                genes[id] = gene;
+            }
+            return genes;
+        }
+
         /// <summary>Creates the genome a plant sown from a packet of <paramref name="varietyId"/> gets: an exact copy of the variety's alleles.</summary>
         /// <exception cref="GenomeException">If the variety id is unknown.</exception>
         public static Genome FromVariety(ContentDb db, string varietyId)
