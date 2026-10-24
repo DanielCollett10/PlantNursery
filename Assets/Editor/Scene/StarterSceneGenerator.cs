@@ -116,6 +116,7 @@ namespace PlantNursery.EditorTools
             hudScript.Configure(interaction);
             hudScript.ConfigureWorld(worldInteractions);
             new GameObject("Bed").AddComponent<BedInteractable>().Configure(simHost.GetComponent<SimHost>());
+            new GameObject("Tending").AddComponent<TendingInteractable>().Configure(simHost.GetComponent<SimHost>(), player.transform);
 
             var buildGo = new GameObject("BuildMode");
             var buildDoc = buildGo.AddComponent<UnityEngine.UIElements.UIDocument>();

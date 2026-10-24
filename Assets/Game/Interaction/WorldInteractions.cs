@@ -99,7 +99,9 @@ namespace PlantNursery.Game
             var result = target.Interact(host);
             if (result.IsAccepted) return;
             var key = string.IsNullOrEmpty(result.Message) ? result.Reason.ToString() : result.Message;
-            _rejection = UiStrings.Has("reject." + result.Reason) ? UiStrings.Get("reject." + result.Reason) : key;
+            // A specific message ("CanEmpty") wins over the broad reason ("NotAllowed").
+            if (!string.IsNullOrEmpty(result.Message) && UiStrings.Has("reject." + result.Message)) _rejection = UiStrings.Get("reject." + result.Message);
+            else _rejection = UiStrings.Has("reject." + result.Reason) ? UiStrings.Get("reject." + result.Reason) : key;
             _rejectUntil = Time.time + RejectionSeconds;
         }
     }

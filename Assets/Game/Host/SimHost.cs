@@ -88,6 +88,12 @@ namespace PlantNursery.Game
             var nursery = NurseryBuilder.Build(world, content);
             var build = nursery.Build;
             BuildingModule.Register(world, build);
+            // Walk-and-tend commands (T-154): crate, bench slots, watering and scraping.
+            CrateCommands.Register(world, nursery.Hands);
+            nursery.Contents.Register(world);
+            nursery.Contents.RegisterPotOn(world, nursery.Crate, nursery.Plants);
+            WaterCommands.Register(world, nursery, content);
+            MossCommands.Register(world, nursery, content, nursery.PlantById);
             WaterSystem.Install(world, nursery.AllContainers, nursery.PlantById, clock);
             SpeciesGrowthSystem.Install(world, content, nursery.AllContainers, nursery.PlantById, clock);
             CrateSoftLockGuard.Install(world, content, nursery, clock);
