@@ -176,10 +176,10 @@ namespace PlantNursery.Sim.Tests
         }
 
         [Test]
-        public void StarterInventoryHasOneCanAndCansAreBuyable()
+        public void StarterInventoryHasOneCanAndCansAreNotSold()
         {
             Assert.AreEqual(1, _db.Economy.StarterInventory["watering_can"]);
-            Assert.Greater(_db.ItemDefs["watering_can"].Price, 0);
+            Assert.AreEqual(0, _db.ItemDefs["watering_can"].Price); // starter kit only (economy.md, Item ids)
         }
     }
 }

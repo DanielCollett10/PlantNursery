@@ -69,6 +69,14 @@ namespace PlantNursery.Sim.Content
         public int WaterCapacity;
         /// <summary>Seeds in one packet (seed packets only; 0 otherwise).</summary>
         public int SeedCount;
+        /// <summary>Species a seed/spore packet grows; null for other items.</summary>
+        public string SpeciesId;
+        /// <summary>Variety a seed/spore packet grows; null for other items.</summary>
+        public string VarietyId;
+        /// <summary>Seeds (or trays' worth of spores) in one packet; 0 for items that are not packets.</summary>
+        public int PacketSeeds;
+        /// <summary>How many things the item carries (carry trays: containers); 0 otherwise.</summary>
+        public int Capacity;
     }
 
     /// <summary>A plant container type (docs/design/plants.md).</summary>
@@ -86,6 +94,14 @@ namespace PlantNursery.Sim.Content
         public PlantStage AcceptsFromStage;
         /// <summary>Moisture lost per hour.</summary>
         public float DryRatePerHour;
+        /// <summary>Length of the container's footprint in 0.1 m units, along the bench.</summary>
+        public int AlongUnits;
+        /// <summary>Width of the container's footprint in 0.1 m units, across the bench.</summary>
+        public int AcrossUnits;
+        /// <summary>Water meter lost per in-game hour (docs/design/plants.md, Containers).</summary>
+        public float DrainPerHour;
+        /// <summary>Can charges one watering uses.</summary>
+        public int WateringCost;
     }
 
     /// <summary>A gene definition.</summary>

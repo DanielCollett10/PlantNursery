@@ -32,6 +32,7 @@ namespace PlantNursery.Sim.Content
             var economy = LoadEconomy(Root(filesByName, EconomyFile), items, varieties);
             var building = LoadBuilding(Root(filesByName, BuildingFile));
             var species = SpeciesLoader.Load(Root(filesByName, SpeciesFile), allGenes, containers, varieties);
+            ValidateSeedItems(Root(filesByName, ItemsFile), items, species);
             return new ContentDb(time, items, containers, varieties, genes, economy, building, species, allGenes);
         }
 
@@ -112,7 +113,17 @@ namespace PlantNursery.Sim.Content
                     Price = n.Int("price"),
                     WaterCapacity = n.Has("waterCapacity") ? n.Int("waterCapacity") : 0,
                     SeedCount = n.Has("seedCount") ? n.Int("seedCount") : 0,
+                    SpeciesId = n.OptStr("speciesId"),
+                    VarietyId = n.OptStr("varietyId"),
+                    PacketSeeds = n.Has("packetSeeds") ? n.Int("packetSeeds", 1) : 0,
+                    Capacity = n.Has("capacity") ? n.Int("capacity", 1) : 0,
                 };
+                if (def.SpeciesId != null || def.VarietyId != null || def.PacketSeeds > 0)
+                {
+                    if (def.SpeciesId == null) throw n.Error("speciesId", "missing required field for a seed item");
+                    if (def.VarietyId == null) throw n.Error("varietyId", "missing required field for a seed item");
+                    if (def.PacketSeeds < 1) throw n.Error("packetSeeds", "missing required field for a seed item");
+                }
                 if (def.Layer == ItemLayer.Surface)
                     def.SurfaceFootprint = n.Size("surfaceFootprint");
                 else
@@ -125,6 +136,20 @@ namespace PlantNursery.Sim.Content
             return result;
         }
 
+        private static void ValidateSeedItems(ContentNode root, Dictionary<string, ItemDef> items, Dictionary<string, SpeciesDef> species)
+        {
+            var nodes = root.ObjArray("items");
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                var def = items[nodes[i].Str("id")];
+                if (def.SpeciesId == null) continue;
+                if (!species.TryGetValue(def.SpeciesId, out var sp))
+                    throw nodes[i].Error("speciesId", "unknown species '" + def.SpeciesId + "'");
+                if (!sp.Varieties.ContainsKey(def.VarietyId))
+                    throw nodes[i].Error("varietyId", "unknown variety '" + def.VarietyId + "' for species '" + def.SpeciesId + "'");
+            }
+        }
+
         private static Dictionary<string, ContainerDef> LoadContainers(ContentNode root, Dictionary<string, ItemDef> items)
         {
             var result = new Dictionary<string, ContainerDef>();
@@ -134,7 +159,11 @@ namespace PlantNursery.Sim.Content
                 {
                     Id = n.Str("id"),
                     ItemId = n.Str("itemId"),
-                    CellCount = n.Int("cellCount", 1),
+                    CellCount = n.Int("cells", 1),
+                    AlongUnits = n.Int("alongUnits", 1),
+                    AcrossUnits = n.Int("acrossUnits", 1),
+                    DrainPerHour = n.Float("drainPerHour"),
+                    WateringCost = n.Int("wateringCost", 1),
                     MaxStage = n.Enum<PlantStage>("maxStage"),
                     AcceptsFromStage = n.Enum<PlantStage>("acceptsFromStage"),
                     DryRatePerHour = n.Float("dryRatePerHour"),

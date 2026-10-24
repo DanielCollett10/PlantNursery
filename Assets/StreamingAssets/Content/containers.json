@@ -1,7 +1,8 @@
 {
   "containers": [
-    { "id": "plug_tray", "itemId": "plug_tray", "cellCount": 6, "maxStage": "Rooted", "acceptsFromStage": "Seed", "dryRatePerHour": 4.0 },
-    { "id": "pot_small", "itemId": "pot_small", "cellCount": 1, "maxStage": "Established", "acceptsFromStage": "Rooted", "dryRatePerHour": 2.5 },
-    { "id": "pot_medium", "itemId": "pot_medium", "cellCount": 1, "maxStage": "Mature", "acceptsFromStage": "Established", "dryRatePerHour": 1.5 }
+    { "id": "plug_tray", "itemId": "plug_tray", "cells": 6, "alongUnits": 6, "acrossUnits": 4, "drainPerHour": 8, "wateringCost": 1, "maxStage": "Rooted", "acceptsFromStage": "Seed", "dryRatePerHour": 4.0 },
+    { "id": "pot_small", "itemId": "pot_small", "cells": 1, "alongUnits": 2, "acrossUnits": 2, "drainPerHour": 6, "wateringCost": 1, "maxStage": "Established", "acceptsFromStage": "Rooted", "dryRatePerHour": 2.5 },
+    { "id": "pot_medium", "itemId": "pot_medium", "cells": 1, "alongUnits": 3, "acrossUnits": 3, "drainPerHour": 4, "wateringCost": 1, "maxStage": "Mature", "acceptsFromStage": "Established", "dryRatePerHour": 1.5 },
+    { "id": "pot_large", "itemId": "pot_large", "cells": 1, "alongUnits": 6, "acrossUnits": 6, "drainPerHour": 3, "wateringCost": 2, "maxStage": "Mature", "acceptsFromStage": "Established", "dryRatePerHour": 1.0 }
   ]
 }

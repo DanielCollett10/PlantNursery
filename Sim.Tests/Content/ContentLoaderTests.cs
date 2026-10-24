@@ -50,7 +50,7 @@ namespace PlantNursery.Sim.Tests
             Assert.AreEqual(10, db.Time.SeasonLengthDays);
             Assert.AreEqual(3, db.VarietyDefs.Count);
             Assert.AreEqual(3, db.GeneDefs.Count); // old genes only; species genes are in AllGeneDefs
-            Assert.AreEqual(3, db.ContainerDefs.Count);
+            Assert.AreEqual(4, db.ContainerDefs.Count);
             Assert.AreEqual(40, db.Building.PlotWidth);
             Assert.AreEqual(30, db.Building.PlotDepth);
             Assert.AreEqual(2, db.Building.NudgeRadius);
@@ -90,6 +90,84 @@ namespace PlantNursery.Sim.Tests
             Assert.AreEqual(PlantStage.Seed, tray.AcceptsFromStage);
             Assert.AreEqual(4.0f, tray.DryRatePerHour);
             Assert.AreEqual(PlantStage.Mature, db.ContainerDefs["pot_medium"].MaxStage);
+        }
+
+        [Test]
+        public void M2ItemCatalogueHasEveryIdAndPrice()
+        {
+            var db = ContentLoader.Load(RealFiles(false));
+            var prices = new Dictionary<string, int>
+            {
+                { "spores_hearthmoss_amber", 10 }, { "spores_hearthmoss_violet", 10 },
+                { "seeds_chimebell_white", 12 }, { "seeds_chimebell_blue", 12 },
+                { "pot_small", 2 }, { "pot_medium", 4 }, { "pot_large", 8 },
+                { "plug_tray", 5 }, { "carry_tray", 6 }, { "bench_3m", 40 }, { "bench_4m", 50 },
+                { "watering_can", 0 }, { "rain_barrel", 0 }, { "storage_crate", 0 },
+                { "order_desk", 0 }, { "bed", 0 }, { "bundle_hearthmoss", 0 },
+            };
+            foreach (var kv in prices)
+            {
+                Assert.IsTrue(db.ItemDefs.ContainsKey(kv.Key), kv.Key);
+                Assert.AreEqual(kv.Value, db.ItemDefs[kv.Key].Price, kv.Key);
+            }
+            var amber = db.ItemDefs["spores_hearthmoss_amber"];
+            Assert.AreEqual("hearthmoss", amber.SpeciesId);
+            Assert.AreEqual("hearthmoss_amber", amber.VarietyId);
+            Assert.AreEqual(1, amber.PacketSeeds);
+            Assert.AreEqual(6, db.ItemDefs["seeds_chimebell_blue"].PacketSeeds);
+            Assert.AreEqual("chimebell_blue", db.ItemDefs["seeds_chimebell_blue"].VarietyId);
+            Assert.AreEqual(10, db.ItemDefs["watering_can"].WaterCapacity);
+            Assert.AreEqual(6, db.ItemDefs["carry_tray"].Capacity);
+        }
+
+        [Test]
+        public void SeedItemWithUnknownVarietyFails()
+        {
+            var files = RealFiles(false);
+            var changed = files["items.json"].Replace("\"varietyId\": \"chimebell_blue\"", "\"varietyId\": \"ghost\"");
+            Assert.AreNotEqual(files["items.json"], changed);
+            files["items.json"] = changed;
+            var e = Fails(files);
+            StringAssert.Contains("varietyId", e.Message);
+        }
+
+        [Test]
+        public void SeedItemWithUnknownSpeciesFails()
+        {
+            var files = RealFiles(false);
+            var changed = files["items.json"].Replace("\"speciesId\": \"chimebell\"", "\"speciesId\": \"ghost\"");
+            Assert.AreNotEqual(files["items.json"], changed);
+            files["items.json"] = changed;
+            StringAssert.Contains("speciesId", Fails(files).Message);
+        }
+
+        [Test]
+        public void SeedItemMissingPacketSeedsFails()
+        {
+            var files = RealFiles(false);
+            var changed = files["items.json"].Replace(", \"packetSeeds\": 1 }", " }");
+            Assert.AreNotEqual(files["items.json"], changed);
+            files["items.json"] = changed;
+            StringAssert.Contains("packetSeeds", Fails(files).Message);
+        }
+
+        [Test]
+        public void ContainersCarryFootprintDrainAndCost()
+        {
+            var db = ContentLoader.Load(RealFiles(false));
+            var drain = new Dictionary<string, float> { { "plug_tray", 8 }, { "pot_small", 6 }, { "pot_medium", 4 }, { "pot_large", 3 } };
+            var cost = new Dictionary<string, int> { { "plug_tray", 1 }, { "pot_small", 1 }, { "pot_medium", 1 }, { "pot_large", 2 } };
+            foreach (var id in drain.Keys)
+            {
+                var c = db.ContainerDefs[id];
+                Assert.AreEqual(drain[id], c.DrainPerHour, id);
+                Assert.AreEqual(cost[id], c.WateringCost, id);
+                Assert.Greater(c.AlongUnits, 0, id);
+                Assert.Greater(c.AcrossUnits, 0, id);
+            }
+            Assert.AreEqual(6, db.ContainerDefs["plug_tray"].CellCount);
+            Assert.AreEqual(6, db.ContainerDefs["plug_tray"].AlongUnits);
+            Assert.AreEqual(4, db.ContainerDefs["plug_tray"].AcrossUnits);
         }
 
         [Test]
