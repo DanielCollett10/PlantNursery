@@ -93,16 +93,17 @@ namespace PlantNursery.Game.PlayModeTests
         }
 
         [UnityTest]
-        public IEnumerator SleepInDaytime_ShowsNotTired_AndTimeDoesNotJump()
+        public IEnumerator SleepInDaytime_NoPrompt_AndTimeDoesNotJump()
         {
             AdvanceTo(DayPhase.Daytime);
             var tick = _host.World.Tick;
             yield return null;
+            Assert.IsNull(_world.Nearest);
+            Assert.AreEqual(string.Empty, _world.Prompt);
             Press(_keyboard.eKey);
             yield return null;
             Release(_keyboard.eKey);
             yield return null;
-            Assert.AreEqual("Not tired yet.", _world.Rejection);
             Assert.Less(_host.World.Tick - tick, 60);
         }
 

@@ -24,7 +24,10 @@ namespace PlantNursery.Game
         private void OnDisable() { WorldInteractions.Unregister(this); }
 
         /// <inheritdoc />
-        public bool IsAvailable => isActiveAndEnabled && host != null && host.IsReady && FindBed() != null;
+        public bool IsAvailable => isActiveAndEnabled && host != null && host.IsReady && IsSleepTime && FindBed() != null;
+
+        // Only a display hint so the prompt matches the Sim's NotTired rule; the Sim still decides.
+        private bool IsSleepTime => host.Clock.Phase == DayPhase.Evening || host.Clock.Phase == DayPhase.Night;
 
         /// <inheritdoc />
         public string PromptKey => "prompt.sleep";
