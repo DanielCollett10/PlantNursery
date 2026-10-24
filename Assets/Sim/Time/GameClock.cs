@@ -59,7 +59,7 @@ namespace PlantNursery.Sim.Time
         public static GameClock Install(SimWorld world, TimeConfig config)
         {
             var clock = new GameClock(config, world);
-            world.AddSystem(clock);
+            world.AddSystem(clock, SystemPhase.Time);
             world.RegisterHandler<SleepCommand>(new SleepHandler(clock));
             return clock;
         }

@@ -44,7 +44,7 @@ namespace PlantNursery.Sim.Economy
         {
             if (world == null) throw new ArgumentNullException(nameof(world));
             var guard = new SoftLockGuard(content, wallet, build, surface, hands, clock);
-            world.AddSystem(guard);
+            world.AddSystem(guard, SystemPhase.Economy);
             return guard;
         }
 

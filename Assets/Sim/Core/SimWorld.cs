@@ -12,7 +12,15 @@ namespace PlantNursery.Sim.Core
     {
         private readonly Queue<ICommand> _pending = new Queue<ICommand>();
         private readonly List<ISimEvent> _events = new List<ISimEvent>();
-        private readonly List<ISimSystem> _systems = new List<ISimSystem>();
+        private readonly List<PhasedSystem> _systems = new List<PhasedSystem>();
+        private int _nextEntityId = 1;
+
+        private readonly struct PhasedSystem
+        {
+            public readonly SystemPhase Phase;
+            public readonly ISimSystem System;
+            public PhasedSystem(SystemPhase phase, ISimSystem system) { Phase = phase; System = system; }
+        }
         private readonly Dictionary<Type, Func<ICommand, SimWorld, CommandResult>> _validators =
             new Dictionary<Type, Func<ICommand, SimWorld, CommandResult>>();
         private readonly Dictionary<Type, Action<ICommand, SimWorld>> _appliers =
@@ -24,11 +32,22 @@ namespace PlantNursery.Sim.Core
         /// <summary>Simulated seconds per tick.</summary>
         public double SecondsPerTick { get; }
 
-        public SimWorld(double secondsPerTick = 0.05)
+        /// <summary>Seed of the world's random source.</summary>
+        public int Seed { get; }
+
+        /// <summary>The one seeded random source. Systems must use this, never System.Random.</summary>
+        public SimRandom Random { get; }
+
+        public SimWorld(double secondsPerTick = 0.05, int seed = 0)
         {
             if (secondsPerTick <= 0) throw new ArgumentOutOfRangeException(nameof(secondsPerTick));
             SecondsPerTick = secondsPerTick;
+            Seed = seed;
+            Random = new SimRandom(seed);
         }
+
+        /// <summary>Return the next entity id (1, 2, 3, ...). Ids are never reused.</summary>
+        public int NextEntityId() { return _nextEntityId++; }
 
         /// <summary>Total simulated time in seconds.</summary>
         public double SimulatedSeconds => Tick * SecondsPerTick;
@@ -55,11 +74,29 @@ namespace PlantNursery.Sim.Core
             _appliers[typeof(T)] = (c, w) => handler.Apply((T)c, w);
         }
 
-        /// <summary>Add a system, updated each tick in registration order.</summary>
-        public void AddSystem(ISimSystem system)
+        /// <summary>Add a system in <see cref="SystemPhase.Behaviour"/>.</summary>
+        public void AddSystem(ISimSystem system) { AddSystem(system, SystemPhase.Behaviour); }
+
+        /// <summary>
+        /// Add a system. Each tick systems update in phase order (Time first, Economy last);
+        /// within a phase, in registration order.
+        /// </summary>
+        public void AddSystem(ISimSystem system, SystemPhase phase)
         {
             if (system == null) throw new ArgumentNullException(nameof(system));
-            _systems.Add(system);
+            if (!Enum.IsDefined(typeof(SystemPhase), phase)) throw new ArgumentOutOfRangeException(nameof(phase));
+            // Insert after the last system whose phase is <= this one: keeps the list sorted and stable.
+            var i = _systems.Count;
+            while (i > 0 && _systems[i - 1].Phase > phase) i--;
+            _systems.Insert(i, new PhasedSystem(phase, system));
+        }
+
+        /// <summary>Number of systems registered in a phase.</summary>
+        public int SystemCount(SystemPhase phase)
+        {
+            var n = 0;
+            foreach (var s in _systems) if (s.Phase == phase) n++;
+            return n;
         }
 
         /// <summary>Queue a command; it is applied at the start of the next tick, in submission order.</summary>
@@ -128,7 +165,7 @@ namespace PlantNursery.Sim.Core
         {
             ApplyPendingCommands();
             Tick++;
-            foreach (var system in _systems) system.Update(this);
+            for (var i = 0; i < _systems.Count; i++) _systems[i].System.Update(this);
         }
 
         private void ApplyPendingCommands()
