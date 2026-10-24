@@ -77,8 +77,15 @@ namespace PlantNursery.Sim.Storage
     }
 
     /// <summary>Things sitting in bench slots, with the PickUpFromSlot / PutInSlot handlers using SlotOccupancy and StripOccupancy rules.</summary>
-    public sealed class SlotContents
+    public sealed partial class SlotContents
     {
+        private static StripContents StripContentsOf(HeldThing held)
+        {
+            if (held.Kind == HeldKind.Container && held.Container.PlantIds.Count > 0) return StripContents.HoldsPlant;
+            if (held.Kind == HeldKind.CarryTray && held.Pots.Count > 0) return StripContents.CarryTrayWithPots;
+            return StripContents.NoPlants;
+        }
+
         private readonly SlotOccupancy _slots;
         private readonly StripOccupancy _strip;
         private readonly HandsV2 _hands;
@@ -90,6 +97,15 @@ namespace PlantNursery.Sim.Storage
             _slots = slots; _strip = strip; _hands = hands;
         }
 
+        /// <summary>Creates slot contents that also reads carry tray capacity from content.</summary>
+        public SlotContents(SlotOccupancy slots, StripOccupancy strip, HandsV2 hands, PlantNursery.Sim.Content.ContentDb content)
+            : this(slots, strip, hands)
+        {
+            _content = content;
+        }
+
+        private readonly PlantNursery.Sim.Content.ContentDb _content;
+
         /// <summary>What sits exactly at this address, or null.</summary>
         public HeldThing Get(SlotAddress a) => _things.TryGetValue(a.Key, out var t) ? t : null;
 
@@ -98,6 +114,7 @@ namespace PlantNursery.Sim.Storage
         {
             world.RegisterHandler<PickUpFromSlot>(new PickH(this));
             world.RegisterHandler<PutInSlot>(new PutH(this));
+            RegisterTray(world);
         }
 
         private CommandResult CanPick(PlayerId p, SlotAddress a)
@@ -118,8 +135,7 @@ namespace PlantNursery.Sim.Storage
             if (a.IsStrip)
             {
                 if (held.ItemId != s.Size) return Fail(RejectReason.InvalidTarget, "NotAccepted");
-                var contents = held.Kind == HeldKind.Container && held.Container.PlantIds.Count > 0
-                    ? StripContents.HoldsPlant : StripContents.NoPlants;
+                var contents = StripContentsOf(held);
                 var r = _strip.CanPlace(s.BenchId, s.Size, s.Col, s.Row, contents);
                 return r == StripRejection.None ? CommandResult.Accepted() : Fail(RejectReason.Blocked, r.ToString());
             }
@@ -163,8 +179,7 @@ namespace PlantNursery.Sim.Storage
                 var held = _c._hands.TakeHeld(cmd.PlayerId);
                 if (a.IsStrip)
                 {
-                    var contents = held.Kind == HeldKind.Container && held.Container.PlantIds.Count > 0
-                        ? StripContents.HoldsPlant : StripContents.NoPlants;
+                    var contents = StripContentsOf(held);
                     _c._strip.Place(s.BenchId, s.Size, s.Col, s.Row, contents);
                 }
                 else _c._slots.PlaceInSlot(s.BenchId, s.Size, s.Col, s.Row);
