@@ -18,7 +18,9 @@ namespace PlantNursery.Sim.Core
         /// <summary>Something else is in the way.</summary>
         Blocked,
         /// <summary>The player cannot sleep yet (Morning or Daytime).</summary>
-        NotTired
+        NotTired,
+        /// <summary>An earlier command this tick already moved, took or filled the target (first request wins).</summary>
+        Taken
     }
 
     /// <summary>Outcome of validating or applying a command.</summary>
