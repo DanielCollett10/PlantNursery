@@ -33,6 +33,26 @@ namespace PlantNursery.Sim.Storage
             Build = build; Slots = slots; Strip = strip; Contents = contents; Crate = crate; Hands = hands; Wallet = wallet;
         }
 
+        /// <summary>Every container entity: in the crate, in bench slots, in hands, and pots inside carry trays.</summary>
+        public IEnumerable<Container> AllContainers()
+        {
+            var seen = new HashSet<int>();
+            foreach (var c in Crate.Containers) if (seen.Add(c.Id)) yield return c;
+            foreach (var t in Contents.Things)
+                foreach (var c in In(t)) if (seen.Add(c.Id)) yield return c;
+            foreach (var t in Hands.AllHeld)
+                foreach (var c in In(t)) if (seen.Add(c.Id)) yield return c;
+        }
+
+        /// <summary>The plant with this id, or null.</summary>
+        public Plant PlantById(int id) => PlantMap.TryGetValue(id, out var p) ? p : null;
+
+        private static IEnumerable<Container> In(HeldThing thing)
+        {
+            if (thing.Container != null) yield return thing.Container;
+            foreach (var pot in thing.Pots) yield return pot;
+        }
+
         /// <summary>
         /// Find a container entity by id wherever it is: in the crate, in a bench slot, in a hand, or as a pot in a carry tray
         /// (in a slot or a hand). Null if none.
