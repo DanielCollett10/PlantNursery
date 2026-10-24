@@ -25,6 +25,28 @@ namespace PlantNursery.Sim.Building
         public PickUpItem(PlayerId player, int placedId) { PlayerId = player; PlacedId = placedId; }
     }
 
+    /// <summary>Move a placed floor item; a bench keeps its pots and strip items in the same slots.</summary>
+    public sealed class MoveItem : ICommand
+    {
+        public PlayerId PlayerId { get; }
+        public int PlacedId { get; }
+        public Cell Anchor { get; }
+        public Rotation Rotation { get; }
+        public MoveItem(PlayerId player, int placedId, Cell anchor, Rotation rotation)
+        {
+            PlayerId = player; PlacedId = placedId; Anchor = anchor; Rotation = rotation;
+        }
+    }
+
+    /// <summary>Raised when an item is moved.</summary>
+    public sealed class ItemMoved : ISimEvent
+    {
+        public PlayerId PlayerId { get; }
+        public PlacedItem Item { get; }
+        public PlacedItem From { get; }
+        public ItemMoved(PlayerId player, PlacedItem item, PlacedItem from) { PlayerId = player; Item = item; From = from; }
+    }
+
     /// <summary>Raised when an item is placed.</summary>
     public sealed class ItemPlaced : ISimEvent
     {
@@ -49,6 +71,7 @@ namespace PlantNursery.Sim.Building
         {
             world.RegisterHandler<PlaceItem>(new PlaceHandler(state));
             world.RegisterHandler<PickUpItem>(new PickUpHandler(state));
+            world.RegisterHandler<MoveItem>(new MoveHandler(state));
         }
 
         /// <summary>Map a building rejection to a command result; the message is the reason name.</summary>
@@ -75,6 +98,19 @@ namespace PlantNursery.Sim.Building
             {
                 var item = _s.Place(c.ItemId, c.Layer, c.Anchor, c.Rotation, out _);
                 if (item != null) w.Raise(new ItemPlaced(c.PlayerId, item));
+            }
+        }
+
+        private sealed class MoveHandler : ICommandHandler<MoveItem>
+        {
+            private readonly BuildState _s;
+            public MoveHandler(BuildState s) { _s = s; }
+            public CommandResult Validate(MoveItem c, SimWorld w) => ToResult(_s.CanMove(c.PlacedId, c.Anchor, c.Rotation));
+            public void Apply(MoveItem c, SimWorld w)
+            {
+                var from = _s.Get(c.PlacedId);
+                var item = _s.Move(c.PlacedId, c.Anchor, c.Rotation, out _);
+                if (item != null) w.Raise(new ItemMoved(c.PlayerId, item, from));
             }
         }
 

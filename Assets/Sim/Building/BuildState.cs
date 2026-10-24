@@ -33,6 +33,7 @@ namespace PlantNursery.Sim.Building
         private readonly ContentDb _content;
         private readonly Dictionary<Cell, int> _cells = new Dictionary<Cell, int>();
         private readonly Dictionary<int, PlacedItem> _placed = new Dictionary<int, PlacedItem>();
+        private readonly List<Func<PlacedItem, bool>> _pickUpBlockers = new List<Func<PlacedItem, bool>>();
         private int _nextId = 1;
 
         /// <summary>Increases on every successful place or pick-up; lets caches know to rebuild.</summary>
@@ -69,6 +70,11 @@ namespace PlantNursery.Sim.Building
             if (itemId == null || !_content.ItemDefs.TryGetValue(itemId, out var def)) return BuildRejection.UnknownItem;
             if (def.Layer != layer || layer != ItemLayer.Floor) return BuildRejection.WrongLayer;
             if (Inventory.Count(itemId) <= 0) return BuildRejection.NotOwned;
+            return CheckFootprint(def, anchor, rotation, 0);
+        }
+
+        private BuildRejection CheckFootprint(ItemDef def, Cell anchor, Rotation rotation, int ignoreId)
+        {
             var size = Footprints.Rotate(def.FloorFootprint, rotation);
             for (var dx = 0; dx < size.W; dx++)
                 for (var dz = 0; dz < size.D; dz++)
@@ -79,8 +85,46 @@ namespace PlantNursery.Sim.Building
                 }
             for (var dx = 0; dx < size.W; dx++)
                 for (var dz = 0; dz < size.D; dz++)
-                    if (_cells.ContainsKey(new Cell(anchor.X + dx, anchor.Z + dz))) return BuildRejection.Occupied;
+                    if (_cells.TryGetValue(new Cell(anchor.X + dx, anchor.Z + dz), out var id) && id != ignoreId) return BuildRejection.Occupied;
             return BuildRejection.None;
+        }
+
+        /// <summary>Register a check that says a placed item still holds things (pots, strip items) and so cannot be picked up.</summary>
+        public void AddPickUpBlocker(Func<PlacedItem, bool> holdsItems) => _pickUpBlockers.Add(holdsItems);
+
+        /// <summary>
+        /// Query-only: would moving a placed item be accepted? Same checks as placing, ignoring the item's own cells.
+        /// Surface-layer items (not carried by a move) on top reject with HasItemsOnTop.
+        /// </summary>
+        public BuildRejection CanMove(int placedId, Cell anchor, Rotation rotation)
+        {
+            if (!_placed.TryGetValue(placedId, out var item)) return BuildRejection.UnknownPlacedItem;
+            if (!_content.ItemDefs.TryGetValue(item.ItemId, out var def)) return BuildRejection.UnknownItem;
+            var r = CheckFootprint(def, anchor, rotation, placedId);
+            if (r != BuildRejection.None) return r;
+            return SurfaceOccupancy.HasItemsOn(item) ? BuildRejection.HasItemsOnTop : BuildRejection.None;
+        }
+
+        /// <summary>
+        /// Move a placed item, keeping its id (so pots and strip items keyed by bench id stay in the same slots).
+        /// Returns the moved item, or null with the reason.
+        /// </summary>
+        public PlacedItem Move(int placedId, Cell anchor, Rotation rotation, out BuildRejection rejection)
+        {
+            rejection = CanMove(placedId, anchor, rotation);
+            if (rejection != BuildRejection.None) return null;
+            var old = _placed[placedId];
+            var size = Footprints.Rotate(_content.ItemDefs[old.ItemId].FloorFootprint, rotation);
+            for (var dx = 0; dx < old.Width; dx++)
+                for (var dz = 0; dz < old.Depth; dz++)
+                    _cells.Remove(new Cell(old.Anchor.X + dx, old.Anchor.Z + dz));
+            var item = new PlacedItem(placedId, old.ItemId, anchor, rotation, size.W, size.D);
+            _placed[placedId] = item;
+            for (var dx = 0; dx < size.W; dx++)
+                for (var dz = 0; dz < size.D; dz++)
+                    _cells[new Cell(anchor.X + dx, anchor.Z + dz)] = placedId;
+            Version++;
+            return item;
         }
 
         /// <summary>Place an item, consuming one from the inventory. Returns the placed item, or null with the reason.</summary>
@@ -103,7 +147,10 @@ namespace PlantNursery.Sim.Building
         public BuildRejection CanPickUp(int placedId)
         {
             if (!_placed.TryGetValue(placedId, out var item)) return BuildRejection.UnknownPlacedItem;
-            return SurfaceOccupancy.HasItemsOn(item) ? BuildRejection.HasItemsOnTop : BuildRejection.None;
+            if (SurfaceOccupancy.HasItemsOn(item)) return BuildRejection.HasItemsOnTop;
+            foreach (var blocker in _pickUpBlockers)
+                if (blocker(item)) return BuildRejection.HasItemsOnTop;
+            return BuildRejection.None;
         }
 
         /// <summary>Pick up a placed item back into the inventory. Returns the item, or null with the reason.</summary>
