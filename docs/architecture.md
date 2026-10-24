@@ -23,7 +23,7 @@ Key decisions: `docs/decisions/0003` (Unity owns bodies, the sim owns things),
 
 | Folder | Contents |
 |---|---|
-| `Sim/Core/` | `SimWorld` (tick clock, command queue, event list), `ICommand`, `CommandResult`, `PlayerId` |
+| `Sim/Core/` | `SimWorld` (tick clock, command queue, event list), `ICommand`, `CommandResult`, `PlayerId`, `ICommandSink` (player input entry point) with `LoopbackCommandSink` (in-process; a network transport implements the same interface later) |
 | `Sim/Content/` | Content definitions and `ContentLoader` |
 | `Sim/Time/` | `GameClock`: day, minute of day, phase, season; sleep |
 | `Sim/Building/` | `Grid`, layers, footprints, placement, `BuildInventory` |
@@ -41,6 +41,7 @@ Key decisions: `docs/decisions/0003` (Unity owns bodies, the sim owns things),
 - `Sim/Genetics/`: `Genome` holds two alleles per content gene (copied; `Genome.FromVariety(db, varietyId)` copies a variety exactly). `Phenotype` has the pure rules: Mendelian = most dominant allele (earlier in the gene's `alleles` list), Blend = mean. `GenomeException` for unknown genes, alleles or varieties.
 - `SimWorld` owns the tick clock. `Step(n)` advances time; nothing else does. 1 tick = 1 in-game minute.
 - `SimWorld` is the SimContext (decision 0014). `new SimWorld(secondsPerTick, seed)` creates one seeded `SimRandom` (`world.Random`; systems must never use `System.Random`). `NextEntityId()` returns 1, 2, 3... and never reuses an id. Systems register with `AddSystem(system, SystemPhase)` and update each tick in phase order Time, Weather, Growth, Watering, Behaviour, Mobility, Orders, Economy (registration order only within a phase; `AddSystem(system)` means Behaviour). Weather is reserved (decision 0013) and has no systems by default. Same seed plus same commands gives identical state.
+- Player input goes through `ICommandSink.Submit(cmd)`; `LoopbackCommandSink` forwards to `SimWorld.Submit`. Input never calls `SimWorld` directly.
 - Commands: `Submit(cmd)` queues; each `Step` tick first applies queued commands in submission order (validate, then apply, via the `ICommandHandler<T>` registered with `RegisterHandler`), then updates `ISimSystem`s. Rejections at apply time raise `CommandRejectedEvent`. `Validate(cmd)` is query-only. A paused world keeps commands queued.
 - Events: handlers and systems call `Raise(ISimEvent)`; the Unity layer calls `DrainEvents()` each frame.
 - State machines: `Sim/Core/StateMachine<TState>` (`0014`) holds a transition table (`Allow(from, to, guard?)`), a plain-data `Current` state and an `onTransition(from, to)` callback the owner uses to raise its event. `TryTransition` returns `TransitionResult` (`Applied`, `Illegal`, `GuardFailed`) and changes nothing when refused; `Check` is the query-only form; `Restore` sets state on load without callbacks. Plant lifecycle and mood do not use it yet.
