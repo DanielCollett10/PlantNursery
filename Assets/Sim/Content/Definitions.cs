@@ -93,6 +93,8 @@ namespace PlantNursery.Sim.Content
     {
         /// <summary>Unique id.</summary>
         public string Id;
+        /// <summary>Owning species id for species.json genes; null for the old pre-pivot genes.</summary>
+        public string SpeciesId;
         /// <summary>Mendelian or Blend.</summary>
         public GeneKind Kind;
         /// <summary>Mendelian alleles, most dominant first. Empty for Blend.</summary>

@@ -13,8 +13,12 @@ namespace PlantNursery.Sim.Content
         public IReadOnlyDictionary<string, ContainerDef> ContainerDefs { get; }
         /// <summary>Varieties by id.</summary>
         public IReadOnlyDictionary<string, VarietyDef> VarietyDefs { get; }
-        /// <summary>Genes by id.</summary>
+        /// <summary>Old (pre-pivot) genes by id, used by <see cref="VarietyDefs"/>. Species genes are in <see cref="AllGeneDefs"/>.</summary>
         public IReadOnlyDictionary<string, GeneDef> GeneDefs { get; }
+        /// <summary>Every gene in genes.json by id, old and species genes.</summary>
+        public IReadOnlyDictionary<string, GeneDef> AllGeneDefs { get; }
+        /// <summary>Species by id (species.json).</summary>
+        public IReadOnlyDictionary<string, SpeciesDef> SpeciesDefs { get; }
         /// <summary>Economy config.</summary>
         public EconomyConfig Economy { get; }
         /// <summary>Building config.</summary>
@@ -25,7 +29,9 @@ namespace PlantNursery.Sim.Content
             IReadOnlyDictionary<string, ContainerDef> containers,
             IReadOnlyDictionary<string, VarietyDef> varieties,
             IReadOnlyDictionary<string, GeneDef> genes,
-            EconomyConfig economy, BuildingConfig building)
+            EconomyConfig economy, BuildingConfig building,
+            IReadOnlyDictionary<string, SpeciesDef> species = null,
+            IReadOnlyDictionary<string, GeneDef> allGenes = null)
         {
             Time = time;
             ItemDefs = items;
@@ -34,6 +40,8 @@ namespace PlantNursery.Sim.Content
             GeneDefs = genes;
             Economy = economy;
             Building = building;
+            SpeciesDefs = species ?? new Dictionary<string, SpeciesDef>();
+            AllGeneDefs = allGenes ?? genes;
         }
     }
 }

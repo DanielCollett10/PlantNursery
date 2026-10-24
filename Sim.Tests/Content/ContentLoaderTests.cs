@@ -49,7 +49,7 @@ namespace PlantNursery.Sim.Tests
             Assert.AreEqual(0.25f, db.Time.NightRateMultiplier);
             Assert.AreEqual(10, db.Time.SeasonLengthDays);
             Assert.AreEqual(3, db.VarietyDefs.Count);
-            Assert.AreEqual(3, db.GeneDefs.Count);
+            Assert.AreEqual(3, db.GeneDefs.Count); // old genes only; species genes are in AllGeneDefs
             Assert.AreEqual(3, db.ContainerDefs.Count);
             Assert.AreEqual(40, db.Building.PlotWidth);
             Assert.AreEqual(30, db.Building.PlotDepth);

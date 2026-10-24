@@ -1,0 +1,38 @@
+{
+  "species": [
+    {
+      "id": "hearthmoss", "name": "Hearthmoss",
+      "stages": [
+        { "name": "Sprout", "days": 1, "allowedContainers": ["plug_tray"] },
+        { "name": "Mature", "days": 0, "allowedContainers": ["plug_tray"] }
+      ],
+      "seasonMultipliers": { "Spring": 1.0, "Summer": 0.5, "Autumn": 1.0 },
+      "geneIds": ["glowColour", "regrowthSpeed"],
+      "regrowDays": 1,
+      "modules": [],
+      "sowing": { "sowInto": ["plug_tray"], "trayMode": "wholeTray" },
+      "varieties": [
+        { "id": "hearthmoss_amber", "name": "Amber Hearthmoss", "genes": { "glowColour": ["amber", "teal"], "regrowthSpeed": [0.5, 0.5] } },
+        { "id": "hearthmoss_violet", "name": "Violet Hearthmoss", "genes": { "glowColour": ["violet", "violet"], "regrowthSpeed": [0.3, 0.4] } }
+      ]
+    },
+    {
+      "id": "chimebell", "name": "Chimebell",
+      "stages": [
+        { "name": "Seedling", "days": 1, "allowedContainers": ["plug_tray", "pot_small"] },
+        { "name": "Young", "days": 1, "allowedContainers": ["pot_small"] },
+        { "name": "Blooming", "days": 2, "allowedContainers": ["pot_medium"] },
+        { "name": "Specimen", "days": 2, "allowedContainers": ["pot_medium"] }
+      ],
+      "seasonMultipliers": { "Spring": 1.0, "Summer": 1.0, "Autumn": 0.5 },
+      "geneIds": ["bloomColour", "bellPattern"],
+      "regrowDays": 0,
+      "modules": [],
+      "sowing": { "sowInto": ["plug_tray", "pot_small"], "trayMode": "perCell" },
+      "varieties": [
+        { "id": "chimebell_white", "name": "White Chimebell", "genes": { "bloomColour": ["white", "rose"], "bellPattern": ["plain", "spotted"] } },
+        { "id": "chimebell_blue", "name": "Blue Chimebell", "genes": { "bloomColour": ["blue", "blue"], "bellPattern": ["striped", "striped"] } }
+      ]
+    }
+  ]
+}
