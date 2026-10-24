@@ -20,7 +20,7 @@ namespace PlantNursery.Sim.Tests
             throw new DirectoryNotFoundException("Assets/StreamingAssets/Content not found");
         }
 
-        private static Dictionary<string, string> RealFiles(bool demo)
+        internal static Dictionary<string, string> RealFiles(bool demo)
         {
             var files = new Dictionary<string, string>();
             foreach (var path in Directory.GetFiles(ContentDir(), "*.json"))

@@ -77,6 +77,8 @@ namespace PlantNursery.Sim.Content
         public int PacketSeeds;
         /// <summary>How many things the item carries (carry trays: containers); 0 otherwise.</summary>
         public int Capacity;
+        /// <summary>Planting area and working strip; null for items that are not benches.</summary>
+        public BenchDef Bench;
     }
 
     /// <summary>A plant container type (docs/design/plants.md).</summary>

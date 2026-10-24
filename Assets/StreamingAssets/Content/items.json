@@ -16,8 +16,36 @@
     { "id": "seeds_chimebell_white", "name": "White Chimebell seeds", "layer": "Surface", "surfaceFootprint": { "w": 1, "d": 2 }, "providesSurface": false, "price": 12, "speciesId": "chimebell", "varietyId": "chimebell_white", "packetSeeds": 6 },
     { "id": "seeds_chimebell_blue", "name": "Blue Chimebell seeds", "layer": "Surface", "surfaceFootprint": { "w": 1, "d": 2 }, "providesSurface": false, "price": 12, "speciesId": "chimebell", "varietyId": "chimebell_blue", "packetSeeds": 6 },
     { "id": "carry_tray", "name": "Carry tray", "layer": "Surface", "surfaceFootprint": { "w": 6, "d": 4 }, "providesSurface": false, "price": 6, "capacity": 6 },
-    { "id": "bench_3m", "name": "Bench (3 m)", "layer": "Floor", "floorFootprint": { "w": 6, "d": 2 }, "providesSurface": true, "price": 40 },
-    { "id": "bench_4m", "name": "Bench (4 m)", "layer": "Floor", "floorFootprint": { "w": 8, "d": 2 }, "providesSurface": true, "price": 50 },
+    {
+      "id": "bench_3m", "name": "Bench (3 m)", "layer": "Floor", "floorFootprint": { "w": 6, "d": 2 }, "providesSurface": true, "price": 40,
+      "planting": { "lengthUnits": 30, "depthUnits": 6, "backOffsetUnits": 0 },
+      "workStrip": {
+        "depthUnits": 4,
+        "accepts": [
+          { "itemId": "pot_small", "stripUnits": { "w": 2, "d": 2 } },
+          { "itemId": "pot_medium", "stripUnits": { "w": 3, "d": 3 } },
+          { "itemId": "plug_tray", "stripUnits": { "w": 6, "d": 4 } },
+          { "itemId": "carry_tray", "stripUnits": { "w": 6, "d": 4 } },
+          { "itemId": "watering_can", "stripUnits": { "w": 3, "d": 3 } },
+          { "itemId": "bundle_hearthmoss", "stripUnits": { "w": 2, "d": 2 } }
+        ]
+      }
+    },
+    {
+      "id": "bench_4m", "name": "Bench (4 m)", "layer": "Floor", "floorFootprint": { "w": 8, "d": 2 }, "providesSurface": true, "price": 50,
+      "planting": { "lengthUnits": 40, "depthUnits": 6, "backOffsetUnits": 0 },
+      "workStrip": {
+        "depthUnits": 4,
+        "accepts": [
+          { "itemId": "pot_small", "stripUnits": { "w": 2, "d": 2 } },
+          { "itemId": "pot_medium", "stripUnits": { "w": 3, "d": 3 } },
+          { "itemId": "plug_tray", "stripUnits": { "w": 6, "d": 4 } },
+          { "itemId": "carry_tray", "stripUnits": { "w": 6, "d": 4 } },
+          { "itemId": "watering_can", "stripUnits": { "w": 3, "d": 3 } },
+          { "itemId": "bundle_hearthmoss", "stripUnits": { "w": 2, "d": 2 } }
+        ]
+      }
+    },
     { "id": "rain_barrel", "name": "Rain barrel", "layer": "Floor", "floorFootprint": { "w": 1, "d": 1 }, "providesSurface": false, "price": 0 },
     { "id": "storage_crate", "name": "Storage crate", "layer": "Floor", "floorFootprint": { "w": 2, "d": 1 }, "providesSurface": false, "price": 0 },
     { "id": "order_desk", "name": "Order desk", "layer": "Floor", "floorFootprint": { "w": 2, "d": 1 }, "providesSurface": false, "price": 0 },

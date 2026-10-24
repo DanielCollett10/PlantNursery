@@ -33,6 +33,7 @@ namespace PlantNursery.Sim.Content
             var building = LoadBuilding(Root(filesByName, BuildingFile));
             var species = SpeciesLoader.Load(Root(filesByName, SpeciesFile), allGenes, containers, varieties);
             ValidateSeedItems(Root(filesByName, ItemsFile), items, species);
+            BenchLoader.ValidateAcceptedIds(Root(filesByName, ItemsFile).ObjArray("items"), items);
             return new ContentDb(time, items, containers, varieties, genes, economy, building, species, allGenes);
         }
 
@@ -130,6 +131,15 @@ namespace PlantNursery.Sim.Content
                     def.FloorFootprint = n.Size("floorFootprint");
                 if (def.ProvidesSurface && def.Layer != ItemLayer.Floor)
                     throw n.Error("providesSurface", "only Floor items can provide a surface");
+                if (n.Has("planting"))
+                {
+                    if (def.Layer != ItemLayer.Floor) throw n.Error("planting", "only Floor items can be benches");
+                    def.Bench = BenchLoader.Load(n);
+                }
+                else if (n.Has("workStrip"))
+                {
+                    throw n.Error("workStrip", "only benches have a working strip (planting is missing)");
+                }
                 if (result.ContainsKey(def.Id)) throw n.Error("id", "duplicate id '" + def.Id + "'");
                 result[def.Id] = def;
             }
