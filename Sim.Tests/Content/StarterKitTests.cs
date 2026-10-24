@@ -18,6 +18,7 @@ namespace PlantNursery.Sim.Tests
         private static Dictionary<string, string> EconomyWith(string from, string to)
         {
             var files = Files();
+            files["economy.json"] = files["economy.json"].Replace("\r\n", "\n");
             var changed = files["economy.json"].Replace(from, to);
             Assert.AreNotEqual(files["economy.json"], changed, "Replace must change economy.json: " + from);
             files["economy.json"] = changed;
