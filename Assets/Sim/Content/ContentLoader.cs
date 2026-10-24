@@ -361,12 +361,15 @@ namespace PlantNursery.Sim.Content
         private static BuildingConfig LoadBuilding(ContentNode root)
         {
             var plot = root.Obj("plot");
+            var cam = root.Has("camera") ? root.Obj("camera") : null;
             return new BuildingConfig
             {
                 PlotWidth = plot.Int("w", 1),
                 PlotDepth = plot.Int("d", 1),
                 NudgeRadius = root.Int("nudgeRadius"),
                 InteractReach = root.Has("interactReach") ? root.Float("interactReach", 0.1f) : 3.0f,
+                AutoZoomOutSeconds = cam != null && cam.Has("autoZoomOutSeconds") ? cam.Float("autoZoomOutSeconds", 0.1f) : 4f,
+                CameraPanSeconds = cam != null && cam.Has("panSeconds") ? cam.Float("panSeconds", 0.01f) : 0.4f,
             };
         }
     }

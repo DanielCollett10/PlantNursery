@@ -66,8 +66,10 @@ namespace PlantNursery.EditorTools
             var camGo = new GameObject("Main Camera") { tag = "MainCamera" };
             var cam = camGo.AddComponent<Camera>();
             camGo.AddComponent<AudioListener>();
-            camGo.transform.SetParent(player.transform, false);
-            // Top-down pose (decision 0010): the camera rides on the player, looking down at an angle.
+            // Top-down pose (decision 0010): a per-player CameraRig follows the player and pans the camera
+            // between Follow and ZoomedOut (docs/design/controls.md, Cameras).
+            var rigGo = new GameObject("CameraRig");
+            camGo.transform.SetParent(rigGo.transform, false);
             camGo.transform.localPosition = new Vector3(0f, 8f, -5f);
             camGo.transform.localRotation = Quaternion.Euler(58f, 0f, 0f);
             var input = AssetDatabase.LoadAssetAtPath<UnityEngine.InputSystem.InputActionAsset>(InputPath);
@@ -80,7 +82,9 @@ namespace PlantNursery.EditorTools
             var firstPerson = player.AddComponent<FirstPersonController>();
             firstPerson.Configure(input, fpPivot);
             firstPerson.enabled = false;
-            player.AddComponent<DebugFirstPersonToggle>().Configure(topDown, firstPerson, camGo.transform);
+            var rig = rigGo.AddComponent<CameraRig>();
+            rig.Configure(simHost.GetComponent<SimHost>(), player.transform, camGo.transform, walkInput);
+            player.AddComponent<DebugFirstPersonToggle>().Configure(topDown, firstPerson, camGo.transform, rig);
             var viewGo = new GameObject("PlayerViews");
             viewGo.AddComponent<PlayerView>().Configure(simHost.GetComponent<SimHost>(), player.transform, topDown);
             var interaction = player.AddComponent<InteractionController>();

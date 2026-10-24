@@ -116,5 +116,12 @@ namespace PlantNursery.Sim.Tests
         {
             Assert.AreEqual(3.0f, _db.Building.InteractReach);
         }
+
+        [Test]
+        public void CameraConfigComesFromContent()
+        {
+            Assert.AreEqual(4f, _db.Building.AutoZoomOutSeconds);
+            Assert.AreEqual(0.4f, _db.Building.CameraPanSeconds, 1e-6f);
+        }
     }
 }

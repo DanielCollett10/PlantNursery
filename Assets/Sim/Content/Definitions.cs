@@ -257,5 +257,9 @@ namespace PlantNursery.Sim.Content
         public int NudgeRadius;
         /// <summary>How far (metres) the player can reach to interact.</summary>
         public float InteractReach = 3.0f;
+        /// <summary>Seconds standing still before the camera zooms out (docs/design/controls.md, Cameras).</summary>
+        public float AutoZoomOutSeconds = 4f;
+        /// <summary>Camera pan duration in seconds between modes; never a cut.</summary>
+        public float CameraPanSeconds = 0.4f;
     }
 }

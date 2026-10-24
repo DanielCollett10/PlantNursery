@@ -14,6 +14,9 @@ namespace PlantNursery.Game
         [SerializeField] private FirstPersonController firstPerson;
         [SerializeField] private Transform cameraTransform;
 
+        [SerializeField] private CameraRig rig;
+
+        private Transform _tdParent;
         private Vector3 _tdPos;
         private Quaternion _tdRot;
 
@@ -21,9 +24,9 @@ namespace PlantNursery.Game
         public bool IsFirstPerson { get; private set; }
 
         /// <summary>Wire references (used by the scene generator).</summary>
-        public void Configure(TopDownPlayerController td, FirstPersonController fp, Transform cam)
+        public void Configure(TopDownPlayerController td, FirstPersonController fp, Transform cam, CameraRig cameraRig = null)
         {
-            topDown = td; firstPerson = fp; cameraTransform = cam;
+            topDown = td; firstPerson = fp; cameraTransform = cam; rig = cameraRig;
         }
 
         /// <summary>Switch view. Does nothing if the controllers are missing.</summary>
@@ -34,13 +37,16 @@ namespace PlantNursery.Game
             if (firstPersonOn && cameraTransform != null)
             {
                 _tdPos = cameraTransform.localPosition; _tdRot = cameraTransform.localRotation;
+                _tdParent = cameraTransform.parent;
+                if (rig != null) rig.enabled = false;
                 cameraTransform.SetParent(firstPerson.CameraPivot, false);
                 cameraTransform.localPosition = Vector3.zero; cameraTransform.localRotation = Quaternion.identity;
             }
             else if (cameraTransform != null)
             {
-                cameraTransform.SetParent(transform, false);
+                cameraTransform.SetParent(_tdParent != null ? _tdParent : transform, false);
                 cameraTransform.localPosition = _tdPos; cameraTransform.localRotation = _tdRot;
+                if (rig != null) rig.enabled = true;
             }
             topDown.enabled = !firstPersonOn;
             firstPerson.enabled = firstPersonOn;
