@@ -5,10 +5,22 @@
     { "id": "computer", "name": "Computer", "layer": "Floor", "floorFootprint": { "w": 1, "d": 1 }, "providesSurface": false, "price": 0 },
     { "id": "bed", "name": "Bed", "layer": "Floor", "floorFootprint": { "w": 2, "d": 3 }, "providesSurface": false, "price": 0 },
     { "id": "delivery_shelf", "name": "Delivery shelf", "layer": "Floor", "floorFootprint": { "w": 1, "d": 2 }, "providesSurface": true, "price": 0 },
-    { "id": "plug_tray", "name": "Plug tray (6 cells)", "layer": "Surface", "surfaceFootprint": { "w": 2, "d": 3 }, "providesSurface": false, "price": 15 },
+    { "id": "plug_tray", "name": "Plug tray (6 cells)", "layer": "Surface", "surfaceFootprint": { "w": 2, "d": 3 }, "providesSurface": false, "price": 5 },
     { "id": "pot_small", "name": "Small pot", "layer": "Surface", "surfaceFootprint": { "w": 1, "d": 1 }, "providesSurface": false, "price": 2 },
-    { "id": "pot_medium", "name": "Medium pot", "layer": "Surface", "surfaceFootprint": { "w": 2, "d": 2 }, "providesSurface": false, "price": 5 },
-    { "id": "watering_can", "name": "Watering can", "layer": "Surface", "surfaceFootprint": { "w": 2, "d": 3 }, "providesSurface": false, "price": 12, "waterCapacity": 10 },
-    { "id": "seed_packet", "name": "Seed packet (6 seeds)", "layer": "Surface", "surfaceFootprint": { "w": 1, "d": 2 }, "providesSurface": false, "price": 10, "seedCount": 6 }
+    { "id": "pot_medium", "name": "Medium pot", "layer": "Surface", "surfaceFootprint": { "w": 2, "d": 2 }, "providesSurface": false, "price": 4 },
+    { "id": "pot_large", "name": "Large pot", "layer": "Surface", "surfaceFootprint": { "w": 3, "d": 3 }, "providesSurface": false, "price": 8 },
+    { "id": "watering_can", "name": "Watering can", "layer": "Surface", "surfaceFootprint": { "w": 2, "d": 3 }, "providesSurface": false, "price": 0, "waterCapacity": 10 },
+    { "id": "seed_packet", "name": "Seed packet (6 seeds)", "layer": "Surface", "surfaceFootprint": { "w": 1, "d": 2 }, "providesSurface": false, "price": 10, "seedCount": 6 },
+    { "id": "spores_hearthmoss_amber", "name": "Amber Hearthmoss spores", "layer": "Surface", "surfaceFootprint": { "w": 1, "d": 2 }, "providesSurface": false, "price": 10, "speciesId": "hearthmoss", "varietyId": "hearthmoss_amber", "packetSeeds": 1 },
+    { "id": "spores_hearthmoss_violet", "name": "Violet Hearthmoss spores", "layer": "Surface", "surfaceFootprint": { "w": 1, "d": 2 }, "providesSurface": false, "price": 10, "speciesId": "hearthmoss", "varietyId": "hearthmoss_violet", "packetSeeds": 1 },
+    { "id": "seeds_chimebell_white", "name": "White Chimebell seeds", "layer": "Surface", "surfaceFootprint": { "w": 1, "d": 2 }, "providesSurface": false, "price": 12, "speciesId": "chimebell", "varietyId": "chimebell_white", "packetSeeds": 6 },
+    { "id": "seeds_chimebell_blue", "name": "Blue Chimebell seeds", "layer": "Surface", "surfaceFootprint": { "w": 1, "d": 2 }, "providesSurface": false, "price": 12, "speciesId": "chimebell", "varietyId": "chimebell_blue", "packetSeeds": 6 },
+    { "id": "carry_tray", "name": "Carry tray", "layer": "Surface", "surfaceFootprint": { "w": 6, "d": 4 }, "providesSurface": false, "price": 6, "capacity": 6 },
+    { "id": "bench_3m", "name": "Bench (3 m)", "layer": "Floor", "floorFootprint": { "w": 6, "d": 2 }, "providesSurface": true, "price": 40 },
+    { "id": "bench_4m", "name": "Bench (4 m)", "layer": "Floor", "floorFootprint": { "w": 8, "d": 2 }, "providesSurface": true, "price": 50 },
+    { "id": "rain_barrel", "name": "Rain barrel", "layer": "Floor", "floorFootprint": { "w": 1, "d": 1 }, "providesSurface": false, "price": 0 },
+    { "id": "storage_crate", "name": "Storage crate", "layer": "Floor", "floorFootprint": { "w": 2, "d": 1 }, "providesSurface": false, "price": 0 },
+    { "id": "order_desk", "name": "Order desk", "layer": "Floor", "floorFootprint": { "w": 2, "d": 1 }, "providesSurface": false, "price": 0 },
+    { "id": "bundle_hearthmoss", "name": "Hearthmoss bundle", "layer": "Surface", "surfaceFootprint": { "w": 1, "d": 1 }, "providesSurface": false, "price": 0 }
   ]
 }

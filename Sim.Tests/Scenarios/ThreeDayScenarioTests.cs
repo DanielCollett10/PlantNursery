@@ -248,8 +248,8 @@ namespace PlantNursery.Sim.Tests
             Sow6(n, n.Find("seed_packet").Id, tray.Id);
             n.Do(new PutDown(P, PacketAnchor, Rotation.Deg0)); // empty packet, no longer blocks the gift
 
-            // Spend the other 190: four benches (160) and two trays (30).
-            n.Do(new BuyItem(P, "bench_standard", 4), new BuyItem(P, "plug_tray", 2));
+            // Spend the other 190: four benches (160) and six trays (30, at 5 each).
+            n.Do(new BuyItem(P, "bench_standard", 4), new BuyItem(P, "plug_tray", 6));
             Assert.AreEqual(0, n.Wallet.Balance);
 
             // Never water. Run until every plant is dead (bounded to five days).
