@@ -71,7 +71,6 @@ namespace PlantNursery.Game.Controls
             Step(ui, "Navigate").AddBinding("<Gamepad>/leftStick", groups: Gamepad);
             Point(ui);
             Button(ui, "Submit", "<Keyboard>/enter", "<Gamepad>/buttonSouth");
-            ui.AddAction("Click", InputActionType.Button).AddBinding("<Mouse>/leftButton", groups: KeyboardMouse);
             Button(ui, "Cancel", "<Keyboard>/escape", "<Gamepad>/buttonEast");
 
             return asset;
@@ -92,6 +91,8 @@ namespace PlantNursery.Game.Controls
         {
             var a = map.AddAction("Point", InputActionType.Value, expectedControlLayout: "Vector2");
             a.AddBinding("<Mouse>/position", groups: KeyboardMouse);
+            // Gamepad: right stick drives a virtual cursor (a velocity, not a position; the cursor code integrates it).
+            a.AddBinding("<Gamepad>/rightStick", groups: Gamepad);
         }
 
         // Arrow keys + d-pad: the slot-stepping / ghost-stepping pointer.
