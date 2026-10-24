@@ -54,6 +54,30 @@ namespace PlantNursery.Sim.Storage
             return null;
         }
 
+        /// <summary>Find the container (crate, slot, hand, or pot in a carry tray) that holds the plant. Null if none.</summary>
+        public Container FindContainerOfPlant(int plantId)
+        {
+            foreach (var c in Crate.Containers)
+                if (HasPlant(c, plantId)) return c;
+            foreach (var t in Contents.Things) { var c = PlantIn(t, plantId); if (c != null) return c; }
+            foreach (var t in Hands.AllHeld) { var c = PlantIn(t, plantId); if (c != null) return c; }
+            return null;
+        }
+
+        private static bool HasPlant(Container c, int plantId)
+        {
+            foreach (var id in c.PlantIds) if (id == plantId) return true;
+            return false;
+        }
+
+        private static Container PlantIn(HeldThing thing, int plantId)
+        {
+            if (thing.Container != null && HasPlant(thing.Container, plantId)) return thing.Container;
+            foreach (var pot in thing.Pots)
+                if (HasPlant(pot, plantId)) return pot;
+            return null;
+        }
+
         private static Container FindIn(HeldThing thing, int id)
         {
             if (thing.Container != null && thing.Container.Id == id) return thing.Container;
