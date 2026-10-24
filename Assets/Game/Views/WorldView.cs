@@ -206,6 +206,7 @@ namespace PlantNursery.Game
                 if (container == null || kv.Value == null) continue;
                 var parent = kv.Value;
                 var top = AnchorHeight(parent);
+                ApplyGauge(parent, container, top);
                 foreach (var plantId in container.PlantIds)
                 {
                     var plant = nursery.PlantById(plantId);
@@ -223,7 +224,7 @@ namespace PlantNursery.Game
                         go.transform.SetParent(parent.transform, false);
                         go.transform.localPosition = PlantPosition(plant, container.Def, top);
                         var view = go.AddComponent<PlantView>();
-                        view.Bind(plant);
+                        view.Bind(plant, StageCount(content, plant));
                         _plants[plant.Id] = view;
                     }
                 }
@@ -235,6 +236,19 @@ namespace PlantNursery.Game
                 if (_plants[id] != null) Kill(_plants[id].gameObject);
                 _plants.Remove(id);
             }
+        }
+
+        private static int StageCount(ContentDb content, Plant plant)
+        {
+            if (content == null || plant.SpeciesId == null) return 0;
+            return content.SpeciesDefs.TryGetValue(plant.SpeciesId, out var sp) ? sp.Stages.Count : 0;
+        }
+
+        private static void ApplyGauge(GameObject view, Container container, float top)
+        {
+            var gauge = view.GetComponent<ContainerGaugeView>();
+            if (gauge == null) gauge = view.AddComponent<ContainerGaugeView>();
+            gauge.Apply(ContainerLook.From(container), top + 0.3f);
         }
 
         private static Vector3 PlantPosition(Plant plant, ContainerDef def, float top)
