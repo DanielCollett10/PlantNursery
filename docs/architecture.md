@@ -70,3 +70,5 @@ Player input → Unity layer → Sim command → `SimWorld.Step` → Sim state +
 
 ## Neighbour graph (T-128)
 `Sim/Building/Neighbours` (`new Neighbours(content, build, slotOccupancy)`) answers `Of(SlotRef)` for occupied planting slots. It maps every planting unit into one nursery-wide unit space (cell * 5; bench-local u/v rotated clockwise by `PlacedItem.Rotation`), and two slots are neighbours when units share an edge (no diagonals), within or across benches. Built only from `SlotOccupancy.PlacedSlots`, so strip items never appear. Cached; rebuilt lazily when `BuildState.Version` or `SlotOccupancy.Version` changes (`RebuildCount` is for tests).
+
+- **HandsV2 (T-131)**: `Storage/HandsV2.cs` holds at most one `HeldThing` per `PlayerId` (container, carry tray, can, bundle, seed packet). `TakeFromCrate` (by item id or container entity id) and `ReturnToCrate` are in `Storage/CrateCommands.cs` (`CrateCommands.Register`). Returned non-container things keep charges/quality/seeds in `StorageCrate.Things`. Independent of the old `Hands.HandsState`.
