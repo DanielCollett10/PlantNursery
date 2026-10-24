@@ -29,6 +29,18 @@ namespace PlantNursery.Sim.Plants
         public int GoodCareMinutes { get; set; }
         /// <summary>Minutes alive.</summary>
         public int AliveMinutes { get; set; }
+        /// <summary>Ticks lived while alive (care counter, plants.md Quality).</summary>
+        public int TicksAlive { get; set; }
+        /// <summary>Ticks lived with water in the container (care counter).</summary>
+        public int TicksNotDry { get; set; }
+        /// <summary>True while the container meter is 0.</summary>
+        public bool IsDry { get; set; }
+        /// <summary>True while Wilted (set by the water system; also true for plants without a lifecycle machine).</summary>
+        public bool IsWilted { get; set; }
+        /// <summary>Consecutive Dry ticks.</summary>
+        public int DryTicks { get; set; }
+        /// <summary>Consecutive ticks spent Wilted.</summary>
+        public int WiltedTicks { get; set; }
         /// <summary>Cell index within its container (0 for pots).</summary>
         public int CellIndex { get; set; }
         /// <summary>True once the plant has died.</summary>

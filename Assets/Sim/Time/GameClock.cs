@@ -104,6 +104,9 @@ namespace PlantNursery.Sim.Time
         /// <summary>Multiplier for need and drying rates: 1.0 by day, nightRateMultiplier at night.</summary>
         public float NeedRateMultiplier => IsNight ? _cfg.NightRateMultiplier : 1f;
 
+        /// <summary>Need rate multiplier for the minute starting at a tick.</summary>
+        public float NeedRateMultiplierAt(long tick) => PhaseAt(tick) == DayPhase.Night ? _cfg.NightRateMultiplier : 1f;
+
         /// <summary>True when the player may sleep (Evening or Night).</summary>
         public bool CanSleep => Phase == DayPhase.Evening || Phase == DayPhase.Night;
 
