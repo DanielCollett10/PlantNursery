@@ -109,6 +109,9 @@ namespace PlantNursery.Sim.Storage
         /// <summary>What sits exactly at this address, or null.</summary>
         public HeldThing Get(SlotAddress a) => _things.TryGetValue(a.Key, out var t) ? t : null;
 
+        /// <summary>Everything sitting in any planting slot or strip slot. Read-only view for rules that look across the benches.</summary>
+        public IEnumerable<HeldThing> Things => _things.Values;
+
         /// <summary>Put a thing straight into a slot's record (day-one setup). The caller has already marked the occupancy.</summary>
         internal void Stock(SlotAddress a, HeldThing thing) { _things[a.Key] = thing; }
 
