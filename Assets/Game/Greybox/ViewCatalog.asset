@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7424823df957eec43884f5b169c676ef, type: 3}
+  m_Name: ViewCatalog
+  m_EditorClassIdentifier: PlantNursery.Game::PlantNursery.Game.ViewCatalog
+  entries:
+  - id: bench_standard
+    prefab: {fileID: 454359332212382760, guid: 800366ea3004b7943b14af0cfdf12220, type: 3}
+  - id: tap
+    prefab: {fileID: 2341867725647242947, guid: ace5c53dfb2f6c9499710bc873a03023, type: 3}
+  - id: computer
+    prefab: {fileID: 7557873814307064046, guid: a02ed63bac7e1834c8248a8a84e43ae0, type: 3}
+  - id: bed
+    prefab: {fileID: 7364866600727497126, guid: ac1f1c83dea872742a6a42c93a9ce154, type: 3}
+  - id: delivery_shelf
+    prefab: {fileID: 6903569714453938242, guid: b9c6aac107d93934fa6662eb325ff710, type: 3}
+  - id: bench_3m
+    prefab: {fileID: 1288727292208141965, guid: c9e50934b4edc574bb8bcf6a4d739ee9, type: 3}
+  - id: bench_4m
+    prefab: {fileID: 1470979561557678345, guid: 163c7882c6ba0ed4bad291e61df660dc, type: 3}
+  - id: rain_barrel
+    prefab: {fileID: 6694838906419199290, guid: bbfb397954a7b5e4495848159a2c29b7, type: 3}
+  - id: storage_crate
+    prefab: {fileID: 6236171403501281922, guid: 61c766d2a5a3b02409c8398ccebb12b0, type: 3}
+  - id: order_desk
+    prefab: {fileID: 7331048401369760951, guid: 0b22b3f26490c254ca675bec731871a3, type: 3}
+  - id: carry_tray
+    prefab: {fileID: 4610964955797465788, guid: ae12d80dd9f0d36469c7c2b9b5544203, type: 3}
+  - id: pot_large
+    prefab: {fileID: 2359367912127026040, guid: fdf9cb00595106f4290826de77e93779, type: 3}
+  - id: plug_tray
+    prefab: {fileID: 6959155919453752382, guid: 3edb51c91eddfdc449bb4b32bde4df05, type: 3}
+  - id: pot_small
+    prefab: {fileID: 2737960231398002003, guid: 4a8d8db7cef62cd45bffc85faedb25de, type: 3}
+  - id: pot_medium
+    prefab: {fileID: 5285515903927050655, guid: 2bb551a9d7f3ed44c9d1e193c6fc6216, type: 3}
+  - id: watering_can
+    prefab: {fileID: 1724945782886355846, guid: 27e1127546241e74fa2d8d21d8099750, type: 3}
+  - id: seed_packet
+    prefab: {fileID: 3428587150719292015, guid: b0208f2429a6e484fb772f13a51bb461, type: 3}
+  fallback: {fileID: 2071445451720312145, guid: ac84b2b5865c03b4088114b0703341a4, type: 3}

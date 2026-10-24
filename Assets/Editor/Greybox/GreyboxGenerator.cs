@@ -39,6 +39,14 @@ namespace PlantNursery.EditorTools
             new Spec { Name = "Bed", Id = "bed", Material = "Building", Layer = PlaceableLayer.Floor, W = 2, D = 3, Size = new Vector3(2 * Cell, 0.5f, 3 * Cell) },
             new Spec { Name = "DeliveryShelf", Id = "delivery_shelf", Material = "Building", Layer = PlaceableLayer.Floor, W = 1, D = 2, Size = new Vector3(Cell, 1.2f, 2 * Cell) },
             // Surface items: size = units * 0.1 m (building.md surface table).
+            // Benches of the starter kit (items.json: bench_3m 6x2 cells, bench_4m 8x2 cells), and the other kit furniture.
+            new Spec { Name = "Bench3m", Id = "bench_3m", Material = "Furniture", Layer = PlaceableLayer.Floor, W = 6, D = 2, Size = new Vector3(6 * Cell, 0.9f, 2 * Cell) },
+            new Spec { Name = "Bench4m", Id = "bench_4m", Material = "Furniture", Layer = PlaceableLayer.Floor, W = 8, D = 2, Size = new Vector3(8 * Cell, 0.9f, 2 * Cell) },
+            new Spec { Name = "RainBarrel", Id = "rain_barrel", Material = "Water", Layer = PlaceableLayer.Floor, W = 1, D = 1, Size = new Vector3(Cell, 0.9f, Cell) },
+            new Spec { Name = "StorageCrate", Id = "storage_crate", Material = "Furniture", Layer = PlaceableLayer.Floor, W = 2, D = 1, Size = new Vector3(2 * Cell, 0.6f, Cell) },
+            new Spec { Name = "OrderDesk", Id = "order_desk", Material = "Building", Layer = PlaceableLayer.Floor, W = 2, D = 1, Size = new Vector3(2 * Cell, 0.9f, Cell) },
+            new Spec { Name = "CarryTray", Id = "carry_tray", Material = "Furniture", Layer = PlaceableLayer.Surface, W = 6, D = 4, Size = new Vector3(6 * Unit, 0.04f, 4 * Unit) },
+            new Spec { Name = "LargePot", Id = "pot_large", Material = "Plant", Layer = PlaceableLayer.Surface, W = 3, D = 3, Size = new Vector3(3 * Unit, 0.2f, 3 * Unit) },
             new Spec { Name = "PlugTray", Id = "plug_tray", Material = "Plant", Layer = PlaceableLayer.Surface, W = 2, D = 3, Size = new Vector3(2 * Unit, 0.05f, 3 * Unit) },
             new Spec { Name = "SmallPot", Id = "pot_small", Material = "Plant", Layer = PlaceableLayer.Surface, W = 1, D = 1, Size = new Vector3(Unit, 0.09f, Unit) },
             new Spec { Name = "MediumPot", Id = "pot_medium", Material = "Plant", Layer = PlaceableLayer.Surface, W = 2, D = 2, Size = new Vector3(2 * Unit, 0.15f, 2 * Unit) },
@@ -68,27 +76,80 @@ namespace PlantNursery.EditorTools
                 ["GhostInvalid"] = Mat("GhostInvalid", GhostInvalid, true),
             };
 
-            foreach (var s in Specs) BuildPrefab(s, mats[s.Material]);
+            var entries = new List<ViewCatalog.Entry>();
+            foreach (var s in Specs)
+            {
+                var prefab = BuildPrefab(s, mats[s.Material]);
+                entries.Add(new ViewCatalog.Entry { id = s.Id, prefab = prefab });
+            }
+            var fallback = BuildFallbackPrefab(mats["Building"]);
+            BuildCatalog(entries, fallback);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("Greybox generated: " + Specs.Length + " prefabs, " + mats.Count + " materials.");
         }
 
-        private static void BuildPrefab(Spec s, Material mat)
+        /// <summary>
+        /// Logic root (PlaceableAuthoring, anchors) with one "Visual" child holding only the mesh (swappable art, decision 0014).
+        /// Anchor_Slot sits at the south-west corner of the top face: things placed on this prefab sit at its height.
+        /// </summary>
+        private static GameObject BuildPrefab(Spec s, Material mat)
         {
             var root = new GameObject(s.Name);
             root.AddComponent<PlaceableAuthoring>().Configure(s.Id, s.Layer, s.W, s.D);
 
+            var visual = new GameObject("Visual");
+            visual.transform.SetParent(root.transform, false);
             var mesh = GameObject.CreatePrimitive(PrimitiveType.Cube);
             mesh.name = "Mesh";
-            mesh.transform.SetParent(root.transform, false);
+            mesh.transform.SetParent(visual.transform, false);
             mesh.transform.localScale = s.Size;
             // Pivot at the south-west corner on the ground: centre the mesh over the footprint.
             mesh.transform.localPosition = new Vector3(s.Size.x / 2f, s.Size.y / 2f, s.Size.z / 2f);
             mesh.GetComponent<MeshRenderer>().sharedMaterial = mat;
 
-            PrefabUtility.SaveAsPrefabAsset(root, PrefabDir + "/" + s.Name + ".prefab");
+            var anchor = new GameObject(WorldView.SlotAnchorName);
+            anchor.transform.SetParent(root.transform, false);
+            anchor.transform.localPosition = new Vector3(0f, s.Size.y, 0f);
+
+            return Save(root, s.Name);
+        }
+
+        private static GameObject BuildFallbackPrefab(Material mat)
+        {
+            var root = new GameObject("Fallback");
+            var visual = new GameObject("Visual");
+            visual.transform.SetParent(root.transform, false);
+            var mesh = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            mesh.name = "Mesh";
+            mesh.transform.SetParent(visual.transform, false);
+            mesh.transform.localScale = Vector3.one * 0.2f;
+            mesh.transform.localPosition = new Vector3(0.1f, 0.1f, 0.1f);
+            mesh.GetComponent<MeshRenderer>().sharedMaterial = mat;
+            var anchor = new GameObject(WorldView.SlotAnchorName);
+            anchor.transform.SetParent(root.transform, false);
+            anchor.transform.localPosition = new Vector3(0f, 0.2f, 0f);
+            return Save(root, "Fallback");
+        }
+
+        private static GameObject Save(GameObject root, string name)
+        {
+            var prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabDir + "/" + name + ".prefab");
             Object.DestroyImmediate(root);
+            return prefab;
+        }
+
+        private static void BuildCatalog(List<ViewCatalog.Entry> entries, GameObject fallback)
+        {
+            var path = Root + "/ViewCatalog.asset";
+            var catalog = AssetDatabase.LoadAssetAtPath<ViewCatalog>(path);
+            if (catalog == null)
+            {
+                catalog = ScriptableObject.CreateInstance<ViewCatalog>();
+                AssetDatabase.CreateAsset(catalog, path);
+            }
+            catalog.Configure(entries, fallback);
+            EditorUtility.SetDirty(catalog);
         }
 
         private static Material Mat(string name, string hex, bool ghost)

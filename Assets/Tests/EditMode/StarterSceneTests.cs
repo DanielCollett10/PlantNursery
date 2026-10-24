@@ -43,7 +43,10 @@ namespace PlantNursery.Game.Tests
             Assert.IsNotNull(Object.FindFirstObjectByType<SimHost>());
             var view = Object.FindFirstObjectByType<WorldView>();
             Assert.IsNotNull(view);
-            Assert.Greater(Prop(view, "prefabs").arraySize, 0);
+            var catalog = Prop(view, "catalog").objectReferenceValue as ViewCatalog;
+            Assert.IsNotNull(catalog, "WorldView.catalog");
+            Assert.Greater(catalog.Count, 0);
+            Assert.IsNotNull(catalog.Fallback, "fallback prefab");
         }
 
         [Test]
