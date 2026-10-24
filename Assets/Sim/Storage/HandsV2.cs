@@ -38,6 +38,22 @@ namespace PlantNursery.Sim.Storage
         /// <summary>What the player holds, or null.</summary>
         public HeldThing GetHeld(PlayerId player) => _held.TryGetValue(player.Value, out var h) ? h : null;
 
+        /// <summary>Put a thing into an empty hand. False (no change) if the hand is full or the thing is null.</summary>
+        public bool TryGive(PlayerId player, HeldThing thing)
+        {
+            if (thing == null || _held.ContainsKey(player.Value)) return false;
+            _held[player.Value] = thing;
+            return true;
+        }
+
+        /// <summary>Empty the hand and return what was in it, or null.</summary>
+        public HeldThing TakeHeld(PlayerId player)
+        {
+            if (!_held.TryGetValue(player.Value, out var h)) return null;
+            _held.Remove(player.Value);
+            return h;
+        }
+
         /// <summary>Query-only check for taking an item id from the crate.</summary>
         public CrateRejection CanTake(PlayerId player, string itemId)
         {

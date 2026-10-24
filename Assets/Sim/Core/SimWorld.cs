@@ -168,16 +168,40 @@ namespace PlantNursery.Sim.Core
             for (var i = 0; i < _systems.Count; i++) _systems[i].System.Update(this);
         }
 
+        /// <summary>
+        /// Targets of queued, not yet applied <see cref="ITargetsEntity"/> commands from players other than
+        /// <paramref name="excludingPlayer"/>, in submission order. Smart targeting skips these.
+        /// </summary>
+        public IReadOnlyList<string> PendingTargets(PlayerId excludingPlayer)
+        {
+            var result = new List<string>();
+            foreach (var cmd in _pending)
+                if (cmd is ITargetsEntity t && !cmd.PlayerId.Equals(excludingPlayer)) result.Add(t.TargetKey);
+            return result;
+        }
+
         private void ApplyPendingCommands()
         {
             // Commands submitted while applying wait for the next tick.
             var count = _pending.Count;
+            var used = new HashSet<string>();
             for (var i = 0; i < count; i++)
             {
                 var cmd = _pending.Dequeue();
                 var result = Validate(cmd);
-                if (result.IsAccepted) _appliers[cmd.GetType()](cmd, this);
-                else Raise(new CommandRejectedEvent(cmd, result));
+                var target = cmd as ITargetsEntity;
+                if (result.IsAccepted)
+                {
+                    _appliers[cmd.GetType()](cmd, this);
+                    if (target != null) used.Add(target.TargetKey);
+                }
+                else
+                {
+                    // An earlier command in this batch used the same target: report Taken, not the generic reason.
+                    if (target != null && used.Contains(target.TargetKey))
+                        result = CommandResult.Rejected(RejectReason.Taken, "Taken");
+                    Raise(new CommandRejectedEvent(cmd, result));
+                }
             }
         }
     }
