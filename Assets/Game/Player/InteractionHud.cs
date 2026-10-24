@@ -199,7 +199,7 @@ namespace PlantNursery.Game
 
         private void Buy(string itemId, string display)
         {
-            var result = _host.Submit(new BuyItem(SimHost.LocalPlayer, itemId, 1));
+            var result = _host.Submit(new BuyItem(_host.Session.LocalPlayer, itemId, 1));
             if (result.IsAccepted)
             {
                 _shopStatus.text = UiStrings.Get("shop.bought", display);

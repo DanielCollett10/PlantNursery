@@ -19,9 +19,6 @@ namespace PlantNursery.Game
     /// </summary>
     public sealed class SimHost : MonoBehaviour
     {
-        /// <summary>The local player (single player).</summary>
-        public static readonly PlayerId LocalPlayer = new PlayerId(0);
-
         private const int MaxTicksPerFrame = 10;
 
         [SerializeField] private bool useDemoProfile;
@@ -30,8 +27,15 @@ namespace PlantNursery.Game
 
         /// <summary>Use time.demo.json overrides (shorter days). Set before <see cref="Initialize"/>.</summary>
         public bool UseDemoProfile { get => useDemoProfile; set => useDemoProfile = value; }
-        /// <summary>The local player id (always 0).</summary>
-        public PlayerId LocalPlayerId => LocalPlayer;
+        /// <summary>The local session (holds the local <see cref="PlayerId"/>). Available before <see cref="Initialize"/>.</summary>
+        public Session Session { get; } = new Session(new PlayerId(0));
+        /// <summary>The local player id, from <see cref="Session"/>.</summary>
+        public PlayerId LocalPlayerId => Session.LocalPlayer;
+        /// <summary>
+        /// Where player commands go. Set by <see cref="Initialize"/>; a <see cref="LoopbackCommandSink"/> for now,
+        /// a network sink later. Null before <see cref="Initialize"/>.
+        /// </summary>
+        public ICommandSink Sink { get; private set; }
         /// <summary>Loaded content, or null before <see cref="Initialize"/>.</summary>
         public ContentDb Content { get; private set; }
         /// <summary>The simulation, or null before <see cref="Initialize"/>.</summary>
@@ -88,6 +92,7 @@ namespace PlantNursery.Game
 
             Content = content; Clock = clock; Build = build; Surface = surface; Wallet = wallet; Hands = hands;
             World = world;
+            Sink = new LoopbackCommandSink(world);
         }
 
         private void Awake()
@@ -125,13 +130,13 @@ namespace PlantNursery.Game
         public CommandResult Validate(ICommand command) => World.Validate(command);
 
         /// <summary>
-        /// Queue a command. An accepted <see cref="SleepCommand"/> fast-forwards at once: the world is stepped
-        /// until the next morning and the events are dispatched. Returns the validation result.
+        /// Queue a command through <see cref="Sink"/>. An accepted <see cref="SleepCommand"/> fast-forwards at once:
+        /// the world is stepped until the next morning and the events are dispatched. Returns the validation result.
         /// </summary>
         public CommandResult Submit(ICommand command)
         {
             var result = World.Validate(command);
-            World.Submit(command);
+            Sink.Submit(command);
             if (result.IsAccepted && command is SleepCommand)
             {
                 World.Step(1); // applies the command; the world then runs on to the next day start

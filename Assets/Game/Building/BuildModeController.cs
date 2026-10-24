@@ -55,6 +55,8 @@ namespace PlantNursery.Game
         private Unit _surfaceAnchor;
         private bool _aimIsSurface;
 
+        private PlayerId LocalPlayer => host.Session.LocalPlayer;
+
         /// <summary>True while build mode is open.</summary>
         public bool IsBuildMode { get; private set; }
         /// <summary>Selected build item id, or null.</summary>
@@ -135,7 +137,7 @@ namespace PlantNursery.Game
             if (_rotate.WasPressedThisFrame()) _rotation = BuildAim.Next(_rotation);
 
             _hasAim = false;
-            var held = host.Hands.GetHeld(SimHost.LocalPlayer);
+            var held = host.Hands.GetHeld(LocalPlayer);
             if (held != null && IsSurfaceItem(held.ItemId)) UpdateSurfaceGhost(held.ItemId);
             else if (IsBuildMode && _selectedId != null) UpdateFloorGhost(_selectedId);
             else { HideGhost(); _reason = string.Empty; }
@@ -205,7 +207,7 @@ namespace PlantNursery.Game
             var size = Footprints.Rotate(def.FloorFootprint, _rotation);
             var anchor = BuildAim.FloorAnchor(ray.GetPoint(dist), plotOrigin, size.W, size.D);
 
-            var result = host.Validate(new PlaceItem(SimHost.LocalPlayer, itemId, ItemLayer.Floor, anchor, _rotation));
+            var result = host.Validate(new PlaceItem(LocalPlayer, itemId, ItemLayer.Floor, anchor, _rotation));
             var reason = result.IsAccepted ? string.Empty : ReasonOf(result);
             ShowGhost(itemId);
             var pos = WorldLayout.PivotFor(plotOrigin + new Vector3(anchor.X * WorldLayout.CellSize, 0f, anchor.Z * WorldLayout.CellSize),
@@ -241,7 +243,7 @@ namespace PlantNursery.Game
             var desired = BuildAim.SurfaceAnchor(hit.point, plotOrigin, size.W, size.D);
             var spot = host.Surface.FindNearestFreeSpot(itemId, _rotation, desired, host.Content.Building.NudgeRadius);
             var anchor = spot ?? desired;
-            var result = host.Validate(new PutDown(SimHost.LocalPlayer, anchor, _rotation));
+            var result = host.Validate(new PutDown(LocalPlayer, anchor, _rotation));
 
             ShowGhost(itemId);
             var top = SupportTop(anchor, hit.point.y);
@@ -271,14 +273,14 @@ namespace PlantNursery.Game
             if (holding)
             {
                 if (_hasAim && _aimIsSurface && _pickUpDrop.WasPressedThisFrame())
-                    Send(new PutDown(SimHost.LocalPlayer, _surfaceAnchor, _rotation));
+                    Send(new PutDown(LocalPlayer, _surfaceAnchor, _rotation));
                 return;
             }
             if (!IsBuildMode) return;
             if (_hasAim && !_aimIsSurface && _place.WasPressedThisFrame())
             {
                 if (_reason == PlayerInTheWay) Fail(PlayerInTheWay);
-                else Send(new PlaceItem(SimHost.LocalPlayer, _selectedId, ItemLayer.Floor, _floorAnchor, _rotation));
+                else Send(new PlaceItem(LocalPlayer, _selectedId, ItemLayer.Floor, _floorAnchor, _rotation));
             }
             if (_pickUpDrop.WasPressedThisFrame()) PickUpAimedItem();
         }
@@ -292,7 +294,7 @@ namespace PlantNursery.Game
                 Mathf.FloorToInt((probe.z - plotOrigin.z) / WorldLayout.CellSize));
             var placed = host.Build.GetAt(cell);
             if (placed == null) return;
-            Send(new PickUpItem(SimHost.LocalPlayer, placed.Id));
+            Send(new PickUpItem(LocalPlayer, placed.Id));
         }
 
         private void Send(ICommand command)
