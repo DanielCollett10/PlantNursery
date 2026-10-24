@@ -61,30 +61,6 @@ namespace PlantNursery.Game
         /// <summary>The view of a plant, or null.</summary>
         public PlantView PlantViewOf(int plantId) => _plants.TryGetValue(plantId, out var v) ? v : null;
 
-        /// <summary>
-        /// The sim container (pot or planting tray) whose view the ray hits first (by renderer bounds), or null.
-        /// <paramref name="scratch"/> is a reusable list so the call allocates nothing. Used by the debug overlay.
-        /// </summary>
-        public Container ContainerAt(Ray ray, List<Renderer> scratch)
-        {
-            if (host == null || !host.IsReady) return null;
-            var best = float.MaxValue;
-            Container hit = null;
-            foreach (var kv in _containerViews)
-            {
-                if (kv.Value == null) continue;
-                kv.Value.GetComponentsInChildren(scratch);
-                foreach (var r in scratch)
-                {
-                    if (r is ParticleSystemRenderer || !r.bounds.IntersectRay(ray, out var d) || d >= best) continue;
-                    var c = host.Nursery.FindContainer(kv.Key);
-                    if (c == null) continue;
-                    best = d; hit = c;
-                }
-            }
-            return hit;
-        }
-
         private void LateUpdate() { Sync(); }
 
         /// <summary>Destroy every view and rebuild from the full sim state (e.g. after load).</summary>

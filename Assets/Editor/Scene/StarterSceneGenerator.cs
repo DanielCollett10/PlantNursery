@@ -98,11 +98,8 @@ namespace PlantNursery.EditorTools
                 if (a != null) prefabs.Add(a);
             }
             var worldGo = new GameObject("WorldView");
-            var worldView = worldGo.AddComponent<WorldView>();
-            worldView.Configure(simHost.GetComponent<SimHost>(),
+            worldGo.AddComponent<WorldView>().Configure(simHost.GetComponent<SimHost>(),
                 AssetDatabase.LoadAssetAtPath<ViewCatalog>("Assets/Game/Greybox/ViewCatalog.asset"));
-            // F1 pot readout (T-181), off by default.
-            new GameObject("PotDebugOverlay").AddComponent<PotDebugOverlay>().Configure(simHost.GetComponent<SimHost>(), worldView, cam);
             var heldGo = new GameObject("HeldItem");
             heldGo.transform.SetParent(camGo.transform, false);
             heldGo.AddComponent<HeldItemView>().Configure(interaction, prefabs);
