@@ -32,9 +32,13 @@ namespace PlantNursery.Sim.Plants
         /// <summary>Quality: care grade (plants.md Quality) minus the steps lost, never below poor.</summary>
         public static QualityGrade QualityOf(Plant p, EconomyConfig economy)
         {
-            var share = p.TicksAlive <= 0 ? 1f : (float)p.TicksNotDry / p.TicksAlive;
-            var grade = share >= economy.ExcellentCareThreshold ? (int)QualityGrade.Excellent
-                : share < economy.PoorCareThreshold ? (int)QualityGrade.Poor : (int)QualityGrade.Good;
+            var grade = (int)QualityGrade.Good; // no ticks alive counts as good
+            if (p.TicksAlive > 0)
+            {
+                var share = (float)p.TicksNotDry / p.TicksAlive;
+                grade = share >= economy.ExcellentCareThreshold ? (int)QualityGrade.Excellent
+                    : share < economy.PoorCareThreshold ? (int)QualityGrade.Poor : (int)QualityGrade.Good;
+            }
             return (QualityGrade)Math.Max((int)QualityGrade.Poor, grade - p.QualityStepsLost);
         }
     }

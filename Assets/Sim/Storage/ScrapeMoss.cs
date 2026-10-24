@@ -83,15 +83,20 @@ namespace PlantNursery.Sim.Storage
 
             public void Apply(ScrapeMoss cmd, SimWorld w)
             {
-                var plant = FindMoss(cmd, out _);
-                var quality = MossRules.QualityOf(plant, _content.Economy);
-                var bundle = new HeldThing(HeldKind.Bundle, BundleItemId) { Quality = quality };
-                _n.Hands.TryGive(cmd.PlayerId, bundle);
-                plant.RegrowTicksLeft = MossRules.RegrowTicks(plant, _content.SpeciesDefs[plant.SpeciesId], GameTicksPerDay);
-                w.Raise(new MossScraped(cmd.PlayerId, cmd.ContainerId, plant.Id, quality));
+                var first = FindMoss(cmd, out var container);
+                // One bundle per tray; its quality is the first harvestable plant's. Every harvestable plant regrows.
+                var quality = MossRules.QualityOf(first, _content.Economy);
+                _n.Hands.TryGive(cmd.PlayerId, new HeldThing(HeldKind.Bundle, BundleItemId) { Quality = quality });
+                foreach (var id in container.PlantIds)
+                {
+                    var p = _plantById(id);
+                    if (!MossRules.IsHarvestable(p, _content)) continue;
+                    p.RegrowTicksLeft = MossRules.RegrowTicks(p, _content.SpeciesDefs[p.SpeciesId], TicksPerDay);
+                }
+                w.Raise(new MossScraped(cmd.PlayerId, cmd.ContainerId, first.Id, quality));
             }
 
-            private const int GameTicksPerDay = PlantNursery.Sim.Time.GameClock.MinutesPerDay;
+            private const int TicksPerDay = PlantNursery.Sim.Time.GameClock.MinutesPerDay; // 1 tick = 1 minute
         }
     }
 }

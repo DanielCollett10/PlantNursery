@@ -62,6 +62,29 @@ namespace PlantNursery.Sim.Tests
         }
 
         [Test]
+        public void NoTicksAliveGivesGoodAndStepsLostLowerIt()
+        {
+            _moss.TicksAlive = 0;
+            Assert.AreEqual(QualityGrade.Good, MossRules.QualityOf(_moss, _db.Economy));
+            _moss.QualityStepsLost = 1;
+            Assert.AreEqual(QualityGrade.Poor, MossRules.QualityOf(_moss, _db.Economy));
+        }
+
+        [Test]
+        public void MultiPlantTrayGivesOneBundleAndAllRegrow()
+        {
+            var second = new SpeciesPlantFactory(_w, _db).Create("hearthmoss", "hearthmoss_amber", "plug_tray", 1);
+            _n.PlantMap[second.Id] = second;
+            _tray.AddPlant(second.Id);
+            Mature(second);
+            Assert.IsTrue(Scrape().IsAccepted);
+            Assert.IsTrue(_moss.IsRegrowing);
+            Assert.IsTrue(second.IsRegrowing);
+            _n.Hands.TakeHeld(A);
+            Assert.AreEqual("NotHarvestable", Scrape().Message);
+        }
+
+        [Test]
         public void PoorMossGivesPoorBundle()
         {
             _moss.TicksAlive = 100; _moss.TicksNotDry = 10;
