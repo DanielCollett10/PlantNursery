@@ -23,8 +23,6 @@ namespace PlantNursery.Sim.Content
         public EconomyConfig Economy { get; }
         /// <summary>Building config.</summary>
         public BuildingConfig Building { get; }
-        /// <summary>The day-one kit (economy.json <c>starterKit</c>); empty when not supplied.</summary>
-        public StarterKitDef StarterKit { get; }
 
         /// <summary>Creates the database.</summary>
         public ContentDb(TimeConfig time, IReadOnlyDictionary<string, ItemDef> items,
@@ -33,8 +31,7 @@ namespace PlantNursery.Sim.Content
             IReadOnlyDictionary<string, GeneDef> genes,
             EconomyConfig economy, BuildingConfig building,
             IReadOnlyDictionary<string, SpeciesDef> species = null,
-            IReadOnlyDictionary<string, GeneDef> allGenes = null,
-            StarterKitDef starterKit = null)
+            IReadOnlyDictionary<string, GeneDef> allGenes = null)
         {
             Time = time;
             ItemDefs = items;
@@ -45,7 +42,6 @@ namespace PlantNursery.Sim.Content
             Building = building;
             SpeciesDefs = species ?? new Dictionary<string, SpeciesDef>();
             AllGeneDefs = allGenes ?? genes;
-            StarterKit = starterKit ?? new StarterKitDef();
         }
     }
 }
