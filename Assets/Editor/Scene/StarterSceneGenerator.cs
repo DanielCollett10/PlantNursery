@@ -18,6 +18,7 @@ namespace PlantNursery.EditorTools
         private const string GhostValidPath = "Assets/Game/Greybox/Materials/GhostValid.mat";
         private const string GhostInvalidPath = "Assets/Game/Greybox/Materials/GhostInvalid.mat";
         private const string InputPath = "Assets/Input/PlayerControls.inputactions";
+        private const string NurseryInputPath = "Assets/Input/NurseryControls.inputactions";
         private const float CellSize = 0.5f;
         private const int BuildPanelSortOrder = 10;
         private const int HudSortOrder = 20;
@@ -66,9 +67,22 @@ namespace PlantNursery.EditorTools
             var cam = camGo.AddComponent<Camera>();
             camGo.AddComponent<AudioListener>();
             camGo.transform.SetParent(player.transform, false);
-            camGo.transform.localPosition = new Vector3(0f, FirstPersonController.EyeHeight, 0f);
+            // Top-down pose (decision 0010): the camera rides on the player, looking down at an angle.
+            camGo.transform.localPosition = new Vector3(0f, 8f, -5f);
+            camGo.transform.localRotation = Quaternion.Euler(58f, 0f, 0f);
             var input = AssetDatabase.LoadAssetAtPath<UnityEngine.InputSystem.InputActionAsset>(InputPath);
-            player.AddComponent<FirstPersonController>().Configure(input, camGo.transform);
+            var walkInput = AssetDatabase.LoadAssetAtPath<UnityEngine.InputSystem.InputActionAsset>(NurseryInputPath);
+            var topDown = player.AddComponent<TopDownPlayerController>();
+            topDown.Configure(walkInput, camGo.transform);
+            // First person stays as an off-by-default debug view (F9).
+            var fpPivot = new GameObject("FirstPersonPivot").transform;
+            fpPivot.SetParent(player.transform, false);
+            var firstPerson = player.AddComponent<FirstPersonController>();
+            firstPerson.Configure(input, fpPivot);
+            firstPerson.enabled = false;
+            player.AddComponent<DebugFirstPersonToggle>().Configure(topDown, firstPerson, camGo.transform);
+            var viewGo = new GameObject("PlayerViews");
+            viewGo.AddComponent<PlayerView>().Configure(simHost.GetComponent<SimHost>(), player.transform, topDown);
             var interaction = player.AddComponent<InteractionController>();
             interaction.Configure(simHost.GetComponent<SimHost>(), cam, input);
             var prefabs = new System.Collections.Generic.List<PlaceableAuthoring>();

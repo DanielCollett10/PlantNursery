@@ -32,6 +32,9 @@ namespace PlantNursery.Game.Tests
             Assert.IsNotNull(Prop(fpc, "actions").objectReferenceValue, "actions");
             Assert.IsNotNull(Prop(fpc, "cameraPivot").objectReferenceValue, "camera");
             Assert.IsNotNull(player.GetComponent<InteractionController>());
+            Assert.IsNotNull(player.GetComponent<TopDownPlayerController>());
+            Assert.IsFalse(fpc.enabled, "first person is off by default");
+            Assert.IsNotNull(Object.FindFirstObjectByType<PlayerView>());
         }
 
         [Test]
