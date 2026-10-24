@@ -56,6 +56,10 @@ namespace PlantNursery.Sim.Plants
         public float StageProgress { get; set; }
         /// <summary>Quality steps lost to bad care (0 = none).</summary>
         public int QualityStepsLost { get; set; }
+        /// <summary>Ticks left before a scraped plant is harvestable again (0 = not regrowing).</summary>
+        public int RegrowTicksLeft { get; set; }
+        /// <summary>True while a scraped plant is regrowing.</summary>
+        public bool IsRegrowing => RegrowTicksLeft > 0;
         /// <summary>True when this plant follows the species rules.</summary>
         public bool IsSpeciesPlant => SpeciesId != null;
         /// <summary>Lifecycle machine: Growing, RootBound, Wilted, Dead. Null for old-variety plants.</summary>
