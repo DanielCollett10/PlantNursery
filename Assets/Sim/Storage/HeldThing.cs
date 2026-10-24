@@ -34,6 +34,21 @@ namespace PlantNursery.Sim.Storage
         /// <summary>Seeds left (seed packets).</summary>
         public int SeedsLeft { get; set; }
 
+        private readonly System.Collections.Generic.List<Container> _pots = new System.Collections.Generic.List<Container>();
+
+        /// <summary>Small pots carried in a carry tray (empty for other kinds). They are never in a bench slot, so never neighbours.</summary>
+        public System.Collections.Generic.IReadOnlyList<Container> Pots => _pots;
+
+        internal void AddPot(Container pot) { _pots.Add(pot); }
+
+        internal Container TakeFirstPot()
+        {
+            if (_pots.Count == 0) return null;
+            var p = _pots[0];
+            _pots.RemoveAt(0);
+            return p;
+        }
+
         /// <summary>Creates a held thing.</summary>
         public HeldThing(HeldKind kind, string itemId, Container container = null)
         {
