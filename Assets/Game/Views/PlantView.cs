@@ -16,17 +16,16 @@ namespace PlantNursery.Game
         private Transform _pivot;
         private Material _stemMat;
         private Material _leafMat;
-        private Color _leafBase;
+        private int _stageCount;
 
         /// <summary>The plant shown.</summary>
         public Plant Plant => _plant;
 
         /// <summary>Build the visual for a plant and apply its current state.</summary>
-        public void Bind(Plant plant)
+        public void Bind(Plant plant, int stageCount = 0)
         {
             _plant = plant;
-            var allele = plant.Genome != null ? plant.Genome.MendelianPhenotype("leafColour") : null;
-            _leafBase = WorldLayout.LeafColour(allele);
+            _stageCount = stageCount;
             Build();
             Refresh();
         }
@@ -35,11 +34,11 @@ namespace PlantNursery.Game
         public void Refresh()
         {
             if (_plant == null) return;
-            var wilt = _plant.IsDead ? 1f : WorldLayout.WiltAmount(_plant.Moisture);
-            _pivot.localScale = Vector3.one * WorldLayout.PlantScale(_plant.Stage);
-            _pivot.localRotation = Quaternion.Euler(wilt * 55f, 0f, wilt * 20f);
-            SetColour(_stemMat, WorldLayout.Tinted(WorldLayout.StemGreen, wilt, _plant.IsDead));
-            SetColour(_leafMat, WorldLayout.Tinted(_leafBase, wilt, _plant.IsDead));
+            var look = PlantLook.From(_plant, _stageCount);
+            _pivot.localScale = Vector3.one * look.Scale;
+            _pivot.localRotation = Quaternion.Euler(look.Droop * 55f, 0f, look.Droop * 20f);
+            SetColour(_stemMat, WorldLayout.Tinted(WorldLayout.StemGreen, look.Droop, look.Dead));
+            SetColour(_leafMat, look.Tint);
         }
 
         private void Build()
