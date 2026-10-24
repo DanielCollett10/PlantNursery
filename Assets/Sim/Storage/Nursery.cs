@@ -32,5 +32,34 @@ namespace PlantNursery.Sim.Storage
         {
             Build = build; Slots = slots; Strip = strip; Contents = contents; Crate = crate; Hands = hands; Wallet = wallet;
         }
+
+        /// <summary>
+        /// Find a container entity by id wherever it is: in the crate, in a bench slot, in a hand, or as a pot in a carry tray
+        /// (in a slot or a hand). Null if none.
+        /// </summary>
+        public Container FindContainer(int id)
+        {
+            var c = Crate.FindContainer(id);
+            if (c != null) return c;
+            foreach (var t in Contents.Things)
+            {
+                c = FindIn(t, id);
+                if (c != null) return c;
+            }
+            foreach (var t in Hands.AllHeld)
+            {
+                c = FindIn(t, id);
+                if (c != null) return c;
+            }
+            return null;
+        }
+
+        private static Container FindIn(HeldThing thing, int id)
+        {
+            if (thing.Container != null && thing.Container.Id == id) return thing.Container;
+            foreach (var pot in thing.Pots)
+                if (pot.Id == id) return pot;
+            return null;
+        }
     }
 }
