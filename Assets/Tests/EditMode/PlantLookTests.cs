@@ -33,7 +33,11 @@ namespace PlantNursery.Game.Tests
         public void AmberPhenotypeGivesAmberTint()
         {
             var look = PlantLook.From(AmberMoss(), 2);
-            Assert.AreEqual(PlantLook.Amber, look.Tint);
+            // Tint goes through an HSV round trip, so compare with a tolerance.
+            Assert.AreEqual(PlantLook.Amber.r, look.Tint.r, 0.01f);
+            Assert.AreEqual(PlantLook.Amber.g, look.Tint.g, 0.01f);
+            Assert.AreEqual(PlantLook.Amber.b, look.Tint.b, 0.01f);
+            Assert.AreEqual(PlantLook.Amber, PlantLook.BaseColour(AmberMoss()));
         }
 
         [Test]
