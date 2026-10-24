@@ -110,7 +110,12 @@ namespace PlantNursery.EditorTools
             var hudDoc = hud.AddComponent<UnityEngine.UIElements.UIDocument>();
             hudDoc.panelSettings = panelSettings;
             hudDoc.sortingOrder = HudSortOrder;
-            hud.AddComponent<InteractionHud>().Configure(interaction);
+            var worldInteractions = player.AddComponent<WorldInteractions>();
+            worldInteractions.Configure(simHost.GetComponent<SimHost>(), player.transform, walkInput);
+            var hudScript = hud.AddComponent<InteractionHud>();
+            hudScript.Configure(interaction);
+            hudScript.ConfigureWorld(worldInteractions);
+            new GameObject("Bed").AddComponent<BedInteractable>().Configure(simHost.GetComponent<SimHost>());
 
             var buildGo = new GameObject("BuildMode");
             var buildDoc = buildGo.AddComponent<UnityEngine.UIElements.UIDocument>();

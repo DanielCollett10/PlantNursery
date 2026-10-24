@@ -19,6 +19,7 @@ namespace PlantNursery.Game
         private const float ToastSeconds = 4f;
 
         [SerializeField] private InteractionController interaction;
+        [SerializeField] private WorldInteractions world;
 
         private SimHost _host;
         private bool _subscribed;
@@ -36,6 +37,9 @@ namespace PlantNursery.Game
 
         /// <summary>Assign the controller (used by the scene generator).</summary>
         public void Configure(InteractionController controller) { interaction = controller; }
+
+        /// <summary>Assign the world-interaction probe that supplies the prompt and rejection text.</summary>
+        public void ConfigureWorld(WorldInteractions worldInteractions) { world = worldInteractions; }
 
         private void OnEnable()
         {
@@ -121,13 +125,18 @@ namespace PlantNursery.Game
             var wallet = UiStrings.Get("hud.wallet", _host.Wallet.Balance);
             _wallet.text = wallet;
 
-            if (interaction != null)
+            if (world != null)
+            {
+                _prompt.text = world.Prompt;
+                _rejection.text = world.Rejection;
+            }
+            else if (interaction != null)
             {
                 _prompt.text = interaction.Prompt;
                 _rejection.text = interaction.Rejection;
-                var held = interaction.HeldItemId;
-                _held.text = string.IsNullOrEmpty(held) ? string.Empty : UiStrings.Get("hud.held", ItemName(held));
             }
+            var heldThing = _host.Nursery?.Hands.GetHeld(_host.Session.LocalPlayer);
+            _held.text = heldThing == null ? string.Empty : UiStrings.Get("hud.held", ItemName(heldThing.ItemId));
 
             _toast.EnableInClassList("hud-toast--visible", Time.unscaledTime < _toastUntil);
 
