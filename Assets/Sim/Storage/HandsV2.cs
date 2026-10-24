@@ -38,6 +38,9 @@ namespace PlantNursery.Sim.Storage
         /// <summary>What the player holds, or null.</summary>
         public HeldThing GetHeld(PlayerId player) => _held.TryGetValue(player.Value, out var h) ? h : null;
 
+        /// <summary>Everything currently held by any player (one per player). Read-only view for rules that look across hands.</summary>
+        public IEnumerable<HeldThing> AllHeld => _held.Values;
+
         /// <summary>Put a thing into an empty hand. False (no change) if the hand is full or the thing is null.</summary>
         public bool TryGive(PlayerId player, HeldThing thing)
         {
