@@ -136,7 +136,7 @@ namespace PlantNursery.Game
                 _rejection.text = interaction.Rejection;
             }
             var heldThing = _host.Nursery?.Hands.GetHeld(_host.Session.LocalPlayer);
-            _held.text = heldThing == null ? string.Empty : UiStrings.Get("hud.held", ItemName(heldThing.ItemId));
+            _held.text = heldThing == null ? string.Empty : UiStrings.Get("hud.held", ItemName(heldThing.ItemId)) + CanSuffix(heldThing);
 
             _toast.EnableInClassList("hud-toast--visible", Time.unscaledTime < _toastUntil);
 
@@ -145,6 +145,14 @@ namespace PlantNursery.Game
                 _shopWallet.text = wallet;
                 if (_cancel != null && _cancel.WasPressedThisFrame()) CloseShop();
             }
+        }
+
+        /// <summary>" 80%" water left for a held watering can, else empty.</summary>
+        private string CanSuffix(PlantNursery.Sim.Storage.HeldThing thing)
+        {
+            if (thing.Kind != PlantNursery.Sim.Storage.HeldKind.Can) return string.Empty;
+            if (!_host.Content.ItemDefs.TryGetValue(thing.ItemId, out var def) || def.WaterCapacity <= 0) return string.Empty;
+            return " " + Mathf.Clamp(Mathf.RoundToInt(100f * thing.Charges / def.WaterCapacity), 0, 100) + "%";
         }
 
         private string ItemName(string id) =>

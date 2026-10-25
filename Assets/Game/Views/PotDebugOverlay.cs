@@ -30,6 +30,9 @@ namespace PlantNursery.Game
         private int _textPlant = -1;
         private Vector2 _mouse;
         private string _diag;
+        private Vector2 _imgui;
+        private bool _hasImgui;
+        private string _inputDevice = "none";
         private bool _textNearest;
         private Transform _player;
         private readonly List<Vector2> _candidates = new List<Vector2>();
@@ -51,9 +54,15 @@ namespace PlantNursery.Game
         {
             if (Keyboard.current != null && Keyboard.current.f1Key.wasPressedThisFrame) Visible = !Visible;
             if (!Visible) { _text = null; _textContainer = -1; _diag = null; return; }
+            // Input System position first; it can stay at (0,0) when the Game view lacks focus or no device reports. Then try any
+            // Pointer (touch/pen), then the IMGUI position captured in OnGUI (always the real cursor over the Game view).
+            var pos = Vector2.zero;
             var mouse = Mouse.current;
-            if (mouse != null) _mouse = mouse.position.ReadValue();
-            Refresh(_mouse);
+            if (mouse != null) pos = mouse.position.ReadValue();
+            if (pos == Vector2.zero && Pointer.current != null) pos = Pointer.current.position.ReadValue();
+            if (pos == Vector2.zero && _hasImgui) pos = _imgui;
+            _inputDevice = mouse != null ? "mouse" : (Pointer.current != null ? "pointer" : "no device");
+            Refresh(pos);
         }
 
         /// <summary>Corner diagnostics line (mouse, screen size, camera pixelRect, hovered container), or null when off.</summary>
@@ -103,6 +112,7 @@ namespace PlantNursery.Game
             _candidates.Add((Vector2)Input.mousePosition);
 #endif
             _candidates.Add(ToCameraPixels(screenPos, c.pixelRect, Screen.width, Screen.height));
+            if (_hasImgui) _candidates.Add(_imgui);
             var container = ResolveHover(_candidates, p => world.ContainerAt(c.ScreenPointToRay(p), _renderers)
                                                          ?? world.ContainerNear(c, p, HoverPixels, _renderers), out var used);
             var hovered = container != null;
@@ -116,7 +126,8 @@ namespace PlantNursery.Game
                 if (_player != null) container = world.ContainerNearestTo(_player.position);
                 ShowingNearest = container != null;
             }
-            _diag = "mouse " + Fmt(screenPos) + "  screen " + Screen.width + "x" + Screen.height + "  pixelRect " + c.pixelRect
+            _diag = "mouse " + Fmt(screenPos) + " [" + _inputDevice + ", imgui " + (_hasImgui ? Fmt(_imgui) : "n/a")
+                    + ", focus " + Application.isFocused + "]  screen " + Screen.width + "x" + Screen.height + "  pixelRect " + c.pixelRect
                     + "  hover " + (hovered ? "#" + container.Id + " via " + Fmt(used) : "none");
             if (container == null) { _text = null; _textContainer = -1; return; }
 
@@ -179,6 +190,13 @@ namespace PlantNursery.Game
 
         private void OnGUI()
         {
+            var e = Event.current;
+            if (e != null && e.mousePosition != Vector2.zero)
+            {
+                var ppp = GUIUtility.pixelsPerPoint;
+                _imgui = new Vector2(e.mousePosition.x * ppp, Screen.height - e.mousePosition.y * ppp); // IMGUI y is top-down
+                _hasImgui = true;
+            }
             if (!Visible) return;
             GUI.Box(new Rect(8f, 8f, 150f, 24f), IndicatorText);
             if (_diag != null) GUI.Box(new Rect(8f, 36f, Mathf.Min(Screen.width - 16f, 760f), 24f), _diag);
