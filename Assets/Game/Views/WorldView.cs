@@ -120,6 +120,27 @@ namespace PlantNursery.Game
             return hit;
         }
 
+        /// <summary>
+        /// The container whose view centre is closest (in world space) to <paramref name="worldPos"/>, or null when there are
+        /// none. Mouse-free fallback for the debug overlay.
+        /// </summary>
+        public Container ContainerNearestTo(Vector3 worldPos)
+        {
+            if (host == null || !host.IsReady) return null;
+            var best = float.MaxValue;
+            Container hit = null;
+            foreach (var kv in _containerViews)
+            {
+                if (kv.Value == null) continue;
+                var d = (kv.Value.transform.position - worldPos).sqrMagnitude;
+                if (d >= best) continue;
+                var c = host.Nursery.FindContainer(kv.Key);
+                if (c == null) continue;
+                best = d; hit = c;
+            }
+            return hit;
+        }
+
         private void LateUpdate() { Sync(); }
 
         /// <summary>Destroy every view and rebuild from the full sim state (e.g. after load).</summary>
