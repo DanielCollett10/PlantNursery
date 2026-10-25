@@ -29,6 +29,13 @@ namespace PlantNursery.Game
         private int _textPercent = -1;
         private int _textPlant = -1;
         private Vector2 _mouse;
+        private string _diag;
+        private Vector2 _imgui;
+        private bool _hasImgui;
+        private string _inputDevice = "none";
+        private bool _textNearest;
+        private Transform _player;
+        private readonly List<Vector2> _candidates = new List<Vector2>();
 
         /// <summary>True while the overlay is shown. Off by default.</summary>
         public bool Visible { get; set; }
@@ -46,20 +53,82 @@ namespace PlantNursery.Game
         private void Update()
         {
             if (Keyboard.current != null && Keyboard.current.f1Key.wasPressedThisFrame) Visible = !Visible;
-            if (!Visible) { _text = null; _textContainer = -1; return; }
+            if (!Visible) { _text = null; _textContainer = -1; _diag = null; return; }
+            // Input System position first; it can stay at (0,0) when the Game view lacks focus or no device reports. Then try any
+            // Pointer (touch/pen), then the IMGUI position captured in OnGUI (always the real cursor over the Game view).
+            var pos = Vector2.zero;
             var mouse = Mouse.current;
-            if (mouse != null) _mouse = mouse.position.ReadValue();
-            Refresh(_mouse);
+            if (mouse != null) pos = mouse.position.ReadValue();
+            if (pos == Vector2.zero && Pointer.current != null) pos = Pointer.current.position.ReadValue();
+            if (pos == Vector2.zero && _hasImgui) pos = _imgui;
+            _inputDevice = mouse != null ? "mouse" : (Pointer.current != null ? "pointer" : "no device");
+            Refresh(pos);
         }
+
+        /// <summary>Corner diagnostics line (mouse, screen size, camera pixelRect, hovered container), or null when off.</summary>
+        public string DiagnosticsLine => Visible ? _diag : null;
+        /// <summary>True when the current label is the nearest-pot fallback rather than a hover hit.</summary>
+        public bool ShowingNearest { get; private set; }
+
+        /// <summary>
+        /// Try each candidate screen position in order and return the first non-null probe result (and the position that hit).
+        /// Pure helper so the hover fallback order can be tested without a scene.
+        /// </summary>
+        public static T ResolveHover<T>(IList<Vector2> candidates, System.Func<Vector2, T> probe, out Vector2 used) where T : class
+        {
+            for (var i = 0; i < candidates.Count; i++)
+            {
+                var r = probe(candidates[i]);
+                if (r != null) { used = candidates[i]; return r; }
+            }
+            used = candidates.Count > 0 ? candidates[0] : Vector2.zero;
+            return null;
+        }
+
+        /// <summary>Rescale a position from the screen into the camera's pixel rect (handles Game view scale / odd viewports).</summary>
+        public static Vector2 ToCameraPixels(Vector2 pos, Rect pixelRect, float screenW, float screenH)
+        {
+            if (screenW <= 0f || screenH <= 0f) return pos;
+            return new Vector2(pixelRect.x + pos.x / screenW * pixelRect.width, pixelRect.y + pos.y / screenH * pixelRect.height);
+        }
+
+        private static string Fmt(Vector2 v) => "(" + v.x.ToString("0") + "," + v.y.ToString("0") + ")";
 
         /// <summary>Re-evaluate what is under a screen position and update <see cref="CurrentText"/>.</summary>
         public void Refresh(Vector2 screenPos)
         {
             _mouse = screenPos;
+            ShowingNearest = false;
             var c = cam != null ? cam : Camera.main;
-            if (host == null || !host.IsReady || world == null || c == null) { _text = null; _textContainer = -1; return; }
-            var container = world.ContainerAt(c.ScreenPointToRay(screenPos), _renderers)
-                            ?? world.ContainerNear(c, screenPos, HoverPixels, _renderers);
+            if (host == null || !host.IsReady || world == null || c == null)
+            {
+                _text = null; _textContainer = -1;
+                _diag = "mouse " + Fmt(screenPos) + "  (overlay not wired / host not ready)";
+                return;
+            }
+            _candidates.Clear();
+            _candidates.Add(screenPos);
+#if ENABLE_LEGACY_INPUT_MANAGER
+            _candidates.Add((Vector2)Input.mousePosition);
+#endif
+            _candidates.Add(ToCameraPixels(screenPos, c.pixelRect, Screen.width, Screen.height));
+            if (_hasImgui) _candidates.Add(_imgui);
+            var container = ResolveHover(_candidates, p => world.ContainerAt(c.ScreenPointToRay(p), _renderers)
+                                                         ?? world.ContainerNear(c, p, HoverPixels, _renderers), out var used);
+            var hovered = container != null;
+            if (!hovered)
+            {
+                if (_player == null)
+                {
+                    var go = GameObject.Find("Player");
+                    if (go != null) _player = go.transform;
+                }
+                if (_player != null) container = world.ContainerNearestTo(_player.position);
+                ShowingNearest = container != null;
+            }
+            _diag = "mouse " + Fmt(screenPos) + " [" + _inputDevice + ", imgui " + (_hasImgui ? Fmt(_imgui) : "n/a")
+                    + ", focus " + Application.isFocused + "]  screen " + Screen.width + "x" + Screen.height + "  pixelRect " + c.pixelRect
+                    + "  hover " + (hovered ? "#" + container.Id + " via " + Fmt(used) : "none");
             if (container == null) { _text = null; _textContainer = -1; return; }
 
             Plant plant = null;
@@ -71,9 +140,10 @@ namespace PlantNursery.Game
             }
             var percent = plant != null ? PercentOf(host.Content, plant) : 0;
             var plantId = plant != null ? plant.Id : -1;
-            if (_text != null && _textContainer == container.Id && _textPlant == plantId && _textPercent == percent) return;
-            _textContainer = container.Id; _textPlant = plantId; _textPercent = percent;
-            _text = Format(host.Content, plant, percent);
+            if (_text != null && _textContainer == container.Id && _textPlant == plantId && _textPercent == percent
+                && _textNearest == ShowingNearest) return;
+            _textContainer = container.Id; _textPlant = plantId; _textPercent = percent; _textNearest = ShowingNearest;
+            _text = Format(host.Content, plant, percent) + (ShowingNearest ? "\n(nearest)" : "");
         }
 
         /// <summary>The label for a pot: "N/A" when empty, otherwise name, stage and growth %.</summary>
@@ -120,10 +190,20 @@ namespace PlantNursery.Game
 
         private void OnGUI()
         {
+            var e = Event.current;
+            if (e != null && e.mousePosition != Vector2.zero)
+            {
+                _imgui = new Vector2(e.mousePosition.x, Screen.height - e.mousePosition.y); // IMGUI y is top-down
+                _hasImgui = true;
+            }
             if (!Visible) return;
             GUI.Box(new Rect(8f, 8f, 150f, 24f), IndicatorText);
+            if (_diag != null) GUI.Box(new Rect(8f, 36f, Mathf.Min(Screen.width - 16f, 760f), 24f), _diag);
             if (_text == null) return;
-            GUI.Box(new Rect(_mouse.x + 16f, Screen.height - _mouse.y + 16f, 180f, 44f), _text);
+            var rect = ShowingNearest
+                ? new Rect(8f, 66f, 180f, 60f)
+                : new Rect(_mouse.x + 16f, Screen.height - _mouse.y + 16f, 180f, 44f);
+            GUI.Box(rect, _text);
         }
     }
 }
