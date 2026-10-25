@@ -193,8 +193,7 @@ namespace PlantNursery.Game
             var e = Event.current;
             if (e != null && e.mousePosition != Vector2.zero)
             {
-                var ppp = GUIUtility.pixelsPerPoint;
-                _imgui = new Vector2(e.mousePosition.x * ppp, Screen.height - e.mousePosition.y * ppp); // IMGUI y is top-down
+                _imgui = new Vector2(e.mousePosition.x, Screen.height - e.mousePosition.y); // IMGUI y is top-down
                 _hasImgui = true;
             }
             if (!Visible) return;
