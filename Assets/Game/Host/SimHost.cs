@@ -92,6 +92,7 @@ namespace PlantNursery.Game
             CrateCommands.Register(world, nursery.Hands);
             nursery.Contents.Register(world);
             nursery.Contents.RegisterPotOn(world, nursery.Crate, nursery.Plants);
+            nursery.RegisterSowing(world, content);
             WaterCommands.Register(world, nursery, content);
             MossCommands.Register(world, nursery, content, nursery.PlantById);
             WaterSystem.Install(world, nursery.AllContainers, nursery.PlantById, clock);

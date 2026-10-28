@@ -65,6 +65,9 @@ Key decisions: `docs/decisions/0003` (Unity owns bodies, the sim owns things),
 - `SimHost` MonoBehaviour owns the `SimWorld`, loads content, steps ticks at the real-time pace from `time.json`, and drains events.
 - View scripts mirror sim state into prefabs (placeholder mesh as a child). The first-person controller sends commands.
 
+## Bench actions (T-158)
+In bench view the BenchView map's Interact (left mouse / gamepad South) acts on the pointed slot in `BenchViewController`: empty hands send `PickUpFromSlot`; a seed packet sends `SowSpecies` for the container in that slot (`-1` when none, so the Sim answers `NotInSlot`); anything else sends `PutInSlot`. A packet points like empty hands (filled slots of any size). Rejections show as `reject.<message>` text via `UiStrings` and in the debug label. `TendingInteractable` is unavailable while any bench view is active, so one press does one thing. `Nursery.RegisterSowing` wires `SowSpecies` (called by `SimHost`).
+
 ## Data flow
 
 Player input → Unity layer → Sim command → `SimWorld.Step` → Sim state + events → Unity layer renders.
