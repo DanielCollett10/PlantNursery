@@ -1,6 +1,7 @@
 using System.Collections;
 using NUnit.Framework;
 using PlantNursery.Sim.Building;
+using PlantNursery.Sim.Content;
 using PlantNursery.Sim.Storage;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -76,6 +77,9 @@ namespace PlantNursery.Game.PlayModeTests
         /// <summary>A point in front (south) of the bench, <paramref name="gap"/> metres from its front edge, mid-bench.</summary>
         private Vector3 InFrontOfBench(float gap) => BenchMin() + new Vector3(_bench.Width * 0.25f, 0f, -gap);
 
+        // A sideways shift of up to 5 cells (bench is 6 cells long) still overlaps along the back row.
+        private static bool BenchSpaceShares(int shiftCells) => System.Math.Abs(shiftCells) < 6;
+
         private PlantNursery.Sim.Core.PlayerId Me => _host.Session.LocalPlayer;
 
         private IEnumerator PressInteract()
@@ -127,8 +131,16 @@ namespace PlantNursery.Game.PlayModeTests
         public IEnumerator BackToBackBenches_ShareOneView()
         {
             _host.Build.Inventory.Add("bench_3m", 1);
-            var other = _host.Build.Place("bench_3m", ItemLayer.Floor, new Cell(_bench.Anchor.X, _bench.Anchor.Z + 2), Rotation.Deg180, out var rej);
-            Assert.AreEqual(BuildRejection.None, rej);
+            // Back to back: a 180-degree bench whose back row touches ours. Shift along until the spot is free.
+            PlacedItem other = null;
+            for (var dx = 0; dx <= 6 && other == null; dx++)
+                foreach (var sx in new[] { dx, -dx })
+                {
+                    var anchor = new Cell(_bench.Anchor.X + sx, _bench.Anchor.Z + 2);
+                    if (_host.Build.CanPlace("bench_3m", ItemLayer.Floor, anchor, Rotation.Deg180) != BuildRejection.None) continue;
+                    if (BenchSpaceShares(sx)) { other = _host.Build.Place("bench_3m", ItemLayer.Floor, anchor, Rotation.Deg180, out _); break; }
+                }
+            Assert.IsNotNull(other, "found a free back-to-back spot");
             yield return PressInteract();
             Assert.IsTrue(_view.InBenchView);
             CollectionAssert.AreEquivalent(new[] { _bench.Id, other.Id }, _view.ViewBenchIds);
