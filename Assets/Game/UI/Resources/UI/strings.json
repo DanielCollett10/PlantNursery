@@ -10,6 +10,7 @@
     { "key": "prompt.format", "value": "{0}: {1}" },
     { "key": "prompt.sleep", "value": "Sleep" },
     { "key": "prompt.tend", "value": "Tend" },
+    { "key": "prompt.bench", "value": "Work at bench" },
     { "key": "prompt.pickup", "value": "Pick up" },
     { "key": "prompt.putdown", "value": "Put down" },
     { "key": "prompt.refill", "value": "Refill can" },

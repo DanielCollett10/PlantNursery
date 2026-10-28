@@ -118,6 +118,9 @@ namespace PlantNursery.EditorTools
             var hudScript = hud.AddComponent<InteractionHud>();
             hudScript.Configure(interaction);
             hudScript.ConfigureWorld(worldInteractions);
+            // Bench view (T-157): interacting with a bench pans the rig straight down; mouse and gamepad point at slots.
+            new GameObject("BenchView").AddComponent<BenchViewController>()
+                .Configure(simHost.GetComponent<SimHost>(), player.transform, rig, cam, walkInput, worldView);
             new GameObject("Bed").AddComponent<BedInteractable>().Configure(simHost.GetComponent<SimHost>());
             new GameObject("Tending").AddComponent<TendingInteractable>().Configure(simHost.GetComponent<SimHost>(), player.transform);
 
