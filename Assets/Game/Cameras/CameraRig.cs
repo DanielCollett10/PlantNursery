@@ -26,9 +26,13 @@ namespace PlantNursery.Game
         private Vector3 _fromOffset, _toOffset, _currentOffset;
         private float _panT = 1f;
         private bool _configLoaded;
+        private bool _benchActive;
+        private float _benchBlend;
+        private Vector3 _benchPos;
+        private Quaternion _benchRot = Quaternion.Euler(90f, 0f, 0f);
 
         /// <summary>Current mode.</summary>
-        public CameraMode Mode => _machine != null ? _machine.Mode : CameraMode.Follow;
+        public CameraMode Mode => _benchActive ? CameraMode.BenchView : (_machine != null ? _machine.Mode : CameraMode.Follow);
         /// <summary>The camera's current offset from the target (metres).</summary>
         public Vector3 CurrentOffset => _currentOffset;
         /// <summary>The offset the pan is heading for.</summary>
@@ -50,8 +54,32 @@ namespace PlantNursery.Game
             autoZoomOutSeconds = autoZoomSeconds; panSeconds = pan; _machine = null;
         }
 
-        /// <summary>Stub for later: bench view slot. Not implemented.</summary>
-        public void EnterBenchView(Transform bench) { }
+        /// <summary>
+        /// Pan to look straight down on a bench (or back-to-back benches). The camera ends at <paramref name="centre"/> raised to
+        /// <paramref name="height"/>, turned by <paramref name="yawDegrees"/> so screen-up is the view bench's back. A smooth pan
+        /// over <see cref="PanSeconds"/>, never a cut. Movement and the follow target are untouched.
+        /// </summary>
+        public void EnterBenchView(Vector3 centre, float yawDegrees, float height)
+        {
+            _benchPos = new Vector3(centre.x, height, centre.z);
+            _benchRot = Quaternion.Euler(90f, yawDegrees, 0f);
+            _benchActive = true;
+        }
+
+        /// <summary>Pan back to the follow pose.</summary>
+        public void ExitBenchView()
+        {
+            if (!_benchActive) return;
+            _benchActive = false;
+            _machine = null; // fresh idle timer and Follow mode
+            _currentOffset = _toOffset = followOffset;
+        }
+
+        /// <summary>True from entering bench view until exit is called.</summary>
+        public bool IsBenchView => _benchActive;
+
+        /// <summary>0 = follow pose, 1 = bench pose (the pan progress).</summary>
+        public float BenchBlend => _benchBlend;
 
         /// <summary>Stub for later: fixed-area (rush zone) slot. Not implemented.</summary>
         public void EnterFixedArea(Transform area) { }
@@ -82,7 +110,8 @@ namespace PlantNursery.Game
             }
             if (_machine == null) _machine = new CameraModeMachine(autoZoomOutSeconds);
             var zoomPressed = _zoom != null && _zoom.WasPressedThisFrame();
-            if (_machine.Update(Time.deltaTime, AnyInput(), zoomPressed))
+            // Bench view owns the camera: movement stays live but must not zoom out or return to follow.
+            if (!_benchActive && _machine.Update(Time.deltaTime, AnyInput(), zoomPressed))
             {
                 _fromOffset = _currentOffset;
                 _toOffset = _machine.Mode == CameraMode.ZoomedOut ? zoomedOutOffset : followOffset;
@@ -93,6 +122,8 @@ namespace PlantNursery.Game
                 _panT = panSeconds <= 0.0001f ? 1f : Mathf.Min(1f, _panT + Time.deltaTime / panSeconds);
                 _currentOffset = Vector3.Lerp(_fromOffset, _toOffset, Mathf.SmoothStep(0f, 1f, _panT));
             }
+            var goal = _benchActive ? 1f : 0f;
+            _benchBlend = panSeconds <= 0.0001f ? goal : Mathf.MoveTowards(_benchBlend, goal, Time.deltaTime / panSeconds);
             Apply();
         }
 
@@ -100,8 +131,16 @@ namespace PlantNursery.Game
         {
             if (target == null || cameraTransform == null) return;
             transform.position = target.position;
-            cameraTransform.localPosition = _currentOffset;
-            cameraTransform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+            var followRot = Quaternion.Euler(pitch, 0f, 0f);
+            if (_benchBlend <= 0f)
+            {
+                cameraTransform.localPosition = _currentOffset;
+                cameraTransform.localRotation = followRot;
+                return;
+            }
+            var s = Mathf.SmoothStep(0f, 1f, _benchBlend);
+            var followPos = transform.position + _currentOffset;
+            cameraTransform.SetPositionAndRotation(Vector3.Lerp(followPos, _benchPos, s), Quaternion.Slerp(followRot, _benchRot, s));
         }
 
         private bool AnyInput()
