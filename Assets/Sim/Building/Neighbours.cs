@@ -96,19 +96,8 @@ namespace PlantNursery.Sim.Building
         /// Bench-local unit (u along from the left, v across from the front, as seen from the working edge) to a world unit.
         /// Rotation turns the bench clockwise seen from above; at 0 the front faces south and u runs east.
         /// </summary>
-        private static void ToWorld(PlacedItem p, int length, int depth, int u, int v, out int x, out int z)
-        {
-            int lx, lz;
-            switch (p.Rotation)
-            {
-                case Rotation.Deg90: lx = v; lz = length - 1 - u; break;
-                case Rotation.Deg180: lx = length - 1 - u; lz = depth - 1 - v; break;
-                case Rotation.Deg270: lx = depth - 1 - v; lz = u; break;
-                default: lx = u; lz = v; break;
-            }
-            x = p.Anchor.X * UnitsPerCell + lx;
-            z = p.Anchor.Z * UnitsPerCell + lz;
-        }
+        private static void ToWorld(PlacedItem p, int length, int depth, int u, int v, out int x, out int z) =>
+            BenchGeometry.ToWorld(p, length, depth, u, v, out x, out z);
 
         private static long Key(int x, int z) => ((long)x << 32) | (uint)z;
     }
