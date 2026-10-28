@@ -47,6 +47,10 @@ namespace PlantNursery.Sim.Building
         private readonly BuildState _build;
         private readonly Dictionary<long, string> _units = new Dictionary<long, string>();
         private readonly HashSet<string> _slots = new HashSet<string>();
+        private readonly Dictionary<string, SlotRef> _slotRefs = new Dictionary<string, SlotRef>();
+
+        /// <summary>Every occupied strip slot (<see cref="SlotRef.Size"/> is the item id).</summary>
+        public IEnumerable<SlotRef> PlacedSlots => _slotRefs.Values;
 
         /// <summary>Creates strip occupancy over a build state.</summary>
         public StripOccupancy(ContentDb content, BuildState build)
@@ -94,6 +98,7 @@ namespace PlantNursery.Sim.Building
                 for (var v = row * across; v < (row + 1) * across; v++)
                     _units[Key(benchId, u, v)] = tag;
             _slots.Add(tag);
+            _slotRefs[tag] = new SlotRef(benchId, itemId, col, row);
             return StripRejection.None;
         }
 
@@ -115,6 +120,7 @@ namespace PlantNursery.Sim.Building
                 for (var v = row * across; v < (row + 1) * across; v++)
                     _units.Remove(Key(benchId, u, v));
             _slots.Remove(Tag(benchId, itemId, col, row));
+            _slotRefs.Remove(Tag(benchId, itemId, col, row));
             return StripRejection.None;
         }
 
