@@ -51,7 +51,8 @@ namespace PlantNursery.Game
         private void OnDisable() { WorldInteractions.Unregister(this); }
 
         /// <inheritdoc />
-        public bool IsAvailable => isActiveAndEnabled && host != null && host.IsReady && host.Nursery != null && player != null;
+        public bool IsAvailable => isActiveAndEnabled && host != null && host.IsReady && host.Nursery != null && player != null
+            && !BenchViewController.AnyInBenchView; // in bench view the slot actions own the interact button
 
         /// <inheritdoc />
         public string PromptKey => Decide(player.position).PromptKey ?? "prompt.tend";

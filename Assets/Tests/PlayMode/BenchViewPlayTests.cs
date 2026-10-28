@@ -238,5 +238,139 @@ namespace PlantNursery.Game.PlayModeTests
             Assert.AreEqual((float)x, _view.HighlightPosition.x, 0.01f);
             Assert.AreEqual((float)z, _view.HighlightPosition.z, 0.01f);
         }
+
+        // ---------- T-158: pick up, put down and sow ----------
+
+        private PlantNursery.Sim.Storage.HeldThing Held => _host.Nursery.Hands.GetHeld(Me);
+
+        private SlotAddress TraySlot => SlotAddress.Planting(_bench.Id, "plug_tray", 0, 0);
+
+        private IEnumerator Settle() { yield return null; yield return null; }
+
+        private IEnumerator ClickMouse(Mouse mouse)
+        {
+            Press(mouse.leftButton);
+            yield return null;
+            Release(mouse.leftButton);
+            yield return null;
+        }
+
+        private IEnumerator PressPad(UnityEngine.InputSystem.Controls.ButtonControl button)
+        {
+            Press(button);
+            yield return null;
+            Release(button);
+            yield return null;
+        }
+
+        private IEnumerator PointMouseAt(Mouse mouse, SlotAddress a)
+        {
+            Set(mouse.position, ScreenOf(a, 0.9f));
+            yield return Settle();
+            Assert.IsTrue(_view.PointedSlot.HasValue, _view.DebugText);
+            Assert.AreEqual(a.Key, _view.PointedSlot.Value.Key, _view.DebugText);
+        }
+
+        /// <summary>Step the gamepad pointer to a slot with the d-pad (bounded).</summary>
+        private IEnumerator StepPadTo(SlotAddress a)
+        {
+            for (var i = 0; i < 40 && !(_view.PointedSlot.HasValue && _view.PointedSlot.Value.Key == a.Key); i++)
+            {
+                yield return PressPad(i < 8 ? _gamepad.dpad.right : _gamepad.dpad.left);
+            }
+            Assert.IsTrue(_view.PointedSlot.HasValue && _view.PointedSlot.Value.Key == a.Key, "stepped to " + a.Key + ": " + _view.DebugText);
+        }
+
+        /// <summary>Swap the tray in slot 0,0 for an empty one and put a chimebell packet in the player's hands.</summary>
+        private PlantNursery.Sim.Plants.Container EmptyTrayInSlotAndPacketInHand()
+        {
+            Assert.IsTrue(_host.Submit(new PickUpFromSlot(Me, TraySlot)).IsAccepted);
+            _host.Nursery.Hands.TakeHeld(Me);
+            var tray = new PlantNursery.Sim.Plants.EntityFactory(_host.World, _host.Content).CreateContainer("plug_tray");
+            _host.Nursery.Hands.TryGive(Me, HeldThing.OfContainer(tray));
+            Assert.IsTrue(_host.Submit(new PutInSlot(Me, TraySlot)).IsAccepted);
+            Assert.IsTrue(_host.Nursery.Hands.TryGive(Me, HeldThing.Fresh(_host.Content.ItemDefs["seeds_chimebell_white"])));
+            return tray;
+        }
+
+        [UnityTest]
+        public IEnumerator Mouse_TakePot_PlaceIt()
+        {
+            var mouse = InputSystem.AddDevice<Mouse>();
+            yield return EnterAndSettle();
+
+            yield return PointMouseAt(mouse, TraySlot);
+            yield return ClickMouse(mouse);
+            Assert.AreEqual("PickUpFromSlot", _view.LastActionName);
+            Assert.IsNotNull(Held, "the tray is in the hands");
+            Assert.IsNull(_host.Nursery.Contents.Get(TraySlot));
+
+            yield return PointMouseAt(mouse, TraySlot);
+            Assert.IsTrue(_view.GhostValidNow, _view.GhostReason);
+            yield return ClickMouse(mouse);
+            Assert.AreEqual("PutInSlot", _view.LastActionName);
+            Assert.IsNull(Held, "hands are empty again");
+            Assert.IsNotNull(_host.Nursery.Contents.Get(TraySlot), "the tray is back in its slot");
+        }
+
+        [UnityTest]
+        public IEnumerator Mouse_Packet_SowsTray_AndRejectsOutsideAContainer()
+        {
+            var mouse = InputSystem.AddDevice<Mouse>();
+            yield return EnterAndSettle();
+            var tray = EmptyTrayInSlotAndPacketInHand();
+
+            // Over the strip's can there is no container: the Sim's rejection is shown.
+            var canSlot = SlotAddress.Strip(_bench.Id, "watering_can", 0, 0);
+            yield return PointMouseAt(mouse, canSlot);
+            yield return ClickMouse(mouse);
+            Assert.AreEqual("SowSpecies", _view.LastActionName);
+            Assert.IsFalse(_view.LastActionResult.IsAccepted);
+            Assert.AreEqual("NotInSlot", _view.LastActionResult.Message);
+            Assert.IsNotEmpty(_view.Rejection, "the rejection is shown");
+            Assert.AreEqual(0, tray.PlantIds.Count);
+
+            yield return PointMouseAt(mouse, TraySlot);
+            yield return ClickMouse(mouse);
+            Assert.IsTrue(_view.LastActionResult.IsAccepted, _view.LastActionResult.Message);
+            Assert.AreEqual(6, tray.PlantIds.Count, "one interact sows the whole tray");
+            Assert.IsNull(Held, "the empty packet is used up");
+        }
+
+        [UnityTest]
+        public IEnumerator Gamepad_TakePot_PlaceIt()
+        {
+            yield return EnterAndSettle();
+            yield return null;
+            Assert.IsFalse(_view.UsingMouse);
+
+            yield return StepPadTo(TraySlot);
+            yield return PressPad(_gamepad.buttonSouth);
+            Assert.AreEqual("PickUpFromSlot", _view.LastActionName);
+            Assert.IsNotNull(Held, "the tray is in the hands");
+            Assert.IsNull(_host.Nursery.Contents.Get(TraySlot));
+
+            yield return StepPadTo(TraySlot);
+            yield return PressPad(_gamepad.buttonSouth);
+            Assert.AreEqual("PutInSlot", _view.LastActionName);
+            Assert.IsNull(Held);
+            Assert.IsNotNull(_host.Nursery.Contents.Get(TraySlot));
+        }
+
+        [UnityTest]
+        public IEnumerator Gamepad_Packet_SowsTray()
+        {
+            yield return EnterAndSettle();
+            yield return null;
+            var tray = EmptyTrayInSlotAndPacketInHand();
+            yield return Settle();
+
+            yield return StepPadTo(TraySlot);
+            yield return PressPad(_gamepad.buttonSouth);
+            Assert.AreEqual("SowSpecies", _view.LastActionName);
+            Assert.IsTrue(_view.LastActionResult.IsAccepted, _view.LastActionResult.Message);
+            Assert.AreEqual(6, tray.PlantIds.Count);
+            Assert.IsNull(Held);
+        }
     }
 }

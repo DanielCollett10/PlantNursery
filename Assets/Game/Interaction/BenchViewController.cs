@@ -35,7 +35,11 @@ namespace PlantNursery.Game
         private readonly Dictionary<int, BenchTarget> _targets = new Dictionary<int, BenchTarget>();
         private readonly List<int> _scratchIds = new List<int>();
         private InputActionMap _map;
-        private InputAction _step, _stepPrev, _stepNext;
+        private static int s_activeViews;
+        private InputAction _step, _stepPrev, _stepNext, _interact;
+        private int _enteredFrame = -1;
+        private float _rejectUntil;
+        private string _rejection = string.Empty;
         private Vector2 _lastStep, _lastMouse;
         private bool _usingMouse = true;
         private string _lastHeldKind;
@@ -59,6 +63,14 @@ namespace PlantNursery.Game
         public string GhostReason { get; private set; } = string.Empty;
         /// <summary>Debug readout: raw pointer position and what it found.</summary>
         public string DebugText { get; private set; } = string.Empty;
+        /// <summary>True while any bench view is active; walking-around tending stands down so one press does one thing.</summary>
+        public static bool AnyInBenchView => s_activeViews > 0;
+        /// <summary>The last action's command and result, for tests (for example "PickUpFromSlot").</summary>
+        public string LastActionName { get; private set; } = string.Empty;
+        /// <summary>The last action's result.</summary>
+        public CommandResult LastActionResult { get; private set; }
+        /// <summary>Player-facing text for the last rejection while it is fresh, else empty.</summary>
+        public string Rejection => Time.time < _rejectUntil ? _rejection : string.Empty;
         /// <summary>Exit distance in metres.</summary>
         public float ExitDistance { get => exitDistance; set => exitDistance = value; }
 
@@ -102,6 +114,7 @@ namespace PlantNursery.Game
             _planeY = ComputePlaneY();
             if (rig != null) PanCamera(group);
             if (_map != null) _map.Enable();
+            if (!wasIn) { s_activeViews++; _enteredFrame = Time.frameCount; }
             if (!wasIn) { _lastStep = Vector2.zero; _usingMouse = Gamepad.current == null || Mouse.current != null; }
             return true;
         }
@@ -110,6 +123,7 @@ namespace PlantNursery.Game
         public void Exit()
         {
             if (!InBenchView) return;
+            s_activeViews = Mathf.Max(0, s_activeViews - 1);
             ViewBenchIds = new int[0];
             PointedSlot = null;
             if (rig != null) rig.ExitBenchView();
@@ -126,6 +140,7 @@ namespace PlantNursery.Game
                     _step = _map.FindAction("Step", false);
                     _stepPrev = _map.FindAction("StepPrev", false);
                     _stepNext = _map.FindAction("StepNext", false);
+                    _interact = _map.FindAction("Interact", false);
                 }
             }
         }
@@ -135,7 +150,7 @@ namespace PlantNursery.Game
             foreach (var t in _targets.Values) WorldInteractions.Unregister(t);
             _targets.Clear();
             if (InBenchView) Exit();
-            _map = null; _step = _stepPrev = _stepNext = null;
+            _map = null; _step = _stepPrev = _stepNext = _interact = null;
             Release(_highlight); Release(_ghost); _highlight = _ghost = null;
         }
 
@@ -146,7 +161,44 @@ namespace PlantNursery.Game
             if (!InBenchView) return;
             if (!StillValid()) { Exit(); return; }
             ReadPointers();
+            // The press that entered the view (gamepad South is also the Walk interact) must not act in the same frame.
+            if (_interact != null && Time.frameCount != _enteredFrame && _interact.WasPressedThisFrame()) DoInteract();
+            if (!InBenchView) return;
             ShowPointed();
+        }
+
+        // ---------- actions ----------
+
+        private HeldThing HeldNow => host.Nursery.Hands.GetHeld(host.Session.LocalPlayer);
+
+        /// <summary>The Sim command the interact button sends for the pointed slot, or null when nothing is pointed.</summary>
+        private ICommand CommandFor(SlotAddress a)
+        {
+            var me = host.Session.LocalPlayer;
+            var held = HeldNow;
+            if (held == null) return new PickUpFromSlot(me, a);
+            if (held.Kind == PlantNursery.Sim.Storage.HeldKind.SeedPacket)
+            {
+                var thing = a.IsStrip ? null : host.Nursery.Contents.Get(a);
+                // -1 is no container: the Sim answers NotInSlot, so even an empty slot gets a Sim rejection.
+                return new SowSpecies(me, thing != null && thing.Container != null ? thing.Container.Id : -1);
+            }
+            return new PutInSlot(me, a);
+        }
+
+        private void DoInteract()
+        {
+            if (!PointedSlot.HasValue) return;
+            var cmd = CommandFor(PointedSlot.Value);
+            var result = host.Submit(cmd);
+            LastActionName = cmd.GetType().Name;
+            LastActionResult = result;
+            if (result.IsAccepted) { _rejection = string.Empty; _rejectUntil = 0f; return; }
+            var key = string.IsNullOrEmpty(result.Message) ? result.Reason.ToString() : result.Message;
+            if (!string.IsNullOrEmpty(result.Message) && UiStrings.Has("reject." + result.Message)) _rejection = UiStrings.Get("reject." + result.Message);
+            else if (UiStrings.Has("reject." + result.Reason)) _rejection = UiStrings.Get("reject." + result.Reason);
+            else _rejection = key;
+            _rejectUntil = Time.time + 2.5f;
         }
 
         private bool StillValid()
@@ -181,6 +233,8 @@ namespace PlantNursery.Game
         {
             var held = host.Nursery.Hands.GetHeld(host.Session.LocalPlayer);
             if (held == null) return null;
+            // A packet sows into whatever is under the pointer, so it points like empty hands: at filled slots of any size.
+            if (held.Kind == PlantNursery.Sim.Storage.HeldKind.SeedPacket) return null;
             return held.Kind == PlantNursery.Sim.Storage.HeldKind.Container && held.Container != null ? held.Container.Def.Id : held.ItemId;
         }
 
@@ -324,7 +378,7 @@ namespace PlantNursery.Game
 
             var held = host.Nursery.Hands.GetHeld(host.Session.LocalPlayer);
             if (held == null) { GhostReason = string.Empty; GhostValidNow = false; _ghost.SetActive(false); return; }
-            var result = host.Validate(new PutInSlot(host.Session.LocalPlayer, a));
+            var result = host.Validate(CommandFor(a));
             GhostValidNow = result.IsAccepted;
             GhostReason = result.IsAccepted ? string.Empty : (string.IsNullOrEmpty(result.Message) ? result.Reason.ToString() : result.Message);
             _ghostMat.color = GhostValidNow ? GhostValid : GhostInvalid;
@@ -373,7 +427,8 @@ namespace PlantNursery.Game
             var cam = Cam;
             var text = DebugText;
             if (!string.IsNullOrEmpty(GhostReason)) text += "\n" + GhostReason;
-            GUI.Label(new Rect(10, 10, 600, 60), "Bench view: " + text);
+            if (!string.IsNullOrEmpty(Rejection)) text += "\n" + Rejection;
+            GUI.Label(new Rect(10, 10, 600, 80), "Bench view: " + text);
             if (cam == null || !PointedSlot.HasValue || string.IsNullOrEmpty(GhostReason)) return;
             var sp = cam.WorldToScreenPoint(GhostPosition);
             if (sp.z > 0f) GUI.Label(new Rect(sp.x - 80, Screen.height - sp.y - 40, 200, 24), GhostReason);

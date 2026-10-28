@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using PlantNursery.Sim.Building;
+using PlantNursery.Sim.Content;
+using PlantNursery.Sim.Core;
 using PlantNursery.Sim.Economy;
 using PlantNursery.Sim.Plants;
 
@@ -42,6 +44,15 @@ namespace PlantNursery.Sim.Storage
                 foreach (var c in In(t)) if (seen.Add(c.Id)) yield return c;
             foreach (var t in Hands.AllHeld)
                 foreach (var c in In(t)) if (seen.Add(c.Id)) yield return c;
+        }
+
+        /// <summary>
+        /// Registers the <see cref="SowSpecies"/> handler. New plants join <see cref="Plants"/>, so growth, water and views see them.
+        /// Call once, after <see cref="Contents"/> is registered.
+        /// </summary>
+        public void RegisterSowing(SimWorld world, ContentDb content)
+        {
+            new SowSystem(content, Hands, Contents, new SpeciesPlantFactory(world, content), PlantMap).Register(world);
         }
 
         /// <summary>The plant with this id, or null.</summary>
